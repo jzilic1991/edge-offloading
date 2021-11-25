@@ -1,0 +1,3 @@
+title=EdgeOffloading
+author=Josip Zilic
+orientation=portrait
