@@ -1,5 +1,4 @@
 import pandas as pd
-import socket
 
 from utilities import OffloadingSiteCode
 from dataset import Dataset
@@ -34,14 +33,12 @@ class FailureMonitor:
 
         def __init__(self, file):
             self._dataset = pd.read_csv(file, encoding = 'utf-8', index_col = False)
-            self._socket = None
             self._ec_data_stats = Dataset(OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
             self._ed_data_stats = Dataset(OffloadingSiteCode.EDGE_DATABASE_SERVER)
             self._er_data_stats = Dataset(OffloadingSiteCode.EDGE_REGULAR_SERVER)
             self._cd_data_stats = Dataset(OffloadingSiteCode.CLOUD_DATA_CENTER)
             
             self.__parse_dataset()
-            self.__init_socket()
         
 
         def get_datasets (cls):
@@ -62,6 +59,10 @@ class FailureMonitor:
 
         def get_cd_data_stats(cls):
             return cls._cd_data_stats
+        
+
+        def get_avail_data (cls, sysid, nodenum):
+            return cls._ed_data_stats.get_node_avail_data(sysid, nodenum)
 
 
         def __parse_dataset(cls):
@@ -91,22 +92,3 @@ class FailureMonitor:
 
         def __get_system_data (cls, system_id):
             return (CONVERSION_SYSTEM_ID_DICT[system_id][0], CONVERSION_SYSTEM_ID_DICT[system_id][1])
-
-
-        def __init_socket (cls):
-            self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.bind(('localhost', 8000))
-            self._socket.listen()
-            
-            while True:
-                conn, _ = self._socket.accept()
-                args = conn.recv(4096).decode()
-                args = args.split('_')
-                system_id, node_num = args[0], args[1]
-
-                self._socket.send()
-
-
-if __name__ == "__main__":
-    fail_mon = FailureMonitor ('../data/LANL.csv')
-    print (fail_mon.get_ed_data_stats().get_node_avail_data(1, 0))

@@ -74,7 +74,7 @@ class Dataset:
         node_dataset = tuple()
 
         for row in cls._data:
-            if int(row['System']) == system_id and int(row['nodenum']) == node_num:
+            if int(row['System']) == int(system_id) and int(row['nodenum']) == int(node_num):
                 node_dataset += (row,)
 
         node_dataset = sorted(node_dataset, key = operator.itemgetter('Prob Started'), reverse = False)
@@ -147,7 +147,7 @@ class Dataset:
         data = tuple()
 
         for row in cls._data:
-            if int(row['System']) == system_id and int(row['nodenum']) == node_num:
+            if int(row['System']) == int(system_id) and int(row['nodenum']) == int(node_num):
                 data += (row,)
 
         return data
