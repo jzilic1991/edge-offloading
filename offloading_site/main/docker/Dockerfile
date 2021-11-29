@@ -1,4 +1,4 @@
-FROM python:3.8.10-slim-buster
+FROM python:3.7.9-slim-buster
 MAINTAINER Rucon@TUW "josip.zilic@tuwien.ac.at"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends curl python3-pip python3-dev build-essential && rm -rf /var/lib/apt/lists/*
