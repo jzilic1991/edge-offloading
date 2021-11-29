@@ -1,40 +1,27 @@
 import sys
-import socket
-import pickle
-import select
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 from offloading_site import OffloadingSite
 from utilities import OffloadingSiteCode
+from socket_client import SocketClient
 
-
-off_site = OffloadingSite(5000, 8, 300, OffloadingSiteCode.EDGE_DATABASE_SERVER, 'A')
-
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('localhost', 8000))
+#off_site = OffloadingSite(5000, 8, 300, OffloadingSiteCode.EDGE_DATABASE_SERVER, 'A')
 
 app = Flask(__name__)
+socket = SocketClient("localhost", 8000)
 
 
 @app.route('/get_avail_data')
 def get_avail_data():
-    system_id = request.args.get('sysid', None)
-    node_num = request.args.get('nodenum', None)
-    avail_data = b""
+    sysid = request.args.get('sysid', None)
+    nodenum = request.args.get('nodenum', None)
     
-    client_socket.send((str(system_id) + '_' + str(node_num)).encode())
-    client_socket.setblocking(False)
+    socket.connect()
+    socket.send(str(sysid) + "_" + str(nodenum))
+    avail_data = socket.receive()
+    socket.close()
 
-    while True:
-        if select.select([client_socket], [], [], 10)[0]:
-            packet = client_socket.recv(4096)
-        
-        if not packet:
-            break
-        
-        avail_data += packet
-
-    return jsonify (pickle.loads(avail_data))
+    return avail_data
 
 
 if __name__ == "__main__":
