@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: offloading-site
+    namespace: default
+    labels:
+        app: offloading-site
+spec:
+    selector:
+        matchLabels:
+            app: offloading-site
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: offloading-site
+        spec:
+            containers:
+            - name: main-offloading-site
+              image: zikadocker1991/offloading-site:v1
+              imagePullPolicy: IfNotPresent
+              ports:
+              - containerPort: 5000
+            
+            - name: failure-monitor
+              image: zikadocker1991/failure-monitor:v1
+              imagePullPolicy: IfNotPresent
+              ports:
+              - containerPort: 8000
+
