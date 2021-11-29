@@ -1,8 +1,5 @@
-import sys
 from flask import Flask, request
 
-from offloading_site import OffloadingSite
-from utilities import OffloadingSiteCode
 from socket_client import SocketClient
 
 #off_site = OffloadingSite(5000, 8, 300, OffloadingSiteCode.EDGE_DATABASE_SERVER, 'A')

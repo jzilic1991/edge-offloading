@@ -1,6 +1,3 @@
-import random
-import numpy
-
 class NodeCategory:
     ER_DATA, EC_DATA, ED_DATA, CD_DATA, NET_DATA = ("EDGE_REG_DATA", "EDGE_COMP_DATA", "EDGE_DATA_DATA", \
         "CLOUD_DATA", "NETWORK_DATA")
