@@ -1,3 +1,4 @@
+import sys
 import socket
 import threading
 import pickle
@@ -14,11 +15,14 @@ class SocketServer():
         self._port = port
 
         self.__bind()
-
+        
     
     def run (cls):
         while True:
             conn, addr = cls._socket.accept()
+            
+            print ('Socket connection is started with ' + str(addr), file = sys.stdout)
+
             client_handler = threading.Thread(target = cls.__receive, args = (conn,))
             client_handler.start()
 
@@ -42,3 +46,5 @@ class SocketServer():
     def __bind (cls):
         cls._socket.bind((cls._host, cls._port))
         cls._socket.listen()
+
+        print ('Socket server is started!', file = sys.stdout)

@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 
 from utilities import OffloadingSiteCode
 from dataset import Dataset
@@ -88,6 +89,8 @@ class FailureMonitor:
 
                 else:
                     exit("Data row must correspond to one of data categories!\n Data: " + str(row))
+
+            print ('Failure monitor is started!', file = sys.stdout)
 
 
         def __get_system_data (cls, system_id):

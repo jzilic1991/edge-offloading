@@ -56,6 +56,9 @@ class Dataset:
 
 
     def __compute_mtbf (cls, data):
+        if len (data) == 0:
+            return -1
+
         total_time = (cls.__get_max_failure_date(data) - cls.__get_min_failure_date(data)).days * 24
         return total_time / len(cls._data)
        
@@ -76,6 +79,9 @@ class Dataset:
         for row in cls._data:
             if int(row['System']) == int(system_id) and int(row['nodenum']) == int(node_num):
                 node_dataset += (row,)
+        
+        if len (node_dataset) == 0:
+            return avail
 
         node_dataset = sorted(node_dataset, key = operator.itemgetter('Prob Started'), reverse = False)
 

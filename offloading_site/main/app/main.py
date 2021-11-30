@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from socket_client import SocketClient
 
@@ -12,7 +12,10 @@ socket = SocketClient("localhost", 8000)
 def get_avail_data():
     sysid = request.args.get('sysid', None)
     nodenum = request.args.get('nodenum', None)
-    
+
+    if sysid == None or nodenum == None:
+        return jsonify([])
+
     socket.connect()
     socket.send(str(sysid) + "_" + str(nodenum))
     avail_data = socket.receive()
