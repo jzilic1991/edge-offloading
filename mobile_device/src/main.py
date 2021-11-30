@@ -12,12 +12,13 @@ class MyWidget(BoxLayout):
         super (MyWidget, self).__init__(**kwargs)
         
         self.label_text = "Waiting for HTTP response..."
-        self._search_url = "http://128.131.169.143:30927"
+        self._search_url = "http://128.131.169.143:30927/get_avail_data?sysid=1&nodenum=0"
         self._request = UrlRequest (self._search_url, self.http_response)
 
 
     def http_response (self, *args):
-        self.label_text = self._request.result
+        print (self._request.result)
+        self.label_text = str(self._request.result[0])
 
 
 class MyApp(App):

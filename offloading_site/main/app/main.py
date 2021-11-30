@@ -1,3 +1,4 @@
+import pickle
 from flask import Flask, request, jsonify
 
 from socket_client import SocketClient
@@ -5,7 +6,8 @@ from socket_client import SocketClient
 #off_site = OffloadingSite(5000, 8, 300, OffloadingSiteCode.EDGE_DATABASE_SERVER, 'A')
 
 app = Flask(__name__)
-socket = SocketClient("localhost", 8000)
+sock_fail_mon = SocketClient ("localhost", 8000)
+sock_pred_engine = SocketClient ("localhost", 8001)
 
 
 @app.route('/get_avail_data')
@@ -16,10 +18,15 @@ def get_avail_data():
     if sysid == None or nodenum == None:
         return jsonify([])
 
-    socket.connect()
-    socket.send(str(sysid) + "_" + str(nodenum))
-    avail_data = socket.receive()
-    socket.close()
+    sock_fail_mon.connect()
+    sock_fail_mon.send(str(sysid) + "_" + str(nodenum))
+    fail_data = socket_fail_mon.receive()
+    socket_fail_mon.close()
+
+    sock_pred_engine.connect()
+    sock_pred_engine.send(pickle.dumps(fail_data))
+    avail_data = pickle.loads(sock_pred_engine.receive())
+    socket_fail_mon.close()
 
     return avail_data
 
