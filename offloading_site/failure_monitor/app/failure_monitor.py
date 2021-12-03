@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
@@ -63,7 +64,9 @@ class FailureMonitor:
         
 
         def get_avail_data (cls, sysid, nodenum):
-            return cls._ed_data_stats.get_node_avail_data(sysid, nodenum)
+            data = cls._ed_data_stats.get_node_avail_data (sysid, nodenum)
+            # cls.__plot_avail_dist (data)
+            return data
 
 
         def __parse_dataset(cls):
@@ -95,3 +98,12 @@ class FailureMonitor:
 
         def __get_system_data (cls, system_id):
             return (CONVERSION_SYSTEM_ID_DICT[system_id][0], CONVERSION_SYSTEM_ID_DICT[system_id][1])
+
+
+        def __plot_avail_dist (cls, data):
+            plt.plot(tuple(i for i in range(len(data))), data)
+            plt.suptitle('#data_points = ' + str(len(data) + 1))
+            plt.title('Availability distribution')
+            plt.xlabel('Failure index')
+            plt.ylabel('Availability (per day)')
+            plt.show()

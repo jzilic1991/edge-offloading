@@ -1,7 +1,7 @@
 import sys
 import select
 import pickle
-from flask import jsonify
+import datetime
 
 
 class SocketClient():
@@ -21,29 +21,31 @@ class SocketClient():
         print ('Socket connection with ' + str(cls._socket.getpeername()) + ' is established!', file = sys.stdout)
     
 
-    def send (cls, str_text):
-        cls._socket.send (str_text.encode())
+    def send (cls, data):
+        if isinstance (data, str):
+            cls._socket.send (data.encode())
+        
+        elif isinstance (data, bytes):
+            cls._socket.send (data)
 
 
     def receive (cls):
-        avail_data = b""
+        data = b""
         packet = None
 
-        cls._socket.setblocking (False)
-
         while True:
-            if select.select([cls._socket], [], [], 10)[0]:
+            if select.select([cls._socket], [], [])[0]:
                 packet = cls._socket.recv(4096)
         
             if not packet:
                 break
         
-            avail_data += packet
+            data += packet
         
-        if avail_data == b"":
-            return jsonify([])
+        if data == b"":
+            return []
         
-        return jsonify (pickle.loads(avail_data))
+        return pickle.loads(data)
 
 
     def close (cls):

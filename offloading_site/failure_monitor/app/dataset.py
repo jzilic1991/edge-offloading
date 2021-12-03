@@ -140,7 +140,7 @@ class Dataset:
                     continue
 
             uptime = Uptime.DAY_IN_MINUTES - downtime_acc
-            uptime = uptime / (uptime + downtime_acc)				
+            uptime = uptime / (uptime + downtime_acc)
             avail += (uptime,)
         
             # update datetime to next day for next iteration

@@ -1,3 +1,4 @@
+import sys
 import pickle
 from flask import Flask, request, jsonify
 
@@ -20,15 +21,15 @@ def get_avail_data():
 
     sock_fail_mon.connect()
     sock_fail_mon.send(str(sysid) + "_" + str(nodenum))
-    fail_data = socket_fail_mon.receive()
-    socket_fail_mon.close()
+    fail_data = sock_fail_mon.receive()
+    sock_fail_mon.close()
 
     sock_pred_engine.connect()
     sock_pred_engine.send(pickle.dumps(fail_data))
-    avail_data = pickle.loads(sock_pred_engine.receive())
-    socket_fail_mon.close()
+    avail_data = sock_pred_engine.receive()
+    sock_pred_engine.close()
 
-    return avail_data
+    return jsonify (avail_data)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,8 @@ import sys
 import socket
 import threading
 import pickle
+import select
+import datetime
 
 from prediction_engine import PredictionEngine
 
@@ -29,26 +31,29 @@ class SocketServer():
 
     def __receive (cls, conn):
         req_data = b""
-        packet = None
-
-        cls._socket.setblocking (False)
 
         while True:
-            if select.select([cls._socket], [], [], 10)[0]:
-                packet = cls._socket.recv(4096)
-        
+            packet = None
+            
+            if select.select([conn], [], [], 5)[0]:
+                packet = conn.recv(4096)
+            
             if not packet:
                 break
         
             req_data += packet
         
-        cls._pred_engine.train(pickle.loads(req_data))
-        cls.__send(conn, cls._pred_engine.estimate())
+        if req_data == b"":
+            cls.__send (conn, [])
+            return
+
+        cls._pred_engine.train (pickle.loads(req_data))
+        cls.__send (conn, cls._pred_engine.estimate())
 
 
     def __send (cls, conn, data):
-        conn.send(pickle.dumps(data))
-        conn.close()
+        conn.send (pickle.dumps(data))
+        conn.close ()
 
 
     def __bind (cls):

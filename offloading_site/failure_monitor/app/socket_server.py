@@ -39,8 +39,8 @@ class SocketServer():
 
 
     def __send (cls, conn, data):
-        conn.send(pickle.dumps(data))
-        conn.close()
+        conn.send (pickle.dumps(data))
+        conn.close ()
 
 
     def __bind (cls):
