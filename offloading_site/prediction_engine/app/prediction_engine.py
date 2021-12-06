@@ -52,7 +52,7 @@ class PredictionEngine:
 
     def __separate_dataset (cls, dataset):
         cls._x_train, cls._x_test, cls._y_train, cls._y_test = \
-            train_test_split(range(len(dataset)), dataset, train_size = 0.8, random_state = cls._random_state)
+            train_test_split(range(len(dataset)), dataset, train_size = 0.8, test_size = 0.2, random_state = cls._random_state)
         cls._x_train = np.array(cls._x_train).reshape(-1, 1)
         cls._y_train = np.ravel(cls._y_train, order = 'C')
         cls._x_test = np.array(cls._x_test).reshape(-1, 1)
