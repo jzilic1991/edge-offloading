@@ -17,17 +17,17 @@ spec:
         spec:
             containers:
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v1
-              imagePullPolicy: IfNotPresent
+              image: zikadocker1991/offloading-site:v2
+              imagePullPolicy: Always
               ports:
               - containerPort: 5000
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v1
-              imagePullPolicy: IfNotPresent
+              image: zikadocker1991/failure-monitor:v2
+              imagePullPolicy: Always
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v1
-              imagePullPolicy: IfNotPresent
+              image: zikadocker1991/prediction-engine:v2
+              imagePullPolicy: Always
               ports:
               - containerPort: 8001
