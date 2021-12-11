@@ -28,10 +28,10 @@ CREATE TABLE network_connections (
 INSERT INTO network_connections (first_site_id, second_site_id, bandwidth)
 VALUES
  ('Cloud Data Center', 'Edge Database Server', 123000),
- ('Cloud Data Center', 'Edge Computational Server', 12500),
+ ('Cloud Data Center', 'Edge Computational Intensive Server', 12500),
  ('Cloud Data Center', 'Edge Regular Server', 12500),
  ('Cloud Data Center', 'Mobile Device', 2500),
- ('Edge Database Server', 'Edge Computational Server', 123000),
+ ('Edge Database Server', 'Edge Computational Intensive Server', 123000),
  ('Edge Database Server', 'Edge Regular Server', 123000),
  ('Edge Database Server', 'Mobile Device', 2500),
  ('Edge Computational Intensive Server', 'Edge Regular Server', 12500),
