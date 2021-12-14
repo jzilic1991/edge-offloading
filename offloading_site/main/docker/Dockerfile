@@ -15,4 +15,4 @@ RUN pip3 install --upgrade pip; pip3 install --no-cache-dir -r requirements.txt;
 COPY app/ /app
 
 EXPOSE 5000
-CMD [ "python3", "-u", "main.py" ]
+ENTRYPOINT [ "python3", "-u", "main.py", "database" ]
