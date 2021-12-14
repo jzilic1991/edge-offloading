@@ -44,7 +44,8 @@ class ExecutionErrorCode:
 
 
 class OffloadingSiteCode:
-    MOBILE_DEVICE, EDGE_DATABASE_SERVER, EDGE_COMPUTATIONAL_INTENSIVE_SERVER, EDGE_REGULAR_SERVER, CLOUD_DATA_CENTER = range(5)
+    MOBILE_DEVICE, EDGE_DATABASE_SERVER, EDGE_COMPUTATIONAL_INTENSIVE_SERVER, EDGE_REGULAR_SERVER, CLOUD_DATA_CENTER,\
+            UNKNOWN = range(6)
 
 
 class OffloadingActions:
@@ -60,6 +61,10 @@ class FailureEventMode:
 class OdeType:
     LOCAL, MOBILE_CLOUD, ENERGY_EFFICIENT, EFPO, MDP_SVR = ('LOCAL', 'MOBILE_CLOUD', 'ENERGY_EFFICIENT',\
         'EFPO', 'MDP_SVR')
+
+class NodeType:
+    MOBILE, EDGE_DATABASE, EDGE_COMPUTATIONAL, EDGE_REGULAR, CLOUD, UNKNOWN = ('Mobile Device', 'Edge Database Server',\
+            'Edge Computational Intensive Server', 'Edge Regular Server', 'Cloud Data Center', 'Unknown')
 
 
 class Util(object):
@@ -81,3 +86,52 @@ class Util(object):
 
         else:
             raise ValueError ("Offloading site code is invalid! (" + str(offloading_site_code) + ")")
+
+
+    @classmethod
+    def determine_node_type (cls, node_type):
+
+        node_type = str (node_type)
+
+        if node_type == 'database':
+            return NodeType.EDGE_DATABASE
+
+        elif node_type == 'comp':
+            return NodeType.EDGE_COMPUTATIONAL
+        
+        elif node_type == 'regular':
+            return NodeType.EDGE_REGULAR
+
+        elif node_type == 'cloud':
+            return NodeType.CLOUD
+
+        elif node_type == 'mobile':
+            return NodeType.MOBILE
+
+        else:
+            return NodeType.UNKNOWN
+
+
+    @classmethod
+    def determine_off_site_code (cls, node_type):
+        
+        if isinstance (node_type, NodeType):
+            return OffloadingSiteCode.UNKNOWN
+
+        if node_type == NodeType.EDGE_DATABASE:
+            return OffloadingSiteCode.EDGE_DATABASE_SERVER
+        
+        elif node_type == NodeType.EDGE_COMPUTATIONAL:
+            return OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER
+
+        elif node_type == NodeType.EDGE_REGULAR:
+            return OffloadingSiteCode.EDGE_REGULAR_SERVER
+        
+        elif node_type == NodeType.CLOUD:
+            return OffloadingSiteCode.CLOUD_DATA_CENTER
+
+        elif node_type == NodeType.MOBILE:
+            return OffloadingSiteCode.MOBILE_DEVICE
+
+        else:
+            return OffloadingSiteCode.UNKNOWN

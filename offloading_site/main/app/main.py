@@ -1,23 +1,30 @@
 import sys
 import psycopg2
 import pickle
+import uuid
 import pandas as pd
 from flask import Flask, request, jsonify
 
 from socket_client import SocketClient
+from utilities import Util
 
 #off_site = OffloadingSite(5000, 8, 300, OffloadingSiteCode.EDGE_DATABASE_SERVER, 'A')
 
 app = Flask(__name__)
 sock_fail_mon = SocketClient ("localhost", 8000)
 sock_pred_engine = SocketClient ("localhost", 8001)
+off_site = init_off_site(sys.argv[1])
 
-def init_off_site ():
+def init_off_site (node_type):
     con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "30226")
     print("Database opened successfully", file = sys.stdout)
     
     cur = con.cursor()
-    query = "SELECT * FROM application_tasks";
+    query_node_type = Util.determine_node_type (node_type)
+    if query_node_type == 'Unknown':
+        raise ValueError ('Wrong node type value is passed! Value = ' + str(node_type))
+    
+    query = "SELECT * FROM offloading_sites WHERE id = \'" + query_node_type + "\'"
     cur.execute(query)
     data = cur.fetchall()
 
@@ -25,9 +32,11 @@ def init_off_site ():
     for elt in cur.description:
         col_names.append(elt[0])
 
-    df = pd.DataFrame(data, columns=col_names)
+    df = pd.DataFrame(data, columns = col_names)
     print (df, file = sys.stdout)
     con.close()
+
+    return OffloadingSite (df['mips'], df['memory'], df['storage'], query_node_type, str(uuid.uuid4().hex))
 
 
 @app.route('/get_avail_data')
@@ -54,4 +63,3 @@ def get_avail_data():
 if __name__ == "__main__":
     app.run(host = '0.0.0.0', port = 5000, debug = True)
 
-    init_off_site()
