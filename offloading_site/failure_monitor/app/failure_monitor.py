@@ -49,7 +49,7 @@ class FailureMonitor:
 
 
         def get_avail_data (cls, sysid, nodenum):
-            data = cls._ed_data_stats.get_node_avail_data (sysid, nodenum)
+            data = cls._data_stats.get_node_avail_data (sysid, nodenum)
             # cls.__plot_avail_dist (data)
             return data
 
@@ -60,7 +60,7 @@ class FailureMonitor:
             if node_type == NodeType.EDGE_DATABASE:
                 return Dataset (OffloadingSiteCode.EDGE_DATABASE_SERVER)
             
-            elif node_type == NodeType.EDGE_COMPUTATIONAL;
+            elif node_type == NodeType.EDGE_COMPUTATIONAL:
                 return Dataset (OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
 
             elif node_type == NodeType.EDGE_REGULAR:
@@ -79,23 +79,11 @@ class FailureMonitor:
 
                 if system_id == EMPTY_SYSTEM_ID:
                     continue
+                
+                (row['System'], offloading_site_code) = cls.__get_system_data (system_id)
 
-                (row['System'], offloading_site_code) = cls.__get_system_data(system_id)
-
-                if offloading_site_code == cls._ec_data_stats.get_offloading_site_code():
-                    cls._ec_data_stats.add_item(row)
-
-                elif offloading_site_code == cls._ed_data_stats.get_offloading_site_code():
-                    cls._ed_data_stats.add_item(row)
-
-                elif offloading_site_code == cls._er_data_stats.get_offloading_site_code():
-                    cls._er_data_stats.add_item(row)
-
-                elif offloading_site_code == cls._cd_data_stats.get_offloading_site_code():
-                    cls._cd_data_stats.add_item(row)
-
-                else:
-                    exit("Data row must correspond to one of data categories!\n Data: " + str(row))
+                if offloading_site_code == cls._data_stats.get_offloading_site_code():
+                    cls._data_stats.add_item (row)
 
             print ('Failure monitor is started!', file = sys.stdout)
 
