@@ -8,8 +8,8 @@ from failure_monitor import FailureMonitor
 
 class SocketServer():
 
-    def __init__ (self, host, port):
-        self._fail_monitor = FailureMonitor ('../data/LANL.csv')
+    def __init__ (self, host, port, node_type):
+        self._fail_monitor = FailureMonitor ('../data/LANL.csv', node_type)
         self._socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
         self._host = host
         self._port = port

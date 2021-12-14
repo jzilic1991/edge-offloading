@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
-from utilities import OffloadingSiteCode
+from utilities import Util, OffloadingSiteCode, NodeType
 from dataset import Dataset
 
 CONVERSION_SYSTEM_ID_DICT = {2: (20, OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER),
@@ -33,40 +33,44 @@ EMPTY_SYSTEM_ID = 17
 
 class FailureMonitor:
 
-        def __init__(self, file):
+        def __init__(self, file, node_type):
             self._dataset = pd.read_csv(file, encoding = 'utf-8', index_col = False)
-            self._ec_data_stats = Dataset(OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
-            self._ed_data_stats = Dataset(OffloadingSiteCode.EDGE_DATABASE_SERVER)
-            self._er_data_stats = Dataset(OffloadingSiteCode.EDGE_REGULAR_SERVER)
-            self._cd_data_stats = Dataset(OffloadingSiteCode.CLOUD_DATA_CENTER)
+            self._data_stats = self.__determine_dataset (node_type)
+            # self._ec_data_stats = Dataset(OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
+            # self._ed_data_stats = Dataset(OffloadingSiteCode.EDGE_DATABASE_SERVER)
+            # self._er_data_stats = Dataset(OffloadingSiteCode.EDGE_REGULAR_SERVER)
+            # self._cd_data_stats = Dataset(OffloadingSiteCode.CLOUD_DATA_CENTER)
             
             self.__parse_dataset()
         
 
-        def get_datasets (cls):
-            return (cls._ec_data_stats, cls._ed_data_stats, cls._er_data_stats, cls._cd_data_stats)
+        def get_dataset (cls):
+            return cls._data_stats
 
-
-        def get_ec_data_stats(cls):
-            return cls._ec_data_stats
-
-
-        def get_ed_data_stats(cls):
-            return cls._ed_data_stats
-
-
-        def get_er_data_stats(cls):
-            return cls._er_data_stats
-
-
-        def get_cd_data_stats(cls):
-            return cls._cd_data_stats
-        
 
         def get_avail_data (cls, sysid, nodenum):
             data = cls._ed_data_stats.get_node_avail_data (sysid, nodenum)
             # cls.__plot_avail_dist (data)
             return data
+
+        
+        def __determine_dataset (cls, node_type):
+            node_type = Util.determine_node_type (node_type)
+
+            if node_type == NodeType.EDGE_DATABASE:
+                return Dataset (OffloadingSiteCode.EDGE_DATABASE_SERVER)
+            
+            elif node_type == NodeType.EDGE_COMPUTATIONAL;
+                return Dataset (OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
+
+            elif node_type == NodeType.EDGE_REGULAR:
+                return Dataset (OffloadingSiteCode.EDGE_REGULAR_SERVER)
+
+            elif node_type == NodeType.CLOUD:
+                return Dataset (OffloadingSiteCode.CLOUD_DATA_CENTER)
+
+            else:
+                raise ValueError ('Wrong node type for Dataset class! Value: ' + str(node_type))
 
 
         def __parse_dataset(cls):
