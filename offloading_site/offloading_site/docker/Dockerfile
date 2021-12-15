@@ -1,7 +1,7 @@
 FROM python:3.7.9-slim-buster
 MAINTAINER Rucon@TUW "josip.zilic@tuwien.ac.at"
 
-RUN apt-get update -y && apt-get install -y --no-install-recommends curl python3-pip python3-dev build-essential && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y --no-install-recommends curl postgresql-libs gcc libc-dev python3-pip python3-dev build-essential && rm -rf /var/lib/apt/lists/*
 
 #Allow pi wheels 
 RUN echo "[global]\nextra-index-url=https://www.piwheels.org/simple" >> /etc/pip.conf
