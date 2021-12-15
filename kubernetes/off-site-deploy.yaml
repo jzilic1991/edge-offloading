@@ -17,12 +17,14 @@ spec:
         spec:
             containers:
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v2
+              image: zikadocker1991/offloading-site:v4
+              args: ["database"]
               imagePullPolicy: Always
               ports:
               - containerPort: 5000
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v2
+              image: zikadocker1991/failure-monitor:v3
+              args: ["database"]
               imagePullPolicy: Always
               ports:
               - containerPort: 8000
@@ -31,3 +33,5 @@ spec:
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
+            nodeSelector:
+              kubernetes.io/hostname: rll-m01

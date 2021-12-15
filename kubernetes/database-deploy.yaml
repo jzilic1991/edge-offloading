@@ -21,3 +21,5 @@ spec:
               imagePullPolicy: Always
               ports:
               - containerPort: 5432
+            nodeSelector:
+              kubernetes.io/hostname: node8
