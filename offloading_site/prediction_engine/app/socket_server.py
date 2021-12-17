@@ -43,11 +43,13 @@ class SocketServer():
         
             req_data += packet
         
-        if req_data == b"":
+        load_data = pickle.loads(req_data)
+        if req_data == b"" or len(load_data) == 0:
             cls.__send (conn, [])
             return
-
-        cls._pred_engine.train (pickle.loads(req_data))
+        
+        print ('Loaded failure data: ' + str(load_data), file = sys.stdout)
+        cls._pred_engine.train (load_data)
         cls.__send (conn, cls._pred_engine.estimate())
 
 

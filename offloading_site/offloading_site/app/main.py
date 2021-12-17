@@ -52,6 +52,9 @@ def get_avail_data():
     fail_data = sock_fail_mon.receive()
     sock_fail_mon.close()
 
+    if len(fail_data) == 0:
+        return jsonify([])
+
     sock_pred_engine.connect()
     sock_pred_engine.send(pickle.dumps(fail_data))
     avail_data = sock_pred_engine.receive()
