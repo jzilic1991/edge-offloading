@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: offloading-site
+  name: cloud-site
   labels:
-      app: offloading-site
+      app: cloud-site
 spec:
   selector:
-    app: offloading-site
+    app: cloud-site
   ports:
     - protocol: TCP
       port: 80

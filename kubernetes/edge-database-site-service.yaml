@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge-database-site
+  labels:
+      app: edge-database-site
+spec:
+  selector:
+    app: edge-database-site
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      name: http
