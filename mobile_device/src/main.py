@@ -4,16 +4,28 @@ from kivy.properties import StringProperty, ObjectProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.lang import Builder
 
+from resource_monitor import ResourceMonitor
+from mobile_device import MobileDevice
+
+
 class MyWidget(BoxLayout):
    
-    label_text = StringProperty()
+    _label_text = StringProperty()
+    _res_monitor = ResourceMonitor()
+    _mobile_device = None
 
     def __init__ (self, **kwargs):
         super (MyWidget, self).__init__(**kwargs)
         
-        self.label_text = "Waiting for HTTP response..."
-        self._search_url = "http://128.131.169.143:30927/get_avail_data?sysid=1&nodenum=0"
-        self._request = UrlRequest (self._search_url, self.http_response)
+        self._label_text = "Waiting for HTTP response..."
+        #self._search_url = "http://128.131.169.143:30256/get_avail_data?sysid=1&nodenum=0"
+        #self._request = UrlRequest (self._search_url, self.http_response)
+    
+        df = self._res_monitor.get_offloading_sites ("SELECT * FROM offloading_sites WHERE id = \'Mobile Device\'")
+        self._mobile_device = MobileDevice (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]))
+        self._mobile_device.print_system_config ()
+        
+        self._res_monitor.get_offloading_sites ("SELECT * FROM offloading_sites WHERE id != \'Mobile Device\'")
 
 
     def http_response (self, *args):
