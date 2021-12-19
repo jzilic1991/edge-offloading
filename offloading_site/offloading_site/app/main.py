@@ -15,7 +15,7 @@ sock_fail_mon = SocketClient ("localhost", 8000)
 sock_pred_engine = SocketClient ("localhost", 8001)
 
 def init_off_site (node_type):
-    con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "30226")
+    con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "32398")
     print("Database opened successfully", file = sys.stdout)
     
     cur = con.cursor()
