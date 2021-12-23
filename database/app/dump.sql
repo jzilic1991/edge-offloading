@@ -2,16 +2,17 @@ CREATE TABLE offloading_sites (
    id VARCHAR (255) NOT NULL PRIMARY KEY,
    mips SMALLINT NOT NULL,
    memory SMALLINT NOT NULL,
-   storage SMALLINT NOT NULL
+   storage SMALLINT NOT NULL,
+   name VARCHAR (255) NOT NULL
 );
 
-INSERT INTO offloading_sites (id, mips, memory, storage)
+INSERT INTO offloading_sites (id, mips, memory, storage, name)
 VALUES
- ('Edge Database Server', 5000, 8, 300),
- ('Edge Computational Intensive Server', 8000, 8, 150),
- ('Edge Regular Server', 5000, 8, 150),
- ('Cloud Data Center', 12000, 128, 1000),
- ('Mobile Device', 1000, 8, 16);
+ ('Edge Database Server', 5000, 8, 300, 'A'),
+ ('Edge Computational Intensive Server', 8000, 8, 150, 'A'),
+ ('Edge Regular Server', 5000, 8, 150, 'A'),
+ ('Cloud Data Center', 12000, 128, 1000, 'A'),
+ ('Mobile Device', 1000, 8, 16, 'A');
 
 
 

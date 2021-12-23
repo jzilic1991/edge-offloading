@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 
 from socket_client import SocketClient
 from utilities import Util, NodeType
-from offloading_site import OffloadingSite
+from base_off_site import BaseOffloadingSite
 
 
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def init_off_site (node_type):
     print (df, file = sys.stdout)
     con.close()
     
-    return OffloadingSite (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]), query_node_type, str(uuid.uuid4().hex))
+    return BaseOffloadingSite (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]), query_node_type, str(df['name']))
 
 
 
