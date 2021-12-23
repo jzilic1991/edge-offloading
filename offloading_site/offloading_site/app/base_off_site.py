@@ -16,7 +16,6 @@ class BaseOffloadingSite (ABC):
         self._mips = mips
         self._memory = memory
         self._data_storage = data_storage
-        self._socket_client = None
         self._data_storage_consumption = 0
         self._memory_consumption = 0
             

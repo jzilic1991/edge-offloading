@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 
 from socket_client import SocketClient
 from utilities import Util, NodeType
-from base_off_site import BaseOffloadingSite
+from remote_off_site import RemoteOffloadingSite
 
 
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def init_off_site (node_type):
     print (df, file = sys.stdout)
     con.close()
     
-    return BaseOffloadingSite (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]), query_node_type, str(df['name']))
+    return RemoteOffloadingSite (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]), query_node_type, str(df['name']))
 
 
 
@@ -66,4 +66,5 @@ def get_avail_data():
 off_site = init_off_site(sys.argv[len(sys.argv) - 1])
 
 if __name__ == "__main__":
-    app.run(host = '0.0.0.0', port = 5000, debug = True)
+    exit()
+    #app.run(host = '0.0.0.0', port = 5000, debug = True)
