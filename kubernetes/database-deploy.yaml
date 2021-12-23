@@ -17,7 +17,7 @@ spec:
         spec:
             containers:
             - name: database
-              image: zikadocker1991/database:v1
+              image: zikadocker1991/database:v2
               imagePullPolicy: Always
               ports:
               - containerPort: 5432
