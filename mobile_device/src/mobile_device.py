@@ -1,4 +1,5 @@
 from utilities import OffloadingSiteCode, OffloadingActions
+from resource_monitor import ResourceMonitor
 
 
 class MobileDevice:
@@ -13,6 +14,7 @@ class MobileDevice:
         self._mobile_app = None
         self._network = None
         self._ode = None
+        self._res_monitor = ResourceMonitor ()
         self._memory_consumption = 0
         self._data_storage_consumption = 0
         self._name = "MOBILE_DEVICE"
