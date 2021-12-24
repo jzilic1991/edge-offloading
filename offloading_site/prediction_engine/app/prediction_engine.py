@@ -29,6 +29,7 @@ class PredictionEngine:
     
 
     def train_and_estimate (cls, node_candidate, dataset):
+        print ('Train and estimate node candidate : ' + node_candidate, file = sys.stdout)
         cls._node_candidate = node_candidate
         cls.__separate_dataset(dataset)
 
@@ -53,14 +54,16 @@ class PredictionEngine:
         return cls._predicted.tolist()
 
     
-    def check_cached_files (cls, node_str):
-        filepath_actual = 'actual_data/' + node_str + '.txt'
-        filepath_predicted = 'predicted_data/' + node_str + '.txt'
+    def check_cached_files (cls, node_candidate):
+        filepath_actual = 'actual_data/' + node_candidate + '.txt'
+        filepath_predicted = 'predicted_data/' + node_candidate + '.txt'
 
         if Path(filepath_actual).exists() and \
                 Path(filepath_predicted).exists():
+            print ('Availability files do exist!', file = sys.stdout)
             return cls.__read_cached_files (filepath_actual, filepath_predicted)
 
+        print ('Avaialbility files do not exist and returning empty data!', file = sys.stdout)
         return {'actual': [], 'predicted': []}
 
 
@@ -73,6 +76,7 @@ class PredictionEngine:
 
 
     def __write_avail_file (cls, filepath, data):
+        print ('Writing availaiblity file (' + filepath + ')', file = sys.stdout)
         with open (filepath, 'r') as filewriter:
             for point in data:
                 filewriter.write(str(point) + '\n')
@@ -88,6 +92,7 @@ class PredictionEngine:
 
 
     def __read_avail_file (cls, filepath):
+        print ('Reading cached availaiblity file (' + filepath + ')', file = sys.stdout)
         data = list ()
 
         with open (filepath, 'r') as filereader:
