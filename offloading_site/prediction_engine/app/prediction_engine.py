@@ -77,7 +77,7 @@ class PredictionEngine:
 
     def __write_avail_file (cls, filepath, data):
         print ('Writing availaiblity file (' + filepath + ')', file = sys.stdout)
-        with open (filepath, 'r') as filewriter:
+        with open (filepath, 'w') as filewriter:
             for point in data:
                 filewriter.write(str(point) + '\n')
 

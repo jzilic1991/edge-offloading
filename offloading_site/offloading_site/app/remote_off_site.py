@@ -1,4 +1,6 @@
 import re
+import sys
+import pickle
 
 from base_off_site import BaseOffloadingSite
 from socket_client import SocketClient
@@ -10,7 +12,7 @@ class RemoteOffloadingSite (BaseOffloadingSite):
     def __init__ (self, mips, memory, storage, node_type, name):
         super().__init__(mips, memory, storage, node_type, name)
         self._sock_fail_mon = SocketClient ("localhost", 8000)
-        #self._sock_pred_engine = SocketClient ("localhost", 8001)
+        self._sock_pred_engine = SocketClient ("localhost", 8001)
         self._node_candidates = self.__parse_node_candidate_list()
         
         self.__gen_avail_dist_in_files ()
@@ -61,7 +63,7 @@ class RemoteOffloadingSite (BaseOffloadingSite):
     
     def __gen_avail_dist_in_files (cls):
         for node in cls._node_candidates:
-            node_candidate = str(node[0] + '_' + str(node[1]))
+            node_candidate = str(node[0]) + '_' + str(node[1])
 
             print ('Sending node candidate ' + node_candidate + ' to failure monitor!', file = sys.stdout)
             cls._sock_fail_mon.connect()
@@ -78,9 +80,10 @@ class RemoteOffloadingSite (BaseOffloadingSite):
             cls._sock_pred_engine.send(pickle.dumps(node_candidate))
             avail_data = cls._sock_pred_engine.receive()
             cls._sock_pred_engine.close()
-            print ('Receive availability data with length ' + str(len(avail_data)), file = sys.stdout)
+            print ('Receive availability data with lengths ' + str(len(avail_data['actual'])) + \
+                    ' and ' + str(len(avail_data['predicted'])) , file = sys.stdout)
 
-            if len(avail_data) == 0:
+            if len(avail_data['actual']) == 0 or len(avail_data['predicted']) == 0:
                 print ('Sendind failure data to prediction engine!', file = sys.stdout)
                 cls._sock_pred_engine.connect()
                 cls._sock_pred_engine.send(pickle.dumps([node_candidate, fail_data]))

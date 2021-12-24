@@ -55,8 +55,8 @@ class SocketServer():
                 cls.__send (conn, result)
                 return
 
-        print ('Loaded failure data (node: ' + str(load_data[0]) + ') = ' + str(load_data[1]), file = sys.stdout)
-        cls.__send (conn, cls._pred_engine.train_and_estimate (load_data[1]))
+        print ('Loaded failure data (node: ' + str(load_data[0]) + ') with length ' + str(len(load_data[1])), file = sys.stdout)
+        cls.__send (conn, cls._pred_engine.train_and_estimate (load_data[0], load_data[1]))
 
 
     def __send (cls, conn, data):
