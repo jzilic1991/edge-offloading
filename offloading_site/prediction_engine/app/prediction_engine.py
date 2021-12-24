@@ -1,7 +1,9 @@
+import re
 import sys
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 
@@ -21,11 +23,13 @@ class PredictionEngine:
         self._y_train = None
         self._y_test = None
         self._predicted = None
+        self._node_candidate = ''
 
         print ('Prediction engine created!', file = sys.stdout)
     
 
-    def train(cls, dataset):
+    def train_and_estimate (cls, node_candidate, dataset):
+        cls._node_candidate = node_candidate
         cls.__separate_dataset(dataset)
 
         cls._svr.fit(cls._x_train, cls._y_train)
@@ -40,14 +44,64 @@ class PredictionEngine:
         predicted = cls._svr.predict(cls._x_train)
         cls.__print_results (cls._y_train, predicted, 'TRAINING')
         # cls.__plot_results (cls._x_train, cls._y_train, predicted, 'Training result')
-
-
-    def estimate(cls):
-        cls._svr.fit (cls._x_train, cls._y_train)
+        
         cls._predicted = cls._svr.predict (cls._x_test)
         cls.__print_results (cls._y_test, cls._predicted, 'TEST')
+        cls.__cache_avail_data (cls._node_candidate, cls._y_test, cls._predicted)
         # cls.__plot_results (cls._x_test, cls._y_test, cls._predicted, 'Test result')
+        
         return cls._predicted.tolist()
+
+    
+    def check_cached_files (cls, node_str):
+        filepath_actual = 'actual_data/' + node_str + '.txt'
+        filepath_predicted = 'predicted_data/' + node_str + '.txt'
+
+        if Path(filepath_actual).exists() and \
+                Path(filepath_predicted).exists():
+            return cls.__read_cached_files (filepath_actual, filepath_predicted)
+
+        return {'actual': [], 'predicted': []}
+
+
+    def __cache_avail_data (cls, node_candidate, actual_data, predicted_data):
+        filepath_actual = 'actual_data/' + node_candidate + '.txt'
+        filepath_predicted = 'predicted_data/' + node_candidate + '.txt'
+        
+        actual_data = cls.__write_avail_file (filepath_actual, actual_data)
+        predicted_data = cls.__write_avail_file (filepath_predicted, predicted_data)
+
+
+    def __write_avail_file (cls, filepath, data):
+        with open (filepath, 'r') as filewriter:
+            for point in data:
+                filewriter.write(str(point) + '\n')
+
+            filewriter.close()
+
+
+    def __read_cached_files (cls, filepath_actual, filepath_predicted):
+        actual_data = cls.__read_avail_file (filepath_actual)
+        predicted_data = cls.__read_avail_file (filepath_predicted)
+
+        return {'actual': actual_data, 'predicted': predicted_data}
+
+
+    def __read_avail_file (cls, filepath):
+        data = list ()
+
+        with open (filepath, 'r') as filereader:
+            line = filereader.readline()
+
+            while line:
+                if re.search ('\d+.\d+', line):
+                    data.append (float (line))
+                
+                line = filereader.readline()
+
+            filereader.close()
+        
+        return data
 
 
     def __separate_dataset (cls, dataset):

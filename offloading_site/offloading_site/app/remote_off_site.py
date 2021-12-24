@@ -10,11 +10,11 @@ class RemoteOffloadingSite (BaseOffloadingSite):
     def __init__ (self, mips, memory, storage, node_type, name):
         super().__init__(mips, memory, storage, node_type, name)
         self._sock_fail_mon = SocketClient ("localhost", 8000)
-        self._sock_pred_engine = SocketClient ("localhost", 8001)
+        #self._sock_pred_engine = SocketClient ("localhost", 8001)
         self._node_candidates = self.__parse_node_candidate_list()
         
-        self.__send_candidate_list ()
-         
+        self.__gen_avail_dist_in_files ()
+        
 
     def get_fail_trans_prob (cls):
         raise NotImplementedError
@@ -59,11 +59,20 @@ class RemoteOffloadingSite (BaseOffloadingSite):
         return node_candidates
     
     
-    def __send_candidate_list (cls):
-        cls._sock_fail_mon.connect()
-        cls._sock_fail_mon.send (pickle.dumps(cls._node_candidates))
-        fail_data = sock_fail_mon.receive()
-        cls._sock_fail_mon.close()
+    def __gen_avail_dist_in_files (cls):
+        for node in cls._node_candidates:
+            cls._sock_fail_mon.connect()
+            cls._sock_fail_mon.send(str(node[0]) + "_" + str(node[1]))
+            fail_data = cls._sock_fail_mon.receive()
+            cls._sock_fail_mon.close()
+            
+            if len(fail_data) == 0:
+                continue
+            
+            cls._sock_pred_engine.connect()
+            cls._sock_pred_engine.send(pickle.dumps(fail_data))
+            avail_data = cls._sock_pred_engine.receive()
+            cls._sock_pred_engine.close()
 
 
     def __deter_cand_list_file_path (cls):

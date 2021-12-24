@@ -36,10 +36,6 @@ class FailureMonitor:
         def __init__(self, file, node_type):
             self._dataset = pd.read_csv(file, encoding = 'utf-8', index_col = False)
             self._data_stats = self.__determine_dataset (node_type)
-            # self._ec_data_stats = Dataset(OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER)
-            # self._ed_data_stats = Dataset(OffloadingSiteCode.EDGE_DATABASE_SERVER)
-            # self._er_data_stats = Dataset(OffloadingSiteCode.EDGE_REGULAR_SERVER)
-            # self._cd_data_stats = Dataset(OffloadingSiteCode.CLOUD_DATA_CENTER)
             
             self.__parse_dataset()
         

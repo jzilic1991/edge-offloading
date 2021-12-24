@@ -1,5 +1,8 @@
+import sys
+import re
 import operator
 import datetime
+from pathlib import Path
 
 from utilities import OffloadingSiteCode, Uptime
 
@@ -25,9 +28,16 @@ class Dataset:
 
 
     def get_node_avail_data (cls, system_id, node_num):
+        filepath = 'avail_dist/' + str(system_id) + '_' + str(node_num) + '.txt'
+        
+        if Path(filepath).exists():
+            return cls.__read_avail_dist (filepath)
+
         rows = cls.__get_data_rows(system_id, node_num)
         cls._mtbf = cls.__compute_mtbf(rows)
-        return cls.__evaluate_failure_data(system_id, node_num)
+        avail_data = cls.__evaluate_failure_data(system_id, node_num)
+        cls.__create_avail_dist_file (filepath, avail_data)
+        return avail_data
 
 
     def get_offloading_site_code (cls):
@@ -202,3 +212,33 @@ class Dataset:
                 tmp_data.append(failure)
 
         return tuple(tmp_data)
+
+
+    def __read_avail_dist (cls, filepath):
+        avail_data = tuple ()
+        
+        print ('Reading availability data from file ' + filepath, file = sys.stdout)
+
+        with open (filepath, 'r') as filereader:
+           line = filereader.readline()
+
+           while line:
+               if re.search ('\d+.\d+', line):
+                   avail_data += (float (line),)                
+               
+               line = filereader.readline()
+           
+           filereader.close()
+        
+        return avail_data
+
+
+    def __create_avail_dist_file (cls, filepath, avail_data):
+        print ('Creating availability file ' + filepath)
+
+        with open (filepath, 'w') as filewriter:
+            
+            for data_point in avail_data:
+                filewriter.write (str(data_point) + '\n')
+
+            filewriter.close()
