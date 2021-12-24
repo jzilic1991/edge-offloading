@@ -66,5 +66,4 @@ def get_avail_data():
 off_site = init_off_site(sys.argv[len(sys.argv) - 1])
 
 if __name__ == "__main__":
-    exit()
-    #app.run(host = '0.0.0.0', port = 5000, debug = True)
+    app.run(host = '0.0.0.0', port = 5000, debug = True)

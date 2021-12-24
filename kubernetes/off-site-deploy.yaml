@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cloud-site
+    namespace: default
+    labels:
+        app: cloud-site
+spec:
+    selector:
+        matchLabels:
+            app: cloud-site
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: cloud-site
+        spec:
+            containers:
+            - name: failure-monitor
+              image: zikadocker1991/failure-monitor:v5
+              args: ["cloud"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8000
+            - name: prediction-engine
+              image: zikadocker1991/prediction-engine:v3
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8001
+            - name: main-offloading-site
+              image: zikadocker1991/offloading-site:v5
+              args: ["cloud"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 5000
+            nodeSelector:
+              kubernetes.io/hostname: node8
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: edge-computational-site
+    namespace: default
+    labels:
+        app: edge-computational-site
+spec:
+    selector:
+        matchLabels:
+            app: edge-computational-site
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: edge-computational-site
+        spec:
+            containers:
+            - name: failure-monitor
+              image: zikadocker1991/failure-monitor:v5
+              args: ["comp"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8000
+            - name: prediction-engine
+              image: zikadocker1991/prediction-engine:v3
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8001
+            - name: main-offloading-site
+              image: zikadocker1991/offloading-site:v5
+              args: ["comp"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 5000
+            nodeSelector:
+              kubernetes.io/hostname: rll-m02
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: edge-database-site
+    namespace: default
+    labels:
+        app: edge-database-site
+spec:
+    selector:
+        matchLabels:
+            app: edge-database-site
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: edge-database-site
+        spec:
+            containers:
+            - name: failure-monitor
+              image: zikadocker1991/failure-monitor:v5
+              args: ["database"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8000
+            - name: prediction-engine
+              image: zikadocker1991/prediction-engine:v3
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8001
+            - name: main-offloading-site
+              image: zikadocker1991/offloading-site:v5
+              args: ["database"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 5000
+            nodeSelector:
+              kubernetes.io/hostname: rll-m01
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: edge-regular-site
+    namespace: default
+    labels:
+        app: edge-regular-site
+spec:
+    selector:
+        matchLabels:
+            app: edge-regular-site
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: edge-regular-site
+        spec:
+            containers:
+            - name: failure-monitor
+              image: zikadocker1991/failure-monitor:v5
+              args: ["regular"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8000
+            - name: prediction-engine
+              image: zikadocker1991/prediction-engine:v3
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8001
+            - name: main-offloading-site
+              image: zikadocker1991/offloading-site:v5
+              args: ["regular"]
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 5000
+            nodeSelector:
+              kubernetes.io/hostname: rll-m03
