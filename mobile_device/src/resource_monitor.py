@@ -18,6 +18,13 @@ class ResourceMonitor:
         self.__get_off_site_data ()
 
 
+    def reset_test_data (cls):
+        cls._edge_reg_server.reset_test_data ()
+        cls._edge_dat_server.reset_test_data ()
+        cls._edge_comp_server.reset_test_data ()
+        cls._cloud_dc.reset_test_data ()
+
+
     def get_edge_servers (cls):
         return (cls._edge_dat_server, cls._edge_reg_server, cls._edge_comp_server)
 

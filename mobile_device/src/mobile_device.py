@@ -58,8 +58,7 @@ class MobileDevice:
             offloading_attempts = 0
 
             # reset test data after each simulation sampling to start from the beginning
-            for edge in cls._edge_servers:
-                edge.init_avail_data
+            cls._res_monitor.reset_test_data ()
 
             # simulate application executions   
             for j in range(executions):
@@ -80,7 +79,7 @@ class MobileDevice:
                 elif choice == 4:
                     cls.deploy_chess_application()
 
-                cls._ode.save_app_name(cls._mobile_app.get_name())
+                # cls._ode.save_app_name(cls._mobile_app.get_name())
 
                 previous_progress = current_progress
                 current_progress = round((j + (i * executions)) / (samplings * executions) * 100)

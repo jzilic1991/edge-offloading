@@ -12,6 +12,7 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         self._node_candidates = self.__parse_node_candidate_list ()
         self._iter_index = -1
         self._avail_data = list ()
+        self._used_data = list ()
 
 
     def get_url_svc (cls):
@@ -30,6 +31,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         
         else:
             cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
+
+        cls._used_data = cls._avail_data
         
 
     def get_fail_trans_prob (cls):
@@ -45,7 +48,20 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
 
     def reset_test_data (cls):
-        raise NotImplementedError
+        if len(cls._avail_data) != 0:
+            cls._used_data = cls._avail_data
+            return
+        
+        filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
+            str(cls._node_candidates[cls._iter_index][1]) + '.txt'
+        
+        if Path(filepath).exists():
+            cls._avail_data = cls.__read_avail_dist (filepath)
+        
+        else:
+            cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
+
+        cls._used_data = cls._avail_data        
 
 
     def execute (cls, task):
