@@ -11,8 +11,6 @@ from remote_off_site import RemoteOffloadingSite
 
 
 app = Flask(__name__)
-sock_fail_mon = SocketClient ("localhost", 8000)
-sock_pred_engine = SocketClient ("localhost", 8001)
 
 def init_off_site (node_type):
     con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "32398")
@@ -20,6 +18,7 @@ def init_off_site (node_type):
     
     cur = con.cursor()
     query_node_type = Util.determine_node_type (node_type)
+    
     if query_node_type == NodeType.UNKNOWN:
         raise ValueError ('Wrong node type value is passed! Value = ' + str(node_type))
     
@@ -39,28 +38,28 @@ def init_off_site (node_type):
 
 
 
-@app.route('/get_avail_data')
-def get_avail_data():
-    sysid = request.args.get('sysid', None)
-    nodenum = request.args.get('nodenum', None)
+#@app.route('/get_avail_data')
+#def get_avail_data():
+#    sysid = request.args.get('sysid', None)
+#    nodenum = request.args.get('nodenum', None)
 
-    if sysid == None or nodenum == None:
-        return jsonify([])
+#    if sysid == None or nodenum == None:
+#        return jsonify([])
 
-    sock_fail_mon.connect()
-    sock_fail_mon.send(str(sysid) + "_" + str(nodenum))
-    fail_data = sock_fail_mon.receive()
-    sock_fail_mon.close()
+#    sock_fail_mon.connect()
+#    sock_fail_mon.send(str(sysid) + "_" + str(nodenum))
+#    fail_data = sock_fail_mon.receive()
+#    sock_fail_mon.close()
 
-    if len(fail_data) == 0:
-        return jsonify([])
+#    if len(fail_data) == 0:
+#        return jsonify([])
 
-    sock_pred_engine.connect()
-    sock_pred_engine.send(pickle.dumps(fail_data))
-    avail_data = sock_pred_engine.receive()
-    sock_pred_engine.close()
+#    sock_pred_engine.connect()
+#    sock_pred_engine.send(pickle.dumps(fail_data))
+#    avail_data = sock_pred_engine.receive()
+#    sock_pred_engine.close()
 
-    return jsonify (avail_data)
+#    return jsonify (avail_data)
 
 
 off_site = init_off_site(sys.argv[len(sys.argv) - 1])
