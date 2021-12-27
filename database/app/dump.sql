@@ -8,10 +8,10 @@ CREATE TABLE offloading_sites (
 
 INSERT INTO offloading_sites (id, mips, memory, storage, name, url_svc)
 VALUES
- ('Edge Database Server', 5000, 8, 300, 'A', 'http://128.131.169.143:30256/database/init_avail_data/'),
- ('Edge Computational Intensive Server', 8000, 8, 150, 'A', 'http://128.131.169.143:30256/comp/init_avail_data'),
- ('Edge Regular Server', 5000, 8, 150, 'A', 'http://128.131.169.143:30256/regular/init_avail_data'),
- ('Cloud Data Center', 12000, 128, 1000, 'A', 'http://128.131.169.143:30256/cloud/init_avail_data'),
+ ('Edge Database Server', 5000, 8, 300, 'A', 'http://128.131.169.143:30256/database/'),
+ ('Edge Computational Intensive Server', 8000, 8, 150, 'A', 'http://128.131.169.143:30256/comp/'),
+ ('Edge Regular Server', 5000, 8, 150, 'A', 'http://128.131.169.143:30256/regular/'),
+ ('Cloud Data Center', 12000, 128, 1000, 'A', 'http://128.131.169.143:30256/cloud/'),
  ('Mobile Device', 1000, 8, 16, 'A', 'N/A');
 
 
