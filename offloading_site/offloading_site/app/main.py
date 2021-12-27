@@ -11,6 +11,9 @@ from remote_off_site import RemoteOffloadingSite
 
 
 app = Flask(__name__)
+sock_fail_mon = SocketClient ("localhost", 8000)
+sock_pred_engine = SocketClient ("localhost", 8001)
+
 
 def init_off_site (node_type):
     con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "32398")
@@ -37,29 +40,39 @@ def init_off_site (node_type):
     return RemoteOffloadingSite (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]), query_node_type, str(df['name']))
 
 
+@app.route('/get_avail_data')
+def get_avail_data():
+    sysid = request.args.get('sysid', None)
+    nodenum = request.args.get('nodenum', None)
+    node_candidate = sysid + '_' + nodenum
 
-#@app.route('/get_avail_data')
-#def get_avail_data():
-#    sysid = request.args.get('sysid', None)
-#    nodenum = request.args.get('nodenum', None)
+    print ('Sending node candidate ' + node_candidate + ' to failure monitor!', file = sys.stdout)
+    sock_fail_mon.connect()
+    sock_fail_mon.send(node_candidate)
+    fail_data = sock_fail_mon.receive()
+    sock_fail_mon.close()
+    print ('Receive failure data with length ' + str(len(fail_data)), file = sys.stdout)
+            
+    if len(fail_data) == 0:
+        return jsonify ([])
+            
+    print ('Sending node candidate ' + node_candidate + ' to prediction engine!', file = sys.stdout)
+    sock_pred_engine.connect()
+    sock_pred_engine.send(pickle.dumps(node_candidate))
+    avail_data = sock_pred_engine.receive()
+    sock_pred_engine.close()
+    print ('Receive availability data with lengths ' + str(len(avail_data['actual'])) + \
+        ' and ' + str(len(avail_data['predicted'])) , file = sys.stdout)
 
-#    if sysid == None or nodenum == None:
-#        return jsonify([])
-
-#    sock_fail_mon.connect()
-#    sock_fail_mon.send(str(sysid) + "_" + str(nodenum))
-#    fail_data = sock_fail_mon.receive()
-#    sock_fail_mon.close()
-
-#    if len(fail_data) == 0:
-#        return jsonify([])
-
-#    sock_pred_engine.connect()
-#    sock_pred_engine.send(pickle.dumps(fail_data))
-#    avail_data = sock_pred_engine.receive()
-#    sock_pred_engine.close()
-
-#    return jsonify (avail_data)
+    if len(avail_data['actual']) == 0 or len(avail_data['predicted']) == 0:
+        print ('Sendind failure data to prediction engine!', file = sys.stdout)
+        sock_pred_engine.connect()
+        sock_pred_engine.send(pickle.dumps([node_candidate, fail_data]))
+        avail_data = sock_pred_engine.receive()
+        sock_pred_engine.close()
+        print ('Receive availability data with length ' + str(len(avail_data)), file = sys.stdout)
+    
+    return jsonify (avail_data)
 
 
 off_site = init_off_site(sys.argv[len(sys.argv) - 1])
