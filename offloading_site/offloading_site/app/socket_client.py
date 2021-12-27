@@ -17,7 +17,6 @@ class SocketClient():
         import socket
         
         cls._socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-        cls._socket.settimeout (10)
         num_trials = 6
         
         while True:
@@ -32,12 +31,14 @@ class SocketClient():
                 num_trials -= 1
                 success_flag = False
             
-            if num_trails == 0:
+            if num_trials == 0:
                 raise Exception ('Socket did not succeed to establish connection! Program terminating!')
                 sys.exit ()
 
             if success_flag:
                 break
+            
+            time.sleep(10)
 
         print ('Socket connection with ' + str(cls._socket.getpeername()) + ' is established!', file = sys.stdout)
     
