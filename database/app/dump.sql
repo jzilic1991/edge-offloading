@@ -3,7 +3,8 @@ CREATE TABLE offloading_sites (
    mips SMALLINT NOT NULL,
    memory SMALLINT NOT NULL,
    storage SMALLINT NOT NULL,
-   name VARCHAR (255) NOT NULL
+   name VARCHAR (255) NOT NULL,
+   url_svc VARCHAR (255) NOT NULL
 );
 
 INSERT INTO offloading_sites (id, mips, memory, storage, name, url_svc)
