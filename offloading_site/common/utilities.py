@@ -66,6 +66,9 @@ class NodeType:
     MOBILE, EDGE_DATABASE, EDGE_COMPUTATIONAL, EDGE_REGULAR, CLOUD, UNKNOWN = ('Mobile Device', 'Edge Database Server',\
             'Edge Computational Intensive Server', 'Edge Regular Server', 'Cloud Data Center', 'Unknown')
 
+class MobApps:
+    ANTIVIRUS, GPS_NAVIGATOR, CHESS, FACERECOGNIZER, FACEBOOK = ('ANTIVIRUS', 'GPS NAVIGATOR', 'CHESS', 'FACERECOGNIZER', 'FACEBOOK')
+
 
 class Util(object):
 

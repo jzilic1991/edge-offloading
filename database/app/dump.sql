@@ -6,13 +6,13 @@ CREATE TABLE offloading_sites (
    name VARCHAR (255) NOT NULL
 );
 
-INSERT INTO offloading_sites (id, mips, memory, storage, name)
+INSERT INTO offloading_sites (id, mips, memory, storage, name, url_svc)
 VALUES
- ('Edge Database Server', 5000, 8, 300, 'A'),
- ('Edge Computational Intensive Server', 8000, 8, 150, 'A'),
- ('Edge Regular Server', 5000, 8, 150, 'A'),
- ('Cloud Data Center', 12000, 128, 1000, 'A'),
- ('Mobile Device', 1000, 8, 16, 'A');
+ ('Edge Database Server', 5000, 8, 300, 'A', 'http://128.131.169.143:30256/database/init_avail_data/'),
+ ('Edge Computational Intensive Server', 8000, 8, 150, 'A', 'http://128.131.169.143:30256/comp/init_avail_data'),
+ ('Edge Regular Server', 5000, 8, 150, 'A', 'http://128.131.169.143:30256/regular/init_avail_data'),
+ ('Cloud Data Center', 12000, 128, 1000, 'A', 'http://128.131.169.143:30256/cloud/init_avail_data'),
+ ('Mobile Device', 1000, 8, 16, 'A', 'N/A');
 
 
 

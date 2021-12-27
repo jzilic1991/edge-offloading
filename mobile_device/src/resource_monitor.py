@@ -1,6 +1,7 @@
 import sys
 import psycopg2
 import pandas as pd
+from kivy.network.urlrequest import UrlRequest
 
 from rep_off_site import RepresentOffloadingSite
 from utilities import NodeType
@@ -14,10 +15,18 @@ class ResourceMonitor:
         self._edge_comp_server = None
         self._cloud_dc = None
 
-        self.__get_off_sites ()
+        self.__get_off_site_data ()
 
 
-    def __get_off_sites (cls):
+    def get_edge_servers (cls):
+        return (cls._edge_dat_server, cls._edge_reg_server, cls._edge_comp_server)
+
+
+    def get_cloud_dc (cls):
+        return cls._cloud_dc
+
+
+    def __get_off_site_data (cls):
         con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
         print("Database opened successfully", file = sys.stdout)
     
@@ -37,16 +46,16 @@ class ResourceMonitor:
         for i, data in df.iterrows():
             if str(data['id']) == 'Edge Database Server':
                 cls._edge_dat_server = RepresentOffloadingSite (int(data['mips']), int(data['memory']), \
-                        int(data['storage']), NodeType.EDGE_DATABASE, str(data['name']))
+                        int(data['storage']), NodeType.EDGE_DATABASE, str(data['url_svc']), str(data['name']))
 
             elif str(data['id']) == 'Edge Computational Intensive Server':
                 cls._edge_comp_server = RepresentOffloadingSite (int(data['mips']), int(data['memory']), \
-                        int(data['storage']), NodeType.EDGE_COMPUTATIONAL, str(data['name']))
+                        int(data['storage']), NodeType.EDGE_COMPUTATIONAL, str(data['url_svc']), str(data['name']))
             
             elif str(data['id']) == 'Edge Regular Server':
                 cls._edge_reg_server = RepresentOffloadingSite (int(data['mips']), int(data['memory']), \
-                        int(data['storage']), NodeType.EDGE_REGULAR, str(data['name']))
+                        int(data['storage']), NodeType.EDGE_REGULAR, str(data['url_svc']), str(data['name']))
             
             elif str(data['id']) == 'Cloud Data Center':
                 cls._cloud_dc = RepresentOffloadingSite (int(data['mips']), int(data['memory']), \
-                        int(data['storage']), NodeType.CLOUD, str(data['name']))
+                        int(data['storage']), NodeType.CLOUD, str(data['url_svc']), str(data['name']))
