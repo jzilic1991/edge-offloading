@@ -27,7 +27,7 @@ class MobileDevice:
         self._stats_log = tuple()
         self._energy_supply_budget = 34200
         self._mobile_app_profiler = MobileAppProfiler ()
-        exit()
+        self._mobile_app = None
         # self._applications = {MobApps.ANTIVIRUS: 0.05, MobApps.GPS_NAVIGATOR: 0.3, MobApps.FACERECOGNIZER: 0.1, \
         #        MobApps.FACEBOOK: 0.45, MobApps.CHESS: 0.1}
 
@@ -65,23 +65,7 @@ class MobileDevice:
 
             # simulate application executions   
             for j in range(executions):
-                choice = np.random.choice(cls._res_monitor.get_mobile_apps(), 1, \
-                        p =[prob for _, prob in cls._applications.items()])[0]
-
-                if choice == 0:
-                    cls.deploy_antivirus_application()
-
-                elif choice == 1:
-                    cls.deploy_gps_navigator_application()
-
-                elif choice == 2:
-                    cls.deploy_facerecognizer_application()
-
-                elif choice == 3:
-                    cls.deploy_facebook_application()
-
-                elif choice == 4:
-                    cls.deploy_chess_application()
+                cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
 
                 # cls._ode.save_app_name(cls._mobile_app.get_name())
 

@@ -1,4 +1,7 @@
+import sys
+
 from utilities import ExecutionErrorCode
+
 
 class Task:
     
@@ -24,19 +27,19 @@ class Task:
         return cls._name
 
 
-    def add_in_edge(cls, task):
+    def add_in_edge (cls, task):
         cls._in_edges.append(task)
 
 
-    def add_out_edge(cls, task):
+    def add_out_edge (cls, task):
         cls._out_edges.append(task)
 
 
-    def get_in_edges(cls):
+    def get_in_edges (cls):
         return cls._in_edges
 
 
-    def get_out_edges(cls):
+    def get_out_edges (cls):
         return cls._out_edges
 
 
@@ -53,9 +56,7 @@ class Task:
                     return ExecutionErrorCode.EXE_NOK
 
             cls._out_edges = []
-
             cls._execute = True
-
             return ExecutionErrorCode.EXE_OK
 
 
@@ -68,28 +69,29 @@ class Task:
 
 
     def print_dependencies(cls):
-        #MdpLogger.write_log("################### " + cls._name + " DEPENDENCIES ###################")
+        print ("################### " + cls._name + " DEPENDENCIES ###################", file = sys.stdout)
     
-        #MdpLogger.write_log("***INPUT DEPENDENCIES***")
-        #for edge in cls._in_edges:
-            #MdpLogger.write_log(edge.get_name())
+        print ("***INPUT DEPENDENCIES***", file = sys.stdout)
+        for edge in cls._in_edges:
+            print (edge, file = sys.stdout)
+        print ('\n', file = sys.stdout)
 
-        #MdpLogger.write_log("***OUTPUT DEPENDECIES***")
-        #for edge in cls._out_edges:
-            #MdpLogger.write_log(edge.get_name())
+        print ("***OUTPUT DEPENDECIES***", file = sys.stdout)
+        for edge in cls._out_edges:
+            print (edge, file = sys.stdout)
+        print ('\n', file = sys.stdout)
 
-        #MdpLogger.write_log('\n\n')
-        pass
+        print ('\n\n', file = sys.stdout)
 
     
     def print_system(cls):
-        # MdpLogger.write_log("################### " + cls._name + " SYSTEM CONFIGURATION ###################")
-        # MdpLogger.write_log("CPU: " + str(cls._millions_of_instructions) + " M cycles")
-        # MdpLogger.write_log("Memory: " + str(cls._memory) + " Gb")
-        # MdpLogger.write_log("Input data: " + str(cls._data_in) + " Kb")
-        # MdpLogger.write_log("Output data: " + str(cls._data_out) + " Kb")
-        # MdpLogger.write_log("Offloadable: Yes" if cls._off else "Offloadable: No\n")
-        pass
+        print ("######### " + cls._name + " SYSTEM CONFIGURATION #########", file = sys.stdout)
+        print ("CPU: " + str(cls._millions_of_instructions) + " M cycles", file = sys.stdout)
+        print ("Memory: " + str(cls._memory) + " Gb", file = sys.stdout)
+        print ("Input data: " + str(cls._data_in) + " Kb", file = sys.stdout)
+        print ("Output data: " + str(cls._data_out) + " Kb", file = sys.stdout)
+        print ("Offloadable: Yes\n" if cls._off else "Offloadable: No\n", file = sys.stdout)
+        
 
     def remove_in_edge(cls, executed_task):
         if executed_task in cls._in_edges:

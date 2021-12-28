@@ -1,21 +1,29 @@
 import sys
 import psycopg2
 import pandas as pd
+import numpy as np
 
 from mobile_app import MobileApplication
 from task import Task
 from utilities import Util, Tasks
 
 
-class MobAppProfiler:
+class MobileAppProfiler:
 
     def __init__ (self):
         self._mobile_app = None
 
-        mob_apps = self.__get_query_results ("SELECY * FROM mobile_applications")
+        mob_apps = self.__get_query_results ("SELECT * FROM mobile_applications")
         app_tasks = self.__get_query_results ("SELECT * FROM application_tasks")
 
         self._mobile_applications = self.__instantiate_mobile_apps (mob_apps, app_tasks)
+
+    
+    def deploy_random_mobile_app (cls):
+        choice = np.random.choice(len(cls._mobile_applications), 1, \
+            p = [app.get_prob() for app in cls._mobile_applications])[0]
+
+        return cls._mobile_applications[choice]
 
 
     def __get_query_results (cls, query):
@@ -38,31 +46,39 @@ class MobAppProfiler:
     
 
     def __instantiate_mobile_apps (cls, mob_apps, app_tasks):
-        for app in mob_apps:
-            dag_dict = dict ()
+        tasks = list ()
+        applications = list ()
+        
+        for _, app in mob_apps.iterrows():
+            dag_structure = dict ()
+            
+            for _, task_ in app_tasks.iterrows():
+                if app['id'] != task_['application_id']:
+                    continue
 
-            for task_ in app_tasks:
-                if task_['application_id'] == app['id']:
-                    cpu_cycles = 0
-                    input_data = 0
-                    output_data = 0
+                cpu_cycles = 0
+                input_data = 0
+                output_data = 0
                     
-                    if task_['component'] == Tasks.MODERATE:
-                        cpu_cycles = Util.generate_random_cpu_cycles ()
-                        input_data = Util.generate_random_input_data ()
-                        output_data = Util.generate_random_output_data ()
+                if task_['component'] == Tasks.MODERATE:
+                    cpu_cycles = Util.generate_random_cpu_cycles ()
+                    input_data = Util.generate_random_input_data ()
+                    output_data = Util.generate_random_output_data ()
 
-                    elif task_['component'] == Tasks.DI:
-                        cpu_cycles = Util.generate_di_cpu_cycles ()
-                        input_data = Util.generate_di_input_data ()
-                        output_data = Util.generate_di_output_data ()
+                elif task_['component'] == Tasks.DI:
+                    cpu_cycles = Util.generate_di_cpu_cycles ()
+                    input_data = Util.generate_di_input_data ()
+                    output_data = Util.generate_di_output_data ()
 
-                    elif task_['component'] == Tasks.CI:
-                        cpu_cycles = Util.generate_ci_cpu_cycles ()
-                        input_data = Util.generate_ci_input_data ()
-                        output_data = Util.generate_ci_output_data ()
+                elif task_['component'] == Tasks.CI:
+                    cpu_cycles = Util.generate_ci_cpu_cycles ()
+                    input_data = Util.generate_ci_input_data ()
+                    output_data = Util.generate_ci_output_data ()
                     
-                    task = Task (task_['name'], cpu_cycles, task_['memory'], input_data, output_data, task_['offloadability'])
-                    dag_dict.update ({task: [task_['next_tasks']]})
+                task = Task (task_['name'], cpu_cycles, task_['memory'], input_data, \
+                    output_data, task_['offloadability'])
+                dag_structure.update ({task: task_['next_tasks']})
+        
+            applications.append (MobileApplication (app['id'], dag_structure, app['prob']))
 
-        print (dag_dict)
+        return applications

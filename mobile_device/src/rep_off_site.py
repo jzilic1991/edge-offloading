@@ -1,13 +1,15 @@
+import re
 from pathlib import Path
 from kivy.network.urlrequest import UrlRequest
 
 from base_off_site import BaseOffloadingSite
+from utilities import OffloadingSiteCode
 
 
 class RepresentOffloadingSite (BaseOffloadingSite):
 
     def __init__ (self, mips, memory, storage, node_type, url_svc, name):
-        super().__init(mips, memory, storage, node_type, name)
+        super().__init__(mips, memory, storage, node_type, name)
         self._url_svc = url_svc
         self._node_candidates = self.__parse_node_candidate_list ()
         self._iter_index = -1
