@@ -1,3 +1,6 @@
+import random
+
+
 class NodeCategory:
     ER_DATA, EC_DATA, ED_DATA, CD_DATA, NET_DATA = ("EDGE_REG_DATA", "EDGE_COMP_DATA", "EDGE_DATA_DATA", \
         "CLOUD_DATA", "NETWORK_DATA")
@@ -137,4 +140,49 @@ class Util(object):
             return OffloadingSiteCode.MOBILE_DEVICE
 
         else:
-            return OffloadingSiteCode.UNKNOWN
+            return OffloadingSiteCode.UNKNOWN@classmethod
+
+
+    @classmethod
+    def generate_di_cpu_cycles(cls):
+        return random.randint(100, 200)
+
+
+    @classmethod
+    def generate_ci_cpu_cycles(cls):
+        return random.randint(550, 650)
+
+
+    @classmethod
+    def generate_random_cpu_cycles(cls):
+        return random.randint(100, 200)
+
+
+    @classmethod
+    def generate_di_input_data(cls):
+        return random.randint(4 * 25, 4 * 30)
+
+
+    @classmethod
+    def generate_random_input_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_ci_input_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_di_output_data(cls):
+        return random.randint(4 * 15, 4 * 20)
+
+
+    @classmethod
+    def generate_random_output_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_ci_output_data(cls):
+        return random.randint(4, 8)

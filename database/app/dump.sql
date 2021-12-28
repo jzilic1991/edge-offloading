@@ -44,12 +44,13 @@ VALUES
 
 
 CREATE TABLE mobile_applications (
-   id VARCHAR (255) NOT NULL PRIMARY KEY
+   id VARCHAR (255) NOT NULL PRIMARY KEY,
+   prob real NOT NULL
 );
 
-INSERT INTO mobile_applications (id)
+INSERT INTO mobile_applications (id, prob)
 VALUES
- ('ANTIVIRUS'), ('CHESS'), ('FACERECOGNIZER'), ('GPS'), ('FACEBOOK');
+ ('ANTIVIRUS', 0.05), ('CHESS', 0.1), ('FACERECOGNIZER', 0.1), ('GPS', 0.3), ('FACEBOOK', 0.45);
 
 
 
@@ -61,39 +62,40 @@ CREATE TABLE application_tasks (
    offloadability boolean NOT NULL,
    application_id VARCHAR (255) NOT NULL,
    next_tasks TEXT [],
+   component VARCHAR (255) NOT NULL,
    FOREIGN KEY (application_id) REFERENCES mobile_applications (id)
 );
 
-INSERT INTO application_tasks (name, memory, offloadability, application_id, next_tasks)
+INSERT INTO application_tasks (name, memory, offloadability, application_id, next_tasks, component)
 VALUES
- ('GUI', 1, FALSE, 'ANTIVIRUS', '{"LOAD_LIBRARY", "SCAN_FILE"}'),
- ('LOAD_LIBRARY', 1, TRUE, 'ANTIVIRUS', '{"COMPARE"}'),
- ('SCAN_FILE', 2, TRUE, 'ANTIVIRUS', '{"COMPARE"}'),
- ('COMPARE', 1, TRUE, 'ANTIVIRUS', '{"OUTPUT"}'),
- ('OUTPUT', 1, FALSE, 'ANTIVIRUS', '{}'),
- ('GUI', 1, FALSE, 'FACERECOGNIZER', '{"FIND_MATCH"}'),
- ('FIND_MATCH', 1, TRUE, 'FACERECOGNIZER', '{"INIT", "DETECT_FACE"}'),
- ('INIT', 2, TRUE, 'FACERECOGNIZER', '{"DETECT_FACE"}'),
- ('DETECT_FACE', 1, TRUE, 'FACERECOGNIZER', '{"OUTPUT"}'),
- ('OUTPUT', 1, FALSE, 'FACERECOGNIZER', '{}'),
- ('GUI', 1, FALSE, 'CHESS', '{"UPDATE_CHESS"}'),
- ('UPDATE_CHESS', 1, TRUE, 'CHESS', '{"COMPUTE_MOVE"}'),
- ('COMPUTE_MOVE', 2, TRUE, 'CHESS', '{"OUTPUT"}'),
- ('OUTPUT', 1, FALSE, 'CHESS', '{}'),
- ('FACEBOOK_GUI', 1, FALSE, 'FACEBOOK', '{"GET_TOKEN", "POST_REQUEST"}'),
- ('GET_TOKEN', 1, TRUE, 'FACEBOOK', '{"POST_REQUEST"}'),
- ('POST_REQUEST', 2, TRUE, 'FACEBOOK', '{"PROCESS_RESPONSE"}'),
- ('PROCESS_RESPONSE', 2, TRUE, 'FACEBOOK', '{"FILE_UPLOAD"}'),
- ('FILE_UPLOAD', 2, FALSE, 'FACEBOOK', '{"APPLY_FILTER"}'),
- ('APPLY_FILTER', 2, TRUE, 'FACEBOOK', '{"FACEBOOK_POST"}'),
- ('FACEBOOK_POST', 2, FALSE, 'FACEBOOK', '{"OUTPUT"}'),
- ('OUTPUT', 1, FALSE, 'FACEBOOK', '{}'),
- ('CONF_PANEL', 1, FALSE, 'GPS', '{"CONTROL"}'),
- ('GPS', 2, FALSE, 'GPS', '{"CONTROL"}'),
- ('CONTROL', 5, TRUE, 'GPS', '{"MAPS", "PATH_CALC", "TRAFFIC"}'),
- ('MAPS', 5, TRUE, 'GPS', '{"PATH_CALC"}'),
- ('TRAFFIC', 1, TRUE, 'GPS', '{"PATH_CALC"}'),
- ('PATH_CALC', 2, TRUE, 'GPS', '{"VOICE_SYNTH", "GUI", "SPEED_TRAP"}'),
- ('VOICE_SYNTH', 1, FALSE, 'GPS', '{}'),
- ('GUI', 1, FALSE, 'GPS', '{}'),
- ('SPEED_TRAP', 1, FALSE, 'GPS', '{}');
+ ('GUI', 1, FALSE, 'ANTIVIRUS', '{"LOAD_LIBRARY", "SCAN_FILE"}', 'MODERATE'),
+ ('LOAD_LIBRARY', 1, TRUE, 'ANTIVIRUS', '{"COMPARE"}', 'DI'),
+ ('SCAN_FILE', 2, TRUE, 'ANTIVIRUS', '{"COMPARE"}', 'DI'),
+ ('COMPARE', 1, TRUE, 'ANTIVIRUS', '{"OUTPUT"}', 'DI'),
+ ('OUTPUT', 1, FALSE, 'ANTIVIRUS', '{}', 'MODERATE'),
+ ('GUI', 1, FALSE, 'FACERECOGNIZER', '{"FIND_MATCH"}', 'DI'),
+ ('FIND_MATCH', 1, TRUE, 'FACERECOGNIZER', '{"INIT", "DETECT_FACE"}', 'DI'),
+ ('INIT', 2, TRUE, 'FACERECOGNIZER', '{"DETECT_FACE"}', 'DI'),
+ ('DETECT_FACE', 1, TRUE, 'FACERECOGNIZER', '{"OUTPUT"}', 'DI'),
+ ('OUTPUT', 1, FALSE, 'FACERECOGNIZER', '{}', 'DI'),
+ ('GUI', 1, FALSE, 'CHESS', '{"UPDATE_CHESS"}', 'MODERATE'),
+ ('UPDATE_CHESS', 1, TRUE, 'CHESS', '{"COMPUTE_MOVE"}', 'MODERATE'),
+ ('COMPUTE_MOVE', 2, TRUE, 'CHESS', '{"OUTPUT"}', 'CI'),
+ ('OUTPUT', 1, FALSE, 'CHESS', '{}', 'MODERATE'),
+ ('FACEBOOK_GUI', 1, FALSE, 'FACEBOOK', '{"GET_TOKEN", "POST_REQUEST"}', 'MODERATE'),
+ ('GET_TOKEN', 1, TRUE, 'FACEBOOK', '{"POST_REQUEST"}', 'MODERATE'),
+ ('POST_REQUEST', 2, TRUE, 'FACEBOOK', '{"PROCESS_RESPONSE"}', 'MODERATE'),
+ ('PROCESS_RESPONSE', 2, TRUE, 'FACEBOOK', '{"FILE_UPLOAD"}', 'MODERATE'),
+ ('FILE_UPLOAD', 2, FALSE, 'FACEBOOK', '{"APPLY_FILTER"}', 'DI'),
+ ('APPLY_FILTER', 2, TRUE, 'FACEBOOK', '{"FACEBOOK_POST"}', 'DI'),
+ ('FACEBOOK_POST', 2, FALSE, 'FACEBOOK', '{"OUTPUT"}', 'DI'),
+ ('OUTPUT', 1, FALSE, 'FACEBOOK', '{}', 'MODERATE'),
+ ('CONF_PANEL', 1, FALSE, 'GPS', '{"CONTROL"}', 'MODERATE'),
+ ('GPS', 2, FALSE, 'GPS', '{"CONTROL"}', 'MODERATE'),
+ ('CONTROL', 5, TRUE, 'GPS', '{"MAPS", "PATH_CALC", "TRAFFIC"}', 'CI'),
+ ('MAPS', 5, TRUE, 'GPS', '{"PATH_CALC"}', 'DI'),
+ ('TRAFFIC', 1, TRUE, 'GPS', '{"PATH_CALC"}', 'DI'),
+ ('PATH_CALC', 2, TRUE, 'GPS', '{"VOICE_SYNTH", "GUI", "SPEED_TRAP"}', 'DI'),
+ ('VOICE_SYNTH', 1, FALSE, 'GPS', '{}', 'MODERATE'),
+ ('GUI', 1, FALSE, 'GPS', '{}', 'MODERATE'),
+ ('SPEED_TRAP', 1, FALSE, 'GPS', '{}', 'MODERATE');

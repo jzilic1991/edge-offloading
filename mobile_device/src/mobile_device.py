@@ -1,7 +1,8 @@
 import datetime
 
-from utilities import OffloadingSiteCode, OffloadingActions, ExecutionErrorCode, MobApps
+from utilities import OffloadingSiteCode, OffloadingActions, ExecutionErrorCode
 from resource_monitor import ResourceMonitor
+from mob_app_profiler import MobileAppProfiler
 
 
 class MobileDevice:
@@ -25,8 +26,10 @@ class MobileDevice:
         self._discrete_epoch_counter = 0
         self._stats_log = tuple()
         self._energy_supply_budget = 34200
-        self._applications = {MobApps.ANTIVIRUS: 0.05, MobApps.GPS_NAVIGATOR: 0.3, MobApps.FACERECOGNIZER: 0.1, \
-                MobApps.FACEBOOK: 0.45, MobApps.CHESS: 0.1}
+        self._mobile_app_profiler = MobileAppProfiler ()
+        exit()
+        # self._applications = {MobApps.ANTIVIRUS: 0.05, MobApps.GPS_NAVIGATOR: 0.3, MobApps.FACERECOGNIZER: 0.1, \
+        #        MobApps.FACEBOOK: 0.45, MobApps.CHESS: 0.1}
 
 
     def print_system_config(cls):
@@ -62,7 +65,8 @@ class MobileDevice:
 
             # simulate application executions   
             for j in range(executions):
-                choice = np.random.choice(MobApps.length, 1, p =[prob for _, prob in cls._applications.items()])[0]
+                choice = np.random.choice(cls._res_monitor.get_mobile_apps(), 1, \
+                        p =[prob for _, prob in cls._applications.items()])[0]
 
                 if choice == 0:
                     cls.deploy_antivirus_application()

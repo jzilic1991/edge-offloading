@@ -1,42 +1,8 @@
-class NodeCategory:
-    ER_DATA, EC_DATA, ED_DATA, CD_DATA, NET_DATA = ("EDGE_REG_DATA", "EDGE_COMP_DATA", "EDGE_DATA_DATA", \
-        "CLOUD_DATA", "NETWORK_DATA")
-
-
-class TrainingDataSize:
-    SIZE_526 = 526
-
-
-class DatasetType:
-    LANL_DATASET, PNNL_DATASET, LDNS_DATASET = ("LANL", "PNNL", "LDNS")
-
-
-class PredictionMode:
-    TEST_PREDICTION_MODE, TRAINING_PREDICTION_MODE = ("test", "training")
-
-
-class SlidingWindowSize:
-    SIZE_1, SIZE_2, SIZE_5, SIZE_10, SIZE_15, SIZE_20, SIZE_30, SIZE_40, SIZE_50, SIZE_70, SIZE_100 = (1, 2, 5, 10, 15, 20, 30, 40, 50, 70, 100)
-
-
-class ExecutionMode:
-    NORMAL_MODE, EXHAUSTIVE_MODE = (1, 2)
-
-
-class DataType:
-    TIME_BETWEEN_FAILURE, FAILURE_RATE, AVAILABILITY = ('TBF', 'FR', 'AVAIL')
+import random
 
 
 class Uptime:
     DAY_IN_MINUTES = 1440
-
-
-class WorkingCondition:
-    SLIDING_WINDOW, TRAINING_TEST_SEPARATION = ('SLIDING_WINDOW', 'TRAINING_TEST_SEPARATION')
-
-
-class PredictionSample:
-    MTBF, SVR = ('MTBF', 'SVR')
 
 
 class ExecutionErrorCode:
@@ -62,12 +28,18 @@ class OdeType:
     LOCAL, MOBILE_CLOUD, ENERGY_EFFICIENT, EFPO, MDP_SVR = ('LOCAL', 'MOBILE_CLOUD', 'ENERGY_EFFICIENT',\
         'EFPO', 'MDP_SVR')
 
+
 class NodeType:
     MOBILE, EDGE_DATABASE, EDGE_COMPUTATIONAL, EDGE_REGULAR, CLOUD, UNKNOWN = ('Mobile Device', 'Edge Database Server',\
             'Edge Computational Intensive Server', 'Edge Regular Server', 'Cloud Data Center', 'Unknown')
 
+
 class MobApps:
     ANTIVIRUS, GPS_NAVIGATOR, CHESS, FACERECOGNIZER, FACEBOOK = ('ANTIVIRUS', 'GPS NAVIGATOR', 'CHESS', 'FACERECOGNIZER', 'FACEBOOK')
+
+
+class Tasks:
+    DI, CI, MODERATE = ('DI', 'CI', 'MODERATE')
 
 
 class Util(object):
@@ -137,4 +109,49 @@ class Util(object):
             return OffloadingSiteCode.MOBILE_DEVICE
 
         else:
-            return OffloadingSiteCode.UNKNOWN
+            return OffloadingSiteCode.UNKNOWN@classmethod
+
+
+    @classmethod
+    def generate_di_cpu_cycles(cls):
+        return random.randint(100, 200)
+
+
+    @classmethod
+    def generate_ci_cpu_cycles(cls):
+        return random.randint(550, 650)
+
+
+    @classmethod
+    def generate_random_cpu_cycles(cls):
+        return random.randint(100, 200)
+
+
+    @classmethod
+    def generate_di_input_data(cls):
+        return random.randint(4 * 25, 4 * 30)
+
+
+    @classmethod
+    def generate_random_input_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_ci_input_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_di_output_data(cls):
+        return random.randint(4 * 15, 4 * 20)
+
+
+    @classmethod
+    def generate_random_output_data(cls):
+        return random.randint(4, 8)
+
+
+    @classmethod
+    def generate_ci_output_data(cls):
+        return random.randint(4, 8)
