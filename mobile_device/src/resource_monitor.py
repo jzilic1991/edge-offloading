@@ -9,13 +9,16 @@ from utilities import NodeType
 
 class ResourceMonitor:
 
-    def __init__ (self):
+    def __init__ (self, mobile_device):
+        self._mobile_device = mobile_device
         self._edge_reg_server = None
         self._edge_dat_server = None
         self._edge_comp_server = None
         self._cloud_dc = None
+        self._net_conns = None
 
         self.__get_off_site_data ()
+        self.__get_net_conn_data ()
 
 
     def reset_test_data (cls):
@@ -23,6 +26,18 @@ class ResourceMonitor:
         cls._edge_dat_server.reset_test_data ()
         cls._edge_comp_server.reset_test_data ()
         cls._cloud_dc.reset_test_data ()
+
+
+    def get_off_sites (cls):
+        off_sites = [None for i in range (OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS)]
+
+        off_sites[cls._mobile_device.get_offloading_action_index ()] = cls._mobile_device
+        off_sites[cls._edge_reg_server.get_offloading_action_index ()] = cls._edge_reg_server
+        off_sites[cls._edge_dat_server.get_offloading_action_index ()] = cls._edge_dat_server
+        off_sites[cls._edge_comp_server.get_offloading_action_index ()] = cls._edge_comp_server
+        off_sites[cls._cloud_dc.get_offloading_action_index ()] = cls._cloud_dc
+        
+        return off_sites
 
 
     def get_edge_servers (cls):
@@ -33,6 +48,24 @@ class ResourceMonitor:
         return cls._cloud_dc
 
 
+    def __get_net_conn_data (cls):
+        con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
+        print("Database opened successfully", file = sys.stdout)
+    
+        query = "SELECT * FROM network_connections"
+        cur = con.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        con.close()
+
+        col_names = []
+        for elt in cur.description:
+            col_names.append(elt[0])
+
+        df = pd.DataFrame(data, columns = col_names)
+        print (df, file = sys.stdout)
+
+
     def __get_off_site_data (cls):
         con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
         print("Database opened successfully", file = sys.stdout)
@@ -41,6 +74,7 @@ class ResourceMonitor:
         cur = con.cursor()
         cur.execute(query)
         data = cur.fetchall()
+        con.close()
 
         col_names = []
         for elt in cur.description:
@@ -48,7 +82,6 @@ class ResourceMonitor:
 
         df = pd.DataFrame(data, columns = col_names)
         print (df, file = sys.stdout)
-        con.close()
 
         for i, data in df.iterrows():
             if str(data['id']) == 'Edge Database Server':
