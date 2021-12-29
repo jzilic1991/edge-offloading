@@ -43,7 +43,8 @@ class MyWidget(BoxLayout):
         #self._request = UrlRequest (self._search_url, self.http_response)
         df = get_md_data ()
         self._mobile_device = MobileDevice (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]))
-        self._mobile_device.print_system_config ()
+        # self._mobile_device.print_system_config ()
+        self._deploy_mdp_svr_ode ()
         self._mobile_device.run (1, 1)
         
         #self._res_monitor.get_offloading_sites ("SELECT * FROM offloading_sites WHERE id != \'Mobile Device\'")

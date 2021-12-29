@@ -1,4 +1,5 @@
 import random
+from abc import ABC
 
 
 class Uptime:
@@ -40,6 +41,38 @@ class MobApps:
 
 class Tasks:
     DI, CI, MODERATE = ('DI', 'CI', 'MODERATE')
+
+
+class Objective:
+    
+    def __init__ (self, execution, downlink, uplink, task_overall):
+        self._execution = execution
+        self._downlink = downlink
+        self._uplink = uplink
+        self._task_overall = task_overall
+
+    def get_execution_energy (cls):
+        return cls._execution
+
+
+    def get_downlink_energy (cls):
+        return cls._downlink
+
+
+    def get_uplink_energy (cls):
+        return cls._uplink
+
+
+    def get_task_overall_energy (cls):
+        return cls._task_overall
+
+
+class ResponseTime (Objective):
+    pass
+
+
+class EnergyConsum (Objective):
+    pass
 
 
 class Util(object):
