@@ -5,7 +5,8 @@ from utilities import ExecutionErrorCode
 
 class Task:
     
-    def __init__(self, name, millions_of_instructions, memory, data_in, data_out, offloadable):
+    def __init__(self, name, millions_of_instructions, memory, data_in, data_out, offloadable\
+            , application_id):
         self.__evaluate_params(millions_of_instructions, memory, data_in, data_out, offloadable)
 
         self._name = name
@@ -19,9 +20,13 @@ class Task:
         self._execute = False
         self._offloading_site_name = ""
         self._policy = ()
+        self._application_id = application_id
 
         self.print_system()
 
+    def get_application_id (cls):
+        return cls._application_id
+    
 
     def get_name(cls):
         return cls._name

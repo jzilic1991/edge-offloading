@@ -18,6 +18,7 @@ def get_md_data ():
     cur = con.cursor()
     cur.execute(query)
     data = cur.fetchall()
+    con.close()
 
     col_names = []
     for elt in cur.description:
@@ -25,7 +26,6 @@ def get_md_data ():
 
     df = pd.DataFrame(data, columns = col_names)
     print (df, file = sys.stdout)
-    con.close()
 
     return df
 
@@ -43,11 +43,8 @@ class MyWidget(BoxLayout):
         #self._request = UrlRequest (self._search_url, self.http_response)
         df = get_md_data ()
         self._mobile_device = MobileDevice (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]))
-        # self._mobile_device.print_system_config ()
-        self._deploy_mdp_svr_ode ()
-        self._mobile_device.run (1, 1)
-        
-        #self._res_monitor.get_offloading_sites ("SELECT * FROM offloading_sites WHERE id != \'Mobile Device\'")
+        self._mobile_device.deploy_mdp_svr_ode ()
+        self._mobile_device.run (2, 5)
 
 
     def http_response (self, *args):

@@ -1,9 +1,30 @@
 import datetime
 
-from utilities import OffloadingSiteCode, OffloadingActions, ExecutionErrorCode
+from utilities import Util, OffloadingSiteCode, OffloadingActions, ExecutionErrorCode
 from resource_monitor import ResourceMonitor
 from mob_app_profiler import MobileAppProfiler
 from mdp_svr_ode import MdpSvrOde
+from statistics import Statistics
+from task import Task
+
+# constants
+GIGABYTES = 1000000
+PROGRESS_REPORT_INTERVAL = 1
+
+FACEBOOK = "FACEBOOK"
+FACERECOGNIZER = "FACERECOGNIZER"
+CHESS = "CHESS"
+ANTIVIRUS = "ANTIVIRUS"
+GPS_NAVIGATOR = "GPS_NAVIGATOR"
+
+LOCAL_ODE_NAME = "LOCAL"
+MC_ODE_NAME = "MC"
+EE_ODE_NAME = "EE"
+EFPO_ODE_NAME = "EFPO"
+MDP_SVR_ODE_NAME = "MDP_SVR"
+CHECK_ODE_NAME = "CHECKPOINTING"
+LOCAL_REEXE_ODE_NAME = "LOCAL_REEXECUTION"
+REACTIVE_ODE_NAME = "REACTIVE"
 
 
 class MobileDevice:
@@ -14,7 +35,6 @@ class MobileDevice:
         self._data_storage = data_storage
     
         self._mobile_app = None
-        self._network = None
         self._ode = None
         self._res_monitor = ResourceMonitor (self)
         #self._edge_servers = self._res_monitor.get_edge_servers ()
@@ -29,6 +49,47 @@ class MobileDevice:
         self._mobile_app_profiler = MobileAppProfiler ()
         self._mobile_app = None
         self._stats_hist = list ()
+        self._network = self.__deploy_network_model ()
+
+
+    def get_offloading_site_code (cls):
+        return cls._offloading_site_code
+
+
+    def get_name (cls):
+        return cls._name
+    
+    
+    def get_offloading_action_index (cls):
+        return cls._offloading_action_index
+
+
+    def get_millions_of_instructions_per_second (cls):
+        return cls._mips
+    
+
+    def get_fail_trans_prob (cls):
+        return 0.0
+    
+    
+    def execute(cls, task):
+        print_text = "Task "
+
+        if not isinstance(task, Task):
+            print ("Task for execution on offloading site should be Task class instance!")
+            return ExecutionErrorCode.EXE_NOK
+
+        if not task.execute():
+            return ExecutionErrorCode.EXE_NOK
+
+        print_text = print_text + task.get_name()
+        task_data_storage_consumption = task.get_data_in() + task.get_data_out()
+        task_memory_consumption = task.get_memory()
+
+        cls._data_storage_consumption = cls._data_storage_consumption + (task_data_storage_consumption / GIGABYTES)
+        cls._memory_consumption = cls._memory_consumption + task_memory_consumption
+
+        return ExecutionErrorCode.EXE_OK
 
 
     def print_system_config(cls):
@@ -40,7 +101,8 @@ class MobileDevice:
 
 
     def deploy_mdp_svr_ode (cls):
-        cls._ode = MdpSvrOde(cls, cls._edge_servers, cls._cloud_dc, cls._network, MDP_SVR_ODE_NAME)
+        cls._ode = MdpSvrOde(cls, cls._res_monitor.get_edge_servers (), cls._res_monitor.get_cloud_dc (), \
+                cls._network, MDP_SVR_ODE_NAME)
 
 
     def run(cls, samplings, executions):
@@ -61,18 +123,14 @@ class MobileDevice:
             application_fail_time_completion = 0
             application_fail_energy_consumption = 0
             application_failures = 0
-            curr_bandwidth_consumption = 0
             offloading_attempts = 0
 
             # reset test data after each simulation sampling to start from the beginning
             cls._res_monitor.reset_test_data ()
+            cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
 
             # simulate application executions   
             for j in range(executions):
-                cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
-
-                # cls._ode.save_app_name(cls._mobile_app.get_name())
-
                 previous_progress = current_progress
                 current_progress = round((j + (i * executions)) / (samplings * executions) * 100)
 
@@ -82,6 +140,7 @@ class MobileDevice:
                 cls._mobile_app.run()
                 ready_tasks = cls._mobile_app.get_ready_tasks()
                 single_app_exe_task_comp = 0
+                single_app_exe_energy_consum = 0
                 
                 while ready_tasks:
                     (task_completion_time, task_energy_consumption, task_overall_reward, task_failure_time_cost,\
@@ -106,10 +165,10 @@ class MobileDevice:
                     print ("Current application failures: " + str(application_failures) + '\n')
 
                     application_overall_rewards = round(application_overall_rewards + task_overall_reward, 3)
-                    curr_bandwidth_consumption += epoch_bandwidth_consumption
+                    # curr_bandwidth_consumption += epoch_bandwidth_consumption
 
                     print ("Current application overall rewards: " + str(application_overall_rewards))
-                    print ("Current bandwidth consumption: " + str(curr_bandwidth_consumption) + ' kbps\n')
+                    # print ("Current bandwidth consumption: " + str(curr_bandwidth_consumption) + ' kbps\n')
                     print ('Task application runtime: ' + str(task_completion_time) + 's')
                     print ('Task energy consumption: ' + str(task_energy_consumption) + 'J')
                     print ('Task rewards: ' + str(task_overall_reward))
@@ -117,9 +176,10 @@ class MobileDevice:
 
                     cls._mobile_app.print_task_exe_status()
 
-                cls.__reset_application()
+                # cls.__reset_application()
                 statistics.add_time_comp_single_app_exe(single_app_exe_task_comp)
                 statistics.add_energy_consum_single_app_exe(single_app_exe_energy_consum)
+                cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
                 
             statistics.add_time_comp(application_time_completion)
                     
@@ -182,12 +242,13 @@ class MobileDevice:
         #    print(edge.get_name() + ' ' + str(edge.get_node_candidate()))
 
         # print(cls._cloud_dc.get_name() + ' ' + str(cls._cloud_dc.get_node_candidate()))
-    
-    def deploy_network_model(cls):
-        cloud_dc = cls.__get_cloud_dc_server()
-        edge_db_server = cls.__get_edge_database_server('A')
-        edge_comp_server = cls.__get_edge_computational_server('A')
-        edge_reg_server = cls.__get_edge_regular_server('A')
+   
+
+    def __deploy_network_model (cls):
+        cloud_dc = cls._res_monitor.get_cloud_dc()
+        edge_db_server = cls._res_monitor.get_edge_dat_server()
+        edge_comp_server = cls._res_monitor.get_edge_comp_server()
+        edge_reg_server = cls._res_monitor.get_edge_reg_server()
         mobile_device = cls
 
         # Cloud DC <-> Edge database server
@@ -223,42 +284,68 @@ class MobileDevice:
 
         cls._network = {
             cloud_dc.get_name(): [(edge_db_server.get_name(), cloud_dc__edge_db_server__net_lat, \
-                    Util.get_network_bandwidth(cloud_dc, edge_db_server)), \
+                    cls._res_monitor.get_network_bandwidth(cloud_dc, edge_db_server)), \
                     (edge_comp_server.get_name(), cloud_dc__edge_comp_server__net_lat, \
-                    Util.get_network_bandwidth(cloud_dc, edge_comp_server)),\
+                    cls._res_monitor.get_network_bandwidth(cloud_dc, edge_comp_server)),\
                     (edge_reg_server.get_name(), cloud_dc__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(cloud_dc, edge_reg_server)), \
+                    cls._res_monitor.get_network_bandwidth(cloud_dc, edge_reg_server)), \
                     (mobile_device.get_name(), cloud_dc__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(cloud_dc, mobile_device))],
+                    cls._res_monitor.get_network_bandwidth(cloud_dc, mobile_device))],
             edge_db_server.get_name(): [(cloud_dc.get_name(), cloud_dc__edge_db_server__net_lat, \
-                    Util.get_network_bandwidth(edge_db_server, cloud_dc)),\
+                    cls._res_monitor.get_network_bandwidth(edge_db_server, cloud_dc)),\
                     (edge_comp_server.get_name(), edge_db_server__edge_comp_server__net_lat, \
-                    Util.get_network_bandwidth(edge_db_server, edge_comp_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_db_server, edge_comp_server)),\
                     (edge_reg_server.get_name(), edge_db_server__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(edge_db_server, edge_reg_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_db_server, edge_reg_server)),\
                     (mobile_device.get_name(), edge_db_server__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(edge_db_server, mobile_device))],
+                    cls._res_monitor.get_network_bandwidth(edge_db_server, mobile_device))],
             edge_comp_server.get_name(): [(cloud_dc.get_name(), cloud_dc__edge_comp_server__net_lat, \
-                    Util.get_network_bandwidth(edge_comp_server, cloud_dc)),\
+                    cls._res_monitor.get_network_bandwidth(edge_comp_server, cloud_dc)),\
                     (edge_db_server.get_name(), edge_db_server__edge_comp_server__net_lat, \
-                    Util.get_network_bandwidth(edge_comp_server, edge_db_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_comp_server, edge_db_server)),\
                     (edge_reg_server.get_name(), edge_comp_server__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(edge_comp_server, edge_reg_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_comp_server, edge_reg_server)),\
                     (mobile_device.get_name(), edge_comp_server__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(edge_comp_server, mobile_device))],
+                    cls._res_monitor.get_network_bandwidth(edge_comp_server, mobile_device))],
             edge_reg_server.get_name(): [(cloud_dc.get_name(), cloud_dc__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(edge_reg_server, cloud_dc)),\
+                    cls._res_monitor.get_network_bandwidth(edge_reg_server, cloud_dc)),\
                     (edge_db_server.get_name(), edge_db_server__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(edge_reg_server, edge_db_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_reg_server, edge_db_server)),\
                     (edge_comp_server.get_name(), edge_comp_server__edge_reg_server__net_lat, \
-                    Util.get_network_bandwidth(edge_reg_server, edge_comp_server)),\
+                    cls._res_monitor.get_network_bandwidth(edge_reg_server, edge_comp_server)),\
                     (mobile_device.get_name(), edge_reg_server__mobild_device__net_lat, \
-                    Util.get_network_bandwidth(edge_reg_server, mobile_device))],
+                    cls._res_monitor.get_network_bandwidth(edge_reg_server, mobile_device))],
             mobile_device.get_name(): [(cloud_dc.get_name(), cloud_dc__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(mobile_device, cloud_dc)),\
+                    cls._res_monitor.get_network_bandwidth(mobile_device, cloud_dc)),\
                     (edge_db_server.get_name(), edge_db_server__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(mobile_device, edge_db_server)),\
+                    cls._res_monitor.get_network_bandwidth(mobile_device, edge_db_server)),\
                     (edge_comp_server.get_name(), edge_comp_server__mobile_device__net_lat, \
-                    Util.get_network_bandwidth(mobile_device, edge_comp_server)),
+                    cls._res_monitor.get_network_bandwidth(mobile_device, edge_comp_server)),
                     (edge_reg_server.get_name(), edge_reg_server__mobild_device__net_lat, \
-                    Util.get_network_bandwidth(mobile_device, edge_reg_server))]}
+                    cls._res_monitor.get_network_bandwidth(mobile_device, edge_reg_server))]}
+    
+    
+    def check_validity_of_deployment(cls, task):
+        if not isinstance(task, Task):
+            print ("Task for execution on offloading site should be Task class instance!")
+            return ExecutionErrorCode.EXE_NOK
+
+        if cls._data_storage > (cls._data_storage_consumption + ((task.get_data_in() + task.get_data_out())) / GIGABYTES) and \
+            cls._memory > (cls._memory_consumption + task.get_memory()):
+            return ExecutionErrorCode.EXE_OK
+    
+        return ExecutionErrorCode.EXE_NOK
+
+
+    def flush_executed_task(cls, task):
+        if not isinstance(task, Task):
+            print ("Task for execution on offloading site should be Task class instance!")
+            return ExecutionErrorCode.EXE_NOK
+    
+        cls._memory_consumption = cls._memory_consumption - task.get_memory()
+        cls._data_storage_consumption = cls._data_storage_consumption - ((task.get_data_in() + task.get_data_out()) / GIGABYTES)
+
+        if cls._memory_consumption < 0 or cls._data_storage_consumption < 0:
+            raise ValueError("Memory consumption: " + str(cls._memory_consumption) + \
+                    "Gb, data storage consumption: " + str(cls._data_storage_consumption) + \
+                    "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())

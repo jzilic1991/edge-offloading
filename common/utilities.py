@@ -1,5 +1,5 @@
 import random
-from abc import ABC
+import numpy
 
 
 class Uptime:
@@ -51,19 +51,19 @@ class Objective:
         self._uplink = uplink
         self._task_overall = task_overall
 
-    def get_execution_energy (cls):
+    def get_execution (cls):
         return cls._execution
 
 
-    def get_downlink_energy (cls):
+    def get_downlink (cls):
         return cls._downlink
 
 
-    def get_uplink_energy (cls):
+    def get_uplink (cls):
         return cls._uplink
 
 
-    def get_task_overall_energy (cls):
+    def get_task_overall (cls):
         return cls._task_overall
 
 
@@ -142,7 +142,7 @@ class Util(object):
             return OffloadingSiteCode.MOBILE_DEVICE
 
         else:
-            return OffloadingSiteCode.UNKNOWN@classmethod
+            return OffloadingSiteCode.UNKNOWN
 
 
     @classmethod
@@ -188,3 +188,102 @@ class Util(object):
     @classmethod
     def generate_ci_output_data(cls):
         return random.randint(4, 8)
+    
+    
+    @classmethod
+    def get_network_latency(cls, src_node, dst_node):
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
+            return round((54 + numpy.random.normal(200, 33.5)), 2)
+
+
+
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER:
+            return 10
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER:
+            return 10
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
+            return 15
+
+
+
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER:
+            return 10 
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER:
+            return 10 
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
+            return 15
+
+
+
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return round((15 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER:
+            return 10
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER:
+            return 10
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
+            return 15
+
+
+
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return round((54 + numpy.random.normal(200, 33.5)), 2)
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_DATABASE_SERVER:
+            return 15
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER:
+            return 15
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER:
+            return 15
+
+        if src_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
+            dst_node.get_offloading_site_code() == OffloadingSiteCode.EDGE_REGULAR_SERVER:
+            return 15

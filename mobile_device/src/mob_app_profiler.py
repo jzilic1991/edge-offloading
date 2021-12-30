@@ -49,36 +49,48 @@ class MobileAppProfiler:
         tasks = list ()
         applications = list ()
         
+        for _, task_ in app_tasks.iterrows():
+            cpu_cycles = 0
+            input_data = 0
+            output_data = 0
+                    
+            if task_['component'] == Tasks.MODERATE:
+                cpu_cycles = Util.generate_random_cpu_cycles ()
+                input_data = Util.generate_random_input_data ()
+                output_data = Util.generate_random_output_data ()
+
+            elif task_['component'] == Tasks.DI:
+                cpu_cycles = Util.generate_di_cpu_cycles ()
+                input_data = Util.generate_di_input_data ()
+                output_data = Util.generate_di_output_data ()
+
+            elif task_['component'] == Tasks.CI:
+                cpu_cycles = Util.generate_ci_cpu_cycles ()
+                input_data = Util.generate_ci_input_data ()
+                output_data = Util.generate_ci_output_data ()
+                    
+            tasks.append(Task (task_['name'], cpu_cycles, task_['memory'], input_data, \
+                output_data, task_['offloadability'], task_['application_id']))
+        
         for _, app in mob_apps.iterrows():
             dag_structure = dict ()
-            
+
             for _, task_ in app_tasks.iterrows():
-                if app['id'] != task_['application_id']:
-                    continue
+                for task in tasks:
+                    if task_['name'] != task.get_name() or task_['application_id'] != app['id']:
+                        continue
+                    for next_task in task_['next_tasks']:
+                        for sec_task in tasks:
+                            if next_task == sec_task.get_name() and sec_task.get_application_id() == task.get_application_id():
+                                if task in dag_structure:
+                                    dag_structure[task].append(sec_task)
 
-                cpu_cycles = 0
-                input_data = 0
-                output_data = 0
-                    
-                if task_['component'] == Tasks.MODERATE:
-                    cpu_cycles = Util.generate_random_cpu_cycles ()
-                    input_data = Util.generate_random_input_data ()
-                    output_data = Util.generate_random_output_data ()
+                                else:
+                                    dag_structure.update({task: [sec_task]})
 
-                elif task_['component'] == Tasks.DI:
-                    cpu_cycles = Util.generate_di_cpu_cycles ()
-                    input_data = Util.generate_di_input_data ()
-                    output_data = Util.generate_di_output_data ()
-
-                elif task_['component'] == Tasks.CI:
-                    cpu_cycles = Util.generate_ci_cpu_cycles ()
-                    input_data = Util.generate_ci_input_data ()
-                    output_data = Util.generate_ci_output_data ()
-                    
-                task = Task (task_['name'], cpu_cycles, task_['memory'], input_data, \
-                    output_data, task_['offloadability'])
-                dag_structure.update ({task: task_['next_tasks']})
-        
+                                break
+            
             applications.append (MobileApplication (app['id'], dag_structure, app['prob']))
-
+       
+        print (str(applications))
         return applications

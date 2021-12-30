@@ -4,7 +4,7 @@ import pandas as pd
 from kivy.network.urlrequest import UrlRequest
 
 from rep_off_site import RepresentOffloadingSite
-from utilities import NodeType
+from utilities import NodeType, OffloadingActions
 
 
 class ResourceMonitor:
@@ -15,10 +15,29 @@ class ResourceMonitor:
         self._edge_dat_server = None
         self._edge_comp_server = None
         self._cloud_dc = None
-        self._net_conns = None
+        self._net_conns = self.__get_net_conn_data ()
 
         self.__get_off_site_data ()
-        self.__get_net_conn_data ()
+
+
+    def get_edge_reg_server (cls):
+        return cls._edge_reg_server
+
+
+    def get_edge_dat_server (cls):
+        return cls._edge_dat_server
+
+
+    def get_edge_comp_server (cls):
+        return cls._edge_comp_server
+
+
+    def get_cloud_dc (cls):
+        return cls._cloud_dc
+    
+
+    def get_edge_servers (cls):
+        return [cls._edge_reg_server, cls._edge_dat_server, cls._edge_comp_server]
 
 
     def reset_test_data (cls):
@@ -26,6 +45,15 @@ class ResourceMonitor:
         cls._edge_dat_server.reset_test_data ()
         cls._edge_comp_server.reset_test_data ()
         cls._cloud_dc.reset_test_data ()
+
+
+    def get_network_bandwidth (cls, first_site, second_site):
+        for _, net_conn in cls._net_conns.iterrows():
+            if (first_site == net_conn['first_site_id'] or first_site == net_conn['second_site_id']) \
+                    and (second_site == net_conn['first_site_id'] or second_site == net_conn['second_site_id']):
+                return net_conn['bandwidth']
+
+        return 0.0
 
 
     def get_off_sites (cls):
@@ -64,6 +92,8 @@ class ResourceMonitor:
 
         df = pd.DataFrame(data, columns = col_names)
         print (df, file = sys.stdout)
+
+        return df
 
 
     def __get_off_site_data (cls):

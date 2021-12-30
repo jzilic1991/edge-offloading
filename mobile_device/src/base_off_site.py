@@ -19,7 +19,7 @@ class BaseOffloadingSite (ABC):
         self._socket_client = None
         self._data_storage_consumption = 0
         self._memory_consumption = 0
-           
+            
         self._off_site_code = Util.determine_off_site_code (node_type)
         (self._name, self._off_action) = Util.determine_name_and_action (name, self._off_site_code)
         self.print_system_config()
@@ -33,6 +33,18 @@ class BaseOffloadingSite (ABC):
         print ("Data Storage: " + str(cls._data_storage) + " Gb", file = sys.stdout)
         print ("Offloading Action: " + str(cls._off_action), file = sys.stdout)
         print ("Offloading Site Code: " + str(cls._off_site_code), file = sys.stdout)
+
+
+    def get_offloading_site_code (cls):
+        return cls._off_site_code
+
+
+    def get_offloading_action_index (cls):
+        return cls._off_action
+
+
+    def get_name (cls):
+        return cls._name
 
 
     def check_validity_of_deployment(cls, task):

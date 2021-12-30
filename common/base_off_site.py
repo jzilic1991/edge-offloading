@@ -35,6 +35,18 @@ class BaseOffloadingSite (ABC):
         print ("Offloading Site Code: " + str(cls._off_site_code), file = sys.stdout)
 
 
+    def get_offloading_site_code (cls):
+        return cls._off_site_code
+
+
+    def get_offloading_action_index (cls):
+        return cls._off_action
+
+
+    def get_name (cls):
+        return cls._name
+
+
     def check_validity_of_deployment(cls, task):
         if not isinstance(task, Task):
             return ExecutionErrorCode.EXE_NOK

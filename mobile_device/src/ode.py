@@ -7,8 +7,9 @@ import numpy as np
 from abc import ABC, abstractmethod
 
 from utilities import OffloadingSiteCode, OffloadingActions, ResponseTime, EnergyConsum
-from offloading_site import OffloadingSite
-from efpo_statistics import Statistics
+from base_off_site import BaseOffloadingSite
+
+# from offloading_site import OffloadingSite
 
 # constants for time (ms -> s) and data conversion (kb for data size and mbps for bandwdith)
 KILOBYTE = 1000            # bytes
@@ -23,6 +24,7 @@ POWER_CONSUM_LOCAL = 0.9
 POWER_CONSUM_IDLE = 0.3
 
 OFFLOADING_FAILURE_DETECTION_TIME = 1.5 # seconds
+
 
 class OffloadingDecisionEngine(ABC):
 
@@ -54,7 +56,7 @@ class OffloadingDecisionEngine(ABC):
 
 
     def get_name(cls):
-        return cls._name #+ "_t_" + str(cls._w_f_time_completion) + "_e_" + str(cls._w_f_energy_consumption)
+        return cls._name + "_t_" + str(cls._w_f_time_completion) + "_e_" + str(cls._w_f_energy_consumption)
 
 
     @abstractmethod
@@ -68,27 +70,27 @@ class OffloadingDecisionEngine(ABC):
 
 
     def __evaluate_params(cls, mobile_device, edge_servers, cloud_dc, network):
-        if not isinstance(cloud_dc, OffloadingSite):
-            MdpLogger.write_log("Cloud data center should be OffloadingSite object instance in ODE class!")
+        if not isinstance(cloud_dc, BaseOffloadingSite):
+            print("Cloud data center should be OffloadingSite object instance in ODE class!")
             return False
 
         if not edge_servers:
-            MdpLogger.write_log("Edge servers should not be empty in ODE class!")
+            print("Edge servers should not be empty in ODE class!")
             return False
 
         for edge in edge_servers:
-            if not isinstance(edge, OffloadingSite):
-                MdpLogger.write_log("Edge servers should be OffloadingSite object instance in ODE class!")
+            if not isinstance(edge, BaseOffloadingSite):
+                print("Edge servers should be OffloadingSite object instance in ODE class!")
                 return False
 
         if not (cloud_dc.get_offloading_site_code() == OffloadingSiteCode.CLOUD_DATA_CENTER):
-            MdpLogger.write_log("Cloud data center should be configured as cloud data center in ODE class!")
+            print("Cloud data center should be configured as cloud data center in ODE class!")
             return False
 
         for edge in edge_servers:
             if not (edge.get_offloading_site_code() in [OffloadingSiteCode.EDGE_DATABASE_SERVER, \
                 OffloadingSiteCode.EDGE_COMPUTATIONAL_INTENSIVE_SERVER, OffloadingSiteCode.EDGE_REGULAR_SERVER]):
-                MdpLogger.write_log("Edge server should be configured as edge server in ODE class!")
+                print("Edge server should be configured as edge server in ODE class!")
                 return False
 
         return True

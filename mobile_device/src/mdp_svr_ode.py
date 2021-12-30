@@ -12,9 +12,9 @@ class MdpSvrOde(MdpOde):
 
         cls._discount_factor = 0.01
 
-        for offloading_site in cls._offloading_sites:
-            if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-                offloading_site.deploy_svr()
+        #for offloading_site in cls._offloading_sites:
+        #    if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
+        #        offloading_site.deploy_svr()
 
 
     def update_P_matrix(cls):
@@ -30,12 +30,12 @@ class MdpSvrOde(MdpOde):
                     # offload to k offloading site
                     if cls._offloading_sites[k].get_offloading_action_index() == i:
                         cls._P[i][j][k] = 1 - cls._offloading_sites[k].\
-                            get_failure_transition_probability(OdeType.MDP_SVR)
+                            get_fail_trans_prob() #OdeType.MDP_SVR as a argument
 
                     # offload to mobile device (in case of offloading failure) 
                     elif cls._mobile_device.get_offloading_action_index() == k:
                         cls._P[i][j][k] = cls._offloading_sites[i].\
-                            get_failure_transition_probability(OdeType.MDP_SVR)
+                            get_fail_trans_prob() # OdeType.MDP_SVR as a argument
 
                     else:
                         cls._P[i][j][k] = 0.0
@@ -61,8 +61,9 @@ class MdpSvrOde(MdpOde):
                         continue
 
                     print(cls._offloading_sites[j].get_name() + " -> " + cls._offloading_sites[k].get_name())
-                    (uplink_time, execution_time, downlink_time, task_completion_time) = cls._OffloadingDecisionEngine__compute_complete_task_time_completion(task, \
-                    cls._offloading_sites[k], cls._offloading_sites[j])
+                    (uplink_time, execution_time, downlink_time, task_completion_time) = \
+                            cls._OffloadingDecisionEngine__compute_complete_task_time_completion(task, \
+                            cls._offloading_sites[k], cls._offloading_sites[j])
                     print("Uplink time: " + str(uplink_time))
                     print("Execution time: " + str(execution_time))
                     print("Downlink time: " + str(downlink_time))
@@ -78,15 +79,18 @@ class MdpSvrOde(MdpOde):
                     print("Task energy: " + str(task_energy_consumption)+ "\n")
 
                     # compute task time completion reward
-                    task_time_completion_reward = cls._OffloadingDecisionEngine__compute_task_time_completion_reward(task_completion_time)
+                    task_time_completion_reward = cls._OffloadingDecisionEngine__compute_task_time_completion_reward\
+                            (task_completion_time)
                     print("Task time completion reward: " + str(task_time_completion_reward))
 
                     # compute task energy reward
-                    task_energy_consumption_reward = cls._OffloadingDecisionEngine__compute_task_energy_consumption_reward(task_energy_consumption)
+                    task_energy_consumption_reward = cls._OffloadingDecisionEngine__compute_task_energy_consumption_reward\
+                            (task_energy_consumption)
                     print("Task energy reward: " + str(task_energy_consumption_reward))
 
                     # compute task overall reward
-                    task_overall_reward = cls._OffloadingDecisionEngine__compute_overall_task_reward(task_time_completion_reward, task_energy_consumption_reward)
+                    task_overall_reward = cls._OffloadingDecisionEngine__compute_overall_task_reward\
+                            (task_time_completion_reward, task_energy_consumption_reward)
                     print("Task overall reward: " + str(task_overall_reward)+ "\n")
 
                     if task_completion_time < 0 or downlink_time < 0 or execution_time < 0 or uplink_time < 0 \

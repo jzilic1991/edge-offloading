@@ -44,10 +44,10 @@ class MobileApplication:
             if not task.get_in_edges() and not task.is_executed():
                 ready_tasks = ready_tasks + (task,)
 
-            if not ready_tasks:
-                for task in cls._delay_dict:
-                    if not task.is_executed():
-                        return False
+        if not ready_tasks:
+            for task in cls._delay_dict:
+                if not task.is_executed():
+                    return False
 
             cls.print_task_exe_status()
             cls.__init_task_dependencies()
@@ -61,7 +61,7 @@ class MobileApplication:
         
         for key, values in cls._delay_dict.items():
             for value in values:
-                print(key.get_name() + " ----------> " + value, file = sys.stdout)
+                print(key.get_name() + " ----------> " + value.get_name(), file = sys.stdout)
                 print('\n\n', file = sys.stdout)
 
 
@@ -93,12 +93,8 @@ class MobileApplication:
         for key, values in cls._delay_dict.items():
             for value in values:
                 key.add_out_edge (value)
+                value.add_in_edge(key)
                 
-                for key_ in cls._delay_dict:
-                    if key_.get_name() == value:
-                        key_.add_in_edge (key.get_name())
-                        break
-
             key.reset_exec_flag()
 
     

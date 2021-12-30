@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 from ode import OffloadingDecisionEngine
-from offloading_site import OffloadingSite
+# from offloading_site import OffloadingSite
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OffloadingActions, ResponseTime, EnergyConsum
 from task import Task
 
@@ -49,6 +49,8 @@ class MdpOde(OffloadingDecisionEngine):
 
                 print (cls._previous_node.get_name() + " -> " + candidate_node.get_name())
                 (task_rsp_time, task_energy_consum) = cls.__compute_objectives (task, cls._previous_node, candidate_node)
+                task_completion_time_tmp = task_rsp_time.get_task_overall()
+                task_energy_consumption_tmp = task_energy_consum.get_task_overall()
     
                 # if task deployment on offloading site is valid, then task is going to be executed
                 if not candidate_node.execute(task):
@@ -60,7 +62,7 @@ class MdpOde(OffloadingDecisionEngine):
                     (cost_rsp_time, cost_energy_consum, cost_reward) = \
                         cls._OffloadingDecisionEngine__compute_failure_cost(candidate_node, cls._previous_node)
 
-                    task_comletion_time_tmp = cost_rsp_time.get_task_overall()
+                    task_completion_time_tmp = cost_rsp_time.get_task_overall()
                     task_energy_consumption_tmp = cost_energy_consum.get_task_overall()
                     task_overall_reward_tmp = cost_reward
 
@@ -166,49 +168,49 @@ class MdpOde(OffloadingDecisionEngine):
                 for i in range(len(validity_vector)):
                     if cls._offloading_sites[i].get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
                         validity_vector[i] = False
-                        return (cls._mobile_device, validity_vector)
+                
+                return (cls._mobile_device, validity_vector)
 
-                offloading_site_index = cls._current_node.get_offloading_action_index()
+            offloading_site_index = cls._current_node.get_offloading_action_index()
     
-                cls._policy = cls.__MDP_run(task, validity_vector)
-                print ("Current node: " + cls._current_node.get_name())
-                print ("Current offloading policy: " + str(cls._policy))
+            cls._policy = cls.__MDP_run(task, validity_vector)
+            print ("Current node: " + cls._current_node.get_name())
+            print ("Current offloading policy: " + str(cls._policy))
 
-                if cls._policy[offloading_site_index] == OffloadingActions.MOBILE_DEVICE:
-                    return (cls._offloading_sites[cls._mobile_device.get_offloading_action_index()], validity_vector)
+            if cls._policy[offloading_site_index] == OffloadingActions.MOBILE_DEVICE:
+                return (cls._offloading_sites[cls._mobile_device.get_offloading_action_index()], validity_vector)
     
-                trans_prob = ()
-                action_index = cls._policy[offloading_site_index]
-                source_node_index = cls._current_node.get_offloading_action_index()
-                P_matrix_columns = len(cls._P[action_index][source_node_index])
-                print("P matrix columns [action = " + str(action_index) + "][source_node = " + \
-                    str(source_node_index) + "] = " + str(cls._P[action_index][source_node_index]))
+            trans_prob = ()
+            action_index = cls._policy[offloading_site_index]
+            source_node_index = cls._current_node.get_offloading_action_index()
+            P_matrix_columns = len(cls._P[action_index][source_node_index])
+            print("P matrix columns [action = " + str(action_index) + "][source_node = " + \
+                str(source_node_index) + "] = " + str(cls._P[action_index][source_node_index]))
 
-                for i in range(P_matrix_columns):
-                    if cls._P[action_index][source_node_index][i] != 0.0 and i != cls._mobile_device.get_offloading_action_index():
-                        trans_prob = trans_prob + (1.0,)
+            for i in range(P_matrix_columns):
+                if cls._P[action_index][source_node_index][i] != 0.0 and i != cls._mobile_device.get_offloading_action_index():
+                    trans_prob = trans_prob + (1.0,)
                     
-                    else:
-                        trans_prob = trans_prob + (0.0,)
+                else:
+                    trans_prob = trans_prob + (0.0,)
     
 
-                print("Transition probabilities for REMOTELY offloading action: " + str(trans_prob))
-                offloading_site_index = np.random.choice(P_matrix_columns, 1, p = trans_prob)[0]
+            offloading_site_index = np.random.choice(P_matrix_columns, 1, p = trans_prob)[0]
 
-                if cls._offloading_sites[offloading_site_index].get_offloading_site_code() == \
-                    OffloadingSiteCode.MOBILE_DEVICE:
-                    validity_vector[action_index] = False
+            if cls._offloading_sites[offloading_site_index].get_offloading_site_code() == \
+                OffloadingSiteCode.MOBILE_DEVICE:
+                validity_vector[action_index] = False
 
-                    if any(validity_vector):
-                        continue
+                if any(validity_vector):
+                    continue
                     
-                    else:
-                        offloading_site_index = cls._mobile_device.get_offloading_action_index()
-                        break
+                else:
+                    offloading_site_index = cls._mobile_device.get_offloading_action_index()
+                    break
 
-                break
+            break
 
-            return (cls._offloading_sites[offloading_site_index], validity_vector)
+        return (cls._offloading_sites[offloading_site_index], validity_vector)
     
 
     def __compute_objectives (cls, task, previous_node, candidate_node):
