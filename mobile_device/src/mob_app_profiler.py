@@ -92,5 +92,4 @@ class MobileAppProfiler:
             
             applications.append (MobileApplication (app['id'], dag_structure, app['prob']))
        
-        print (str(applications))
         return applications

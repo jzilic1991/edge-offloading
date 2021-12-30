@@ -39,15 +39,20 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         
 
     def get_fail_trans_prob (cls):
-        raise NotImplementedError
+        if len(cls._used_data) == 0:
+            cls._used_data = cls._avail_data
+        
+        fail_prob = cls._used_data[0]
+        del cls._used_data[0]
+        return fail_prob
 
     
     def get_server_fail_prob (cls):
-        raise NotImplementedError
+        return 0.9
 
 
     def get_net_fail_prob (cls):
-        raise NotImplementedError
+        return 0.1
 
 
     def reset_test_data (cls):
@@ -58,12 +63,10 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
             str(cls._node_candidates[cls._iter_index][1]) + '.txt'
         
-        if Path(filepath).exists():
-            cls._avail_data = cls.__read_avail_dist (filepath)
-        
-        else:
+        if not Path(filepath).exists():
             cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
-
+        
+        cls._avail_data = cls.__read_avail_dist (filepath)
         cls._used_data = cls._avail_data        
 
 
@@ -142,5 +145,3 @@ class RepresentOffloadingSite (BaseOffloadingSite):
                 filewriter.write (str(data_point) + '\n')
 
             filewriter.close()
-
-        return avail_data
