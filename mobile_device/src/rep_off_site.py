@@ -1,11 +1,15 @@
 import sys
 import re
+import json
 from pathlib import Path
 from kivy.network.urlrequest import UrlRequest
 
 from base_off_site import BaseOffloadingSite
-from utilities import OffloadingSiteCode
+from utilities import OffloadingSiteCode, ExecutionErrorCode
+from task import Task
 
+# constants
+GIGABYTES = 1000000
 
 class RepresentOffloadingSite (BaseOffloadingSite):
 
@@ -27,7 +31,7 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         cls._iter_index %= len(cls._node_candidates)
 
         filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
-            str(cls._node_candidates[cls._iter_index][1]) + '.txt'
+            str(cls._node_candidates[cls._iter_index][1]) + '.json'
     
         if Path(filepath).exists():
             cls._avail_data = cls.__read_avail_dist (filepath)
@@ -42,9 +46,15 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         if len(cls._used_data) == 0:
             cls._used_data = cls._avail_data
         
-        fail_prob = cls._used_data[0]
-        del cls._used_data[0]
-        return fail_prob
+        fail_prob = cls._used_data['predicted'][0]
+
+        if fail_prob > 1:
+            fail_prob = 1
+        
+        if fail_prob >= 0.95 and cls._off_site_code != OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return 0
+
+        return (1 - fail_prob)
 
     
     def get_server_fail_prob (cls):
@@ -71,7 +81,33 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
 
     def execute (cls, task):
-        raise NotImplementedError
+        if not isinstance(task, Task):
+            raise ValueError("Task for execution on offloading site should be Task class instance!")
+
+        offloadable = task.is_offloadable()
+
+        if not offloadable:
+            return ExecutionErrorCode.EXE_NOK
+
+        #if cls._failure_event_mode == FailureEventMode.POISSON_FAILURE:
+        #    if cls._failure_event <= cls._discrete_epoch_counter:
+        #        return ExecutionErrorCode.EXE_NOK
+
+        #elif cls._failure_event_mode == FailureEventMode.TEST_DATASET_FAILURE:
+        #    if cls._failure_event_flag:
+        #        return ExecutionErrorCode.EXE_NOK
+    
+        if not task.execute():
+            raise ValueError("Task execution operation is not executed properly! Please check the code of execute() method in Task class!")
+
+        print_text = "Task " + task.get_name()
+        task_data_storage_consumption = task.get_data_in() + task.get_data_out()
+        task_memory_consumption = task.get_memory()
+
+        cls._data_storage_consumption = cls._data_storage_consumption + (task_data_storage_consumption / GIGABYTES)
+        cls._memory_consumption = cls._memory_consumption + task_memory_consumption
+
+        return ExecutionErrorCode.EXE_OK
 
 
     def terminate_task (cls, task):
@@ -80,6 +116,19 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
     def detect_failure_event (cls, prob):
         raise NotImplementedError
+    
+
+    def flush_executed_task(cls, task):
+        if not isinstance(task, Task):
+            return ExecutionErrorCode.EXE_NOK
+    
+        cls._memory_consumption = cls._memory_consumption - task.get_memory()
+        cls._data_storage_consumption = cls._data_storage_consumption - ((task.get_data_in() + task.get_data_out()) / GIGABYTES)
+
+        if cls._memory_consumption < 0 or cls._data_storage_consumption < 0:
+            raise ValueError("Memory consumption: " + str(cls._memory_consumption) + \
+                    "Gb, data storage consumption: " + str(cls._data_storage_consumption) + \
+                    "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())
 
 
     def __parse_node_candidate_list (cls):
@@ -116,16 +165,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
 
-        with open (filepath, 'r') as filereader:
-           line = filereader.readline()
-
-           while line:
-               if re.search ('\d+.\d+', line):
-                   avail_data.append(float (line))                
-               
-               line = filereader.readline()
-           
-           filereader.close()
+        with open (filepath, 'r') as jsonfile:
+           avail_data  = json.load(jsonfile)
         
         return avail_data
 
@@ -139,9 +180,5 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
         print ('Creating availability file ' + filepath)
         
-        with open (filepath, 'w') as filewriter:
-            
-            for data_point in avail_data:
-                filewriter.write (str(data_point) + '\n')
-
-            filewriter.close()
+        with open (filepath, 'w') as jsonfile:
+            json.dump(avail_data, jsonfile)

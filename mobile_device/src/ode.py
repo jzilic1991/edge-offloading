@@ -57,6 +57,12 @@ class OffloadingDecisionEngine(ABC):
 
     def get_name(cls):
         return cls._name + "_t_" + str(cls._w_f_time_completion) + "_e_" + str(cls._w_f_energy_consumption)
+    
+    
+    def __increment_discrete_epoch_counters(cls):
+        for offloading_site in cls._offloading_sites:
+            if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
+                offloading_site.evaluate_failure_event()
 
 
     @abstractmethod

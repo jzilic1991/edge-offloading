@@ -9,12 +9,7 @@ class MdpSvrOde(MdpOde):
 
     def initialize_params(cls):
         cls._MdpOde__init_MDP_settings()
-
         cls._discount_factor = 0.01
-
-        #for offloading_site in cls._offloading_sites:
-        #    if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-        #        offloading_site.deploy_svr()
 
 
     def update_P_matrix(cls):
@@ -40,7 +35,7 @@ class MdpSvrOde(MdpOde):
                     else:
                         cls._P[i][j][k] = 0.0
 
-                cls.__check_stochasticity_of_P_matrix(i, j)
+                #cls.__check_stochasticity_of_P_matrix(i, j)
 
             print(cls._offloading_sites[i].get_name() + ' updated P matrix: ' + \
                 str(cls._P[i]) + '\n')
@@ -61,31 +56,29 @@ class MdpSvrOde(MdpOde):
                         continue
 
                     print(cls._offloading_sites[j].get_name() + " -> " + cls._offloading_sites[k].get_name())
-                    (uplink_time, execution_time, downlink_time, task_completion_time) = \
-                            cls._OffloadingDecisionEngine__compute_complete_task_time_completion(task, \
+                    task_rsp_time = cls._OffloadingDecisionEngine__compute_complete_task_time_completion(task, \
                             cls._offloading_sites[k], cls._offloading_sites[j])
-                    print("Uplink time: " + str(uplink_time))
-                    print("Execution time: " + str(execution_time))
-                    print("Downlink time: " + str(downlink_time))
-                    print("Task completion time: " + str(task_completion_time)+ "\n")
+                    print("Uplink time: " + str(task_rsp_time.get_uplink()))
+                    print("Execution time: " + str(task_rsp_time.get_execution()))
+                    print("Downlink time: " + str(task_rsp_time.get_downlink()))
+                    print("Task completion time: " + str(task_rsp_time.get_task_overall()) + "\n")
 
                     # compute task energy consumption
-                    (uplink_energy, execution_energy, downlink_energy, task_energy_consumption) = \
-                        cls._OffloadingDecisionEngine__compute_complete_energy_consumption(uplink_time, \
-                        execution_time, downlink_time, cls._offloading_sites[k], cls._offloading_sites[j])
-                    print("Uplink energy: " + str(uplink_energy))
-                    print("Execution energy: " + str(execution_energy))
-                    print("Downlink energy: " + str(downlink_energy))
-                    print("Task energy: " + str(task_energy_consumption)+ "\n")
+                    task_energy_consum = cls._OffloadingDecisionEngine__compute_complete_energy_consumption\
+                            (task_rsp_time, cls._offloading_sites[k], cls._offloading_sites[j])
+                    print("Uplink energy: " + str(task_energy_consum.get_uplink()))
+                    print("Execution energy: " + str(task_energy_consum.get_execution()))
+                    print("Downlink energy: " + str(task_energy_consum.get_downlink()))
+                    print("Task energy: " + str(task_energy_consum.get_task_overall())+ "\n")
 
                     # compute task time completion reward
                     task_time_completion_reward = cls._OffloadingDecisionEngine__compute_task_time_completion_reward\
-                            (task_completion_time)
+                            (task_rsp_time.get_task_overall())
                     print("Task time completion reward: " + str(task_time_completion_reward))
 
                     # compute task energy reward
                     task_energy_consumption_reward = cls._OffloadingDecisionEngine__compute_task_energy_consumption_reward\
-                            (task_energy_consumption)
+                            (task_energy_consum.get_task_overall())
                     print("Task energy reward: " + str(task_energy_consumption_reward))
 
                     # compute task overall reward
@@ -93,18 +86,18 @@ class MdpSvrOde(MdpOde):
                             (task_time_completion_reward, task_energy_consumption_reward)
                     print("Task overall reward: " + str(task_overall_reward)+ "\n")
 
-                    if task_completion_time < 0 or downlink_time < 0 or execution_time < 0 or uplink_time < 0 \
-                            or task_energy_consumption < 0 or task_time_completion_reward < 0 or \
+                    if task_rsp_time.get_task_overall() < 0 or task_rsp_time.get_downlink() < 0 or \
+                            task_rsp_time.get_execution() < 0 or task_rsp_time.get_uplink() < 0 \
+                            or task_energy_consum.get_task_overall() < 0 or task_time_completion_reward < 0 or \
                             task_energy_consumption_reward < 0 or task_overall_reward < 0:
                         raise ValueError("Some value is negative, leading to negative rewards!")
 
                     cls._R[i][j][k] = round(task_overall_reward, 3)
-                    cls._response_time_matrix[i][j][k] = round(task_completion_time, 3)
+                    cls._response_time_matrix[i][j][k] = round(task_rsp_time.get_task_overall(), 3)
 
                     print(cls._offloading_sites[i].get_name() + ' updated response time matrix: \n' + \
                        str(cls._response_time_matrix[i]) + '\n')
 
-                print('\nFilename: ' + getframeinfo(currentframe()).filename + ', Line = ' + str(getframeinfo(currentframe()).lineno))
                 print('####################################################################')
                 print('########################## ' + cls._name +' REWARD MATRIX ############################')
                 print('####################################################################\n')

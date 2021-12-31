@@ -49,8 +49,10 @@ class ResourceMonitor:
 
     def get_network_bandwidth (cls, first_site, second_site):
         for _, net_conn in cls._net_conns.iterrows():
-            if (first_site == net_conn['first_site_id'] or first_site == net_conn['second_site_id']) \
-                    and (second_site == net_conn['first_site_id'] or second_site == net_conn['second_site_id']):
+            if (first_site.get_node_type() == net_conn['first_site_id'] or \
+                    first_site.get_node_type() == net_conn['second_site_id']) and\
+                    (second_site.get_node_type() == net_conn['first_site_id'] or \
+                    second_site.get_node_type() == net_conn['second_site_id']):
                 return net_conn['bandwidth']
 
         return 0.0

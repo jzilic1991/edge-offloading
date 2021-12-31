@@ -19,6 +19,7 @@ class BaseOffloadingSite (ABC):
         self._socket_client = None
         self._data_storage_consumption = 0
         self._memory_consumption = 0
+        self._node_type = node_type
             
         self._off_site_code = Util.determine_off_site_code (node_type)
         (self._name, self._off_action) = Util.determine_name_and_action (name, self._off_site_code)
@@ -41,10 +42,22 @@ class BaseOffloadingSite (ABC):
 
     def get_offloading_action_index (cls):
         return cls._off_action
+    
+
+    def get_node_type (cls):
+        return cls._node_type
 
 
     def get_name (cls):
         return cls._name
+
+
+    def get_millions_of_instructions_per_second (cls):
+        return cls._mips
+
+
+    def evaluate_failure_event(cls):
+        cls.__evaluate_failure_test()
 
 
     def check_validity_of_deployment(cls, task):

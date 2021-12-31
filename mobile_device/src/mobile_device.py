@@ -1,6 +1,6 @@
 import datetime
 
-from utilities import Util, OffloadingSiteCode, OffloadingActions, ExecutionErrorCode
+from utilities import Util, NodeType, OffloadingSiteCode, OffloadingActions, ExecutionErrorCode
 from resource_monitor import ResourceMonitor
 from mob_app_profiler import MobileAppProfiler
 from mdp_svr_ode import MdpSvrOde
@@ -44,6 +44,7 @@ class MobileDevice:
         self._name = "MOBILE_DEVICE"
         self._offloading_site_code = OffloadingSiteCode.MOBILE_DEVICE
         self._offloading_action_index = OffloadingActions.MOBILE_DEVICE
+        self._node_type = NodeType.MOBILE
         self._discrete_epoch_counter = 0
         self._energy_supply_budget = 34200
         self._mobile_app_profiler = MobileAppProfiler ()
@@ -58,6 +59,10 @@ class MobileDevice:
 
     def get_name (cls):
         return cls._name
+
+
+    def get_node_type (cls):
+        return cls._node_type
     
     
     def get_offloading_action_index (cls):
@@ -195,7 +200,7 @@ class MobileDevice:
 
         print('##############################################################')
         print('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
-        print('################## ' + app_name + ' ###########################################')
+        # print('################## ' + app_name + ' ###########################################')
         print('##############################################################\n')
         print("Time mean: " + str(statistics.get_time_completion_mean()) + ' s')
         print("Time variance: " + str(statistics.get_time_completion_var()) + ' s\n')
@@ -203,8 +208,8 @@ class MobileDevice:
         print("Battery lifetime variance: " + str(statistics.get_energy_consumption_var()) + '%\n')
         print("Offloading failure rate mean: " + str(statistics.get_failure_rates_mean()) + ' failures')
         print("Offloading failure rate variance: " + str(statistics.get_failure_rates_var()) + ' failures\n')
-        print("Network bandwidth consumption mean: " + str(statistics.get_bandwidth_consumption_mean()) + " kbps")
-        print("Network bandwidth consumption variance: " + str(statistics.get_bandwidth_consumption_var()) + " kbps\n")
+        # print("Network bandwidth consumption mean: " + str(statistics.get_bandwidth_consumption_mean()) + " kbps")
+        # print("Network bandwidth consumption variance: " + str(statistics.get_bandwidth_consumption_var()) + " kbps\n")
         print("Service availability rate mean: " + str(statistics.get_service_avail_mean()) + "%")
         print("Service availability rate variance: " + str(statistics.get_service_avail_var()) + "%\n")
         print("Offloading distribution: " + \
@@ -282,7 +287,7 @@ class MobileDevice:
         edge_reg_server__mobild_device__net_lat = Util.get_network_latency(edge_reg_server, mobile_device)
 
 
-        cls._network = {
+        return {
             cloud_dc.get_name(): [(edge_db_server.get_name(), cloud_dc__edge_db_server__net_lat, \
                     cls._res_monitor.get_network_bandwidth(cloud_dc, edge_db_server)), \
                     (edge_comp_server.get_name(), cloud_dc__edge_comp_server__net_lat, \
