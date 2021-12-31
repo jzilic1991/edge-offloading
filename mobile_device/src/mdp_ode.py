@@ -8,6 +8,7 @@ from ode import OffloadingDecisionEngine
 # from offloading_site import OffloadingSite
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OffloadingActions, ResponseTime, EnergyConsum
 from task import Task
+from logger import Logger
 
 
 class MdpOde(OffloadingDecisionEngine):
@@ -47,14 +48,15 @@ class MdpOde(OffloadingDecisionEngine):
                 if not candidate_node.check_validity_of_deployment(task):
                     raise ValueError(candidate_node.get_name() + " does not have validity for task deployment!")
 
-                print (cls._previous_node.get_name() + " -> " + candidate_node.get_name())
+                Logger.w ('\n\n\n\n\n' + cls._previous_node.get_name() + " -> " + candidate_node.get_name())
+                Logger.w ('Offloading task ' + task.get_name() + ' (off = ' + str(task.is_offloadable()) + ')\n')
                 (task_rsp_time, task_energy_consum) = cls.__compute_objectives (task, cls._previous_node, candidate_node)
                 task_completion_time_tmp = task_rsp_time.get_task_overall()
                 task_energy_consumption_tmp = task_energy_consum.get_task_overall()
     
                 # if task deployment on offloading site is valid, then task is going to be executed
                 if not candidate_node.execute(task):
-                    print("Failure occurs on node " + candidate_node.get_name())
+                    Logger.w("Failure occurs on node " + candidate_node.get_name())
                     validity_vector = cls.recovery_action(validity_vector, candidate_node.get_offloading_action_index())
                     # cls._statistics.add_offload_fail(candidate_node.get_name())
                     task_failures += 1
@@ -85,9 +87,10 @@ class MdpOde(OffloadingDecisionEngine):
                 task_completion_time_array += (task_completion_time,)
                 task_energy_consumption = round(task_energy_consumption + task_energy_consumption_tmp, 3)
                 task_energy_consumption_array += (task_energy_consumption,)
-                        
-                print("Complete task completion time: " + str(task_completion_time) + " s")
-                print("Complete task energy: " + str(task_energy_consumption) + " J")
+                
+                Logger.w ('Task ' + task.get_name() + ' is offloaded on ' + candidate_node.get_name())
+                Logger.w("Complete task completion time: " + str(task_completion_time) + " s")
+                Logger.w("Complete task energy: " + str(task_energy_consumption) + " J")
 
                 task_time_completion_reward = cls._OffloadingDecisionEngine__compute_task_time_completion_reward\
                         (task_completion_time)
@@ -95,11 +98,11 @@ class MdpOde(OffloadingDecisionEngine):
                         (task_energy_consumption)
                 task_overall_reward_tmp = round(cls._OffloadingDecisionEngine__compute_overall_task_reward\
                         (task_time_completion_reward, task_energy_consumption_reward), 3)
-                print ("Reward: " + str(task_overall_reward_tmp) + '\n')
+                Logger.w("Reward: " + str(task_overall_reward_tmp) + '\n')
     
                 task_overall_reward = task_overall_reward + task_overall_reward_tmp
                 task_overall_reward_array += (task_overall_reward),
-                print("Complete task reward: " + str(task_overall_reward) + "\n")
+                Logger.w("Complete task reward: " + str(task_overall_reward) + "\n")
 
                 break
 
@@ -137,7 +140,7 @@ class MdpOde(OffloadingDecisionEngine):
         cls._response_time_matrix = np.array([[[0.0 for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS)] \
                 for i in range(len(cls._offloading_sites))] for i in range(len(cls._offloading_sites))])
 
-        print ("Offloading sites: " + str(cls._offloading_sites))
+        # print ("Offloading sites: " + str(cls._offloading_sites))
 
         if (cls._P.size / cls._P[0].size) != OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS:
             raise ValueError("Size of P matrix is not correct! It should contain " + \
@@ -158,8 +161,8 @@ class MdpOde(OffloadingDecisionEngine):
         cls._discount_factor = 0.96
         cls._policy = ()
         
-        print ('Init P matrix = ' + str(cls._P))
-        print ('Init R matrix = ' + str(cls._R))
+        #print ('Init P matrix = ' + str(cls._P))
+        #print ('Init R matrix = ' + str(cls._R))
 
 
     def __offloading_decision(cls, task, validity_vector):
@@ -174,8 +177,8 @@ class MdpOde(OffloadingDecisionEngine):
             offloading_site_index = cls._current_node.get_offloading_action_index()
     
             cls._policy = cls.__MDP_run(task, validity_vector)
-            print ("Current node: " + cls._current_node.get_name())
-            print ("Current offloading policy: " + str(cls._policy))
+            Logger.w("Current node: " + cls._current_node.get_name())
+            Logger.w("Current offloading policy: " + str(cls._policy))
 
             if cls._policy[offloading_site_index] == OffloadingActions.MOBILE_DEVICE:
                 return (cls._offloading_sites[cls._mobile_device.get_offloading_action_index()], validity_vector)
@@ -184,8 +187,8 @@ class MdpOde(OffloadingDecisionEngine):
             action_index = cls._policy[offloading_site_index]
             source_node_index = cls._current_node.get_offloading_action_index()
             P_matrix_columns = len(cls._P[action_index][source_node_index])
-            print("P matrix columns [action = " + str(action_index) + "][source_node = " + \
-                str(source_node_index) + "] = " + str(cls._P[action_index][source_node_index]))
+            # print("P matrix columns [action = " + str(action_index) + "][source_node = " + \
+            #    str(source_node_index) + "] = " + str(cls._P[action_index][source_node_index]))
 
             for i in range(P_matrix_columns):
                 if cls._P[action_index][source_node_index][i] != 0.0 and i != cls._mobile_device.get_offloading_action_index():
@@ -216,17 +219,17 @@ class MdpOde(OffloadingDecisionEngine):
     def __compute_objectives (cls, task, previous_node, candidate_node):
         task_rsp_time = cls._OffloadingDecisionEngine__compute_complete_task_time_completion\
             (task, candidate_node, previous_node)
-        print("Uplink time: " + str(task_rsp_time.get_uplink()) + "s")
-        print("Execution time: " + str(task_rsp_time.get_execution()) + "s")
-        print("Downlink time: " + str(task_rsp_time.get_downlink()) + "s")
-        print("Task completion time: " + str(task_rsp_time.get_task_overall()) + "s\n")
+        Logger.w("Uplink time: " + str(task_rsp_time.get_uplink()) + "s")
+        Logger.w("Execution time: " + str(task_rsp_time.get_execution()) + "s")
+        Logger.w("Downlink time: " + str(task_rsp_time.get_downlink()) + "s")
+        Logger.w("Task completion time: " + str(task_rsp_time.get_task_overall()) + "s\n")
 
         task_energy_consum = cls._OffloadingDecisionEngine__compute_complete_energy_consumption\
             (task_rsp_time, candidate_node, previous_node)
-        print("Uplink energy: " + str(task_energy_consum.get_uplink()) + "J")
-        print("Execution/Idle energy: " + str(task_energy_consum.get_execution()) + "J")
-        print("Downlink energy: " + str(task_energy_consum.get_downlink()) + "J")
-        print("Task energy: " + str(task_energy_consum.get_task_overall()) + "J")
+        Logger.w("Uplink energy: " + str(task_energy_consum.get_uplink()) + "J")
+        Logger.w("Execution/Idle energy: " + str(task_energy_consum.get_execution()) + "J")
+        Logger.w("Downlink energy: " + str(task_energy_consum.get_downlink()) + "J")
+        Logger.w("Task energy: " + str(task_energy_consum.get_task_overall()) + "J")
 
         return (task_rsp_time, task_energy_consum)
 
@@ -235,8 +238,8 @@ class MdpOde(OffloadingDecisionEngine):
         cls.update_P_matrix()
         cls.update_R_matrix(task, validity_vector)
 
-        print ("P = " + str(cls._P))
-        print ("R = " + str(cls._R))
+        # Logger.w("P = " + str(cls._P))
+        # Logger.w("R = " + str(cls._R))
 
         PIA = mdptoolbox.mdp.PolicyIteration(cls._P, cls._R, cls._discount_factor)
         PIA.verbose = False

@@ -12,7 +12,7 @@ from mobile_device import MobileDevice
 
 def get_md_data ():
     con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
-    print("Database opened successfully", file = sys.stdout)
+    # print("Database opened successfully", file = sys.stdout)
     
     query = "SELECT * FROM offloading_sites WHERE id = \'Mobile Device\'"
     cur = con.cursor()
@@ -25,7 +25,7 @@ def get_md_data ():
         col_names.append(elt[0])
 
     df = pd.DataFrame(data, columns = col_names)
-    print (df, file = sys.stdout)
+    # print (df, file = sys.stdout)
 
     return df
 

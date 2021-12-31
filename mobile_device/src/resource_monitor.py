@@ -80,7 +80,7 @@ class ResourceMonitor:
 
     def __get_net_conn_data (cls):
         con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
-        print("Database opened successfully", file = sys.stdout)
+        # print("Database opened successfully", file = sys.stdout)
     
         query = "SELECT * FROM network_connections"
         cur = con.cursor()
@@ -93,14 +93,14 @@ class ResourceMonitor:
             col_names.append(elt[0])
 
         df = pd.DataFrame(data, columns = col_names)
-        print (df, file = sys.stdout)
+        # print (df, file = sys.stdout)
 
         return df
 
 
     def __get_off_site_data (cls):
         con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
-        print("Database opened successfully", file = sys.stdout)
+        # print("Database opened successfully", file = sys.stdout)
     
         query = "SELECT * FROM offloading_sites WHERE id != \'Mobile Device\'"
         cur = con.cursor()
@@ -113,7 +113,7 @@ class ResourceMonitor:
             col_names.append(elt[0])
 
         df = pd.DataFrame(data, columns = col_names)
-        print (df, file = sys.stdout)
+        # print (df, file = sys.stdout)
 
         for i, data in df.iterrows():
             if str(data['id']) == 'Edge Database Server':

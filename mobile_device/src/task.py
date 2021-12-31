@@ -1,6 +1,7 @@
 import sys
 
 from utilities import ExecutionErrorCode
+from logger import Logger
 
 
 class Task:
@@ -22,7 +23,7 @@ class Task:
         self._policy = ()
         self._application_id = application_id
 
-        self.print_system()
+        # self.print_system()
 
     def get_application_id (cls):
         return cls._application_id
@@ -90,12 +91,12 @@ class Task:
 
     
     def print_system(cls):
-        print ("######### " + cls._name + " SYSTEM CONFIGURATION #########", file = sys.stdout)
-        print ("CPU: " + str(cls._millions_of_instructions) + " M cycles", file = sys.stdout)
-        print ("Memory: " + str(cls._memory) + " Gb", file = sys.stdout)
-        print ("Input data: " + str(cls._data_in) + " Kb", file = sys.stdout)
-        print ("Output data: " + str(cls._data_out) + " Kb", file = sys.stdout)
-        print ("Offloadable: Yes\n" if cls._off else "Offloadable: No\n", file = sys.stdout)
+        Logger.w("######### " + cls._name + " SYSTEM CONFIGURATION #########")
+        Logger.w("CPU: " + str(cls._millions_of_instructions) + " M cycles")
+        Logger.w("Memory: " + str(cls._memory) + " Gb")
+        Logger.w("Input data: " + str(cls._data_in) + " Kb")
+        Logger.w("Output data: " + str(cls._data_out) + " Kb")
+        Logger.w("Offloadable: Yes\n" if cls._off else "Offloadable: No\n")
         
 
     def remove_in_edge(cls, executed_task):

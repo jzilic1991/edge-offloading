@@ -28,7 +28,7 @@ class MobileAppProfiler:
 
     def __get_query_results (cls, query):
         con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
-        print("Database opened successfully", file = sys.stdout)
+        # print("Database opened successfully", file = sys.stdout)
     
         cur = con.cursor()
         cur.execute(query)
@@ -40,7 +40,7 @@ class MobileAppProfiler:
             col_names.append(elt[0])
         
         df = pd.DataFrame (data, columns = col_names)
-        print (df, file = sys.stdout)
+        # print (df, file = sys.stdout)
 
         return df
     

@@ -119,7 +119,7 @@ class OffloadingDecisionEngine(ABC):
     def __compute_complete_task_time_completion(cls, task, current_node, previous_node):
         if current_node.get_name() == previous_node.get_name():
             execution_time = cls.__compute_execution_time(task, current_node)
-            print ("Computed execution time is " + str(execution_time))
+            # print ("Computed execution time is " + str(execution_time))
             return ResponseTime (execution_time, 0, 0, execution_time)
             # return (0, execution_time, 0, execution_time)
 

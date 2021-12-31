@@ -6,6 +6,7 @@ from mob_app_profiler import MobileAppProfiler
 from mdp_svr_ode import MdpSvrOde
 from statistics import Statistics
 from task import Task
+from logger import Logger
 
 # constants
 GIGABYTES = 1000000
@@ -132,7 +133,6 @@ class MobileDevice:
 
             # reset test data after each simulation sampling to start from the beginning
             cls._res_monitor.reset_test_data ()
-            cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
 
             # simulate application executions   
             for j in range(executions):
@@ -141,6 +141,10 @@ class MobileDevice:
 
                 if current_progress != previous_progress and (current_progress % PROGRESS_REPORT_INTERVAL == 0):
                     print(str(current_progress) + "% - " + str(datetime.datetime.utcnow()))
+
+                cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
+                Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
+                cls._mobile_app.print_entire_config()
 
                 cls._mobile_app.run()
                 ready_tasks = cls._mobile_app.get_ready_tasks()
@@ -151,35 +155,35 @@ class MobileDevice:
                     (task_completion_time, task_energy_consumption, task_overall_reward, task_failure_time_cost,\
                             task_failure_energy_cost, task_failures) = cls._ode.offload(ready_tasks)
                     offloading_attempts += task_failures + len(ready_tasks)
-                    print ("Failed offloading attemps: " + str(task_failures))
-                    print ("Successful offloading attempts:" + str(len(ready_tasks)))
-                    print ("Current offloading attempts: " + str(offloading_attempts))
+                    # print ("Failed offloading attemps: " + str(task_failures))
+                    # print ("Successful offloading attempts:" + str(len(ready_tasks)))
+                    # print ("Current offloading attempts: " + str(offloading_attempts))
                     ready_tasks = cls._mobile_app.get_ready_tasks()
 
                     application_time_completion = round(application_time_completion + task_completion_time, 3)
                     application_fail_time_completion += round(task_failure_time_cost, 3)
                     single_app_exe_task_comp = round(single_app_exe_task_comp + task_completion_time, 3)
-                    print ("Current application runtime: " + str(application_time_completion) + " s")
+                    Logger.w ("Current application runtime: " + str(application_time_completion) + " s")
 
                     application_energy_consumption = round(application_energy_consumption + task_energy_consumption, 3)
                     application_fail_energy_consumption = round(application_fail_energy_consumption + task_failure_energy_cost, 3)
                     single_app_exe_energy_consum = round(single_app_exe_energy_consum + task_energy_consumption, 3)
-                    print ("Current application energy consumption: " + str(application_energy_consumption) + " J")
+                    Logger.w ("Current application energy consumption: " + str(application_energy_consumption) + " J")
 
                     application_failures += task_failures
-                    print ("Current application failures: " + str(application_failures) + '\n')
+                    Logger.w ("Current application failures: " + str(application_failures) + '\n')
 
                     application_overall_rewards = round(application_overall_rewards + task_overall_reward, 3)
                     # curr_bandwidth_consumption += epoch_bandwidth_consumption
 
-                    print ("Current application overall rewards: " + str(application_overall_rewards))
+                    # print ("Current application overall rewards: " + str(application_overall_rewards))
                     # print ("Current bandwidth consumption: " + str(curr_bandwidth_consumption) + ' kbps\n')
-                    print ('Task application runtime: ' + str(task_completion_time) + 's')
-                    print ('Task energy consumption: ' + str(task_energy_consumption) + 'J')
-                    print ('Task rewards: ' + str(task_overall_reward))
-                    print ('Task failure time cost:' + str(task_failure_time_cost) + 's')
+                    # print ('Task application runtime: ' + str(task_completion_time) + 's')
+                    # print ('Task energy consumption: ' + str(task_energy_consumption) + 'J')
+                    # print ('Task rewards: ' + str(task_overall_reward))
+                    # print ('Task failure time cost:' + str(task_failure_time_cost) + 's')
 
-                    cls._mobile_app.print_task_exe_status()
+                    # cls._mobile_app.print_task_exe_status()
 
                 # cls.__reset_application()
                 statistics.add_time_comp_single_app_exe(single_app_exe_task_comp)
