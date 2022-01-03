@@ -4,7 +4,6 @@ from utilities import Util, NodeType, OffloadingSiteCode, OffloadingActions, Exe
 from resource_monitor import ResourceMonitor
 from mob_app_profiler import MobileAppProfiler
 from mdp_svr_ode import MdpSvrOde
-from statistics import Statistics
 from task import Task
 from logger import Logger
 
@@ -117,7 +116,7 @@ class MobileDevice:
         
         previous_progress = 0
         current_progress = 0
-        statistics = Statistics (cls._res_monitor.get_off_sites ())
+        # cls._ode.get_statistics() = Statistics (cls._res_monitor.get_off_sites ())
 
         print ("**************** PROGRESS with " + cls._ode.get_name() + "****************")
         print (str(previous_progress) + "% - " + str(datetime.datetime.utcnow()))
@@ -136,6 +135,8 @@ class MobileDevice:
 
             # simulate application executions   
             for j in range(executions):
+                single_app_exe_task_comp = 0
+                single_app_exe_energy_consum = 0
                 previous_progress = current_progress
                 current_progress = round((j + (i * executions)) / (samplings * executions) * 100)
 
@@ -145,11 +146,8 @@ class MobileDevice:
                 cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
                 Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
                 cls._mobile_app.print_entire_config()
-
                 cls._mobile_app.run()
                 ready_tasks = cls._mobile_app.get_ready_tasks()
-                single_app_exe_task_comp = 0
-                single_app_exe_energy_consum = 0
                 
                 while ready_tasks:
                     (task_completion_time, task_energy_consumption, task_overall_reward, task_failure_time_cost,\
@@ -186,42 +184,42 @@ class MobileDevice:
                     # cls._mobile_app.print_task_exe_status()
 
                 # cls.__reset_application()
-                statistics.add_time_comp_single_app_exe(single_app_exe_task_comp)
-                statistics.add_energy_consum_single_app_exe(single_app_exe_energy_consum)
+                cls._ode.get_statistics().add_time_comp_single_app_exe(single_app_exe_task_comp)
+                cls._ode.get_statistics().add_energy_consum_single_app_exe(single_app_exe_energy_consum)
                 cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
                 
-            statistics.add_time_comp(application_time_completion)
+            cls._ode.get_statistics().add_time_comp(application_time_completion)
                     
             battery_lifetime = (cls._energy_supply_budget - application_energy_consumption) / cls._energy_supply_budget * 100
-            statistics.add_energy_eff(battery_lifetime)
-            statistics.add_reward(application_overall_rewards)
-            statistics.add_failure_rate(application_failures)
-            statistics.add_service_avail((offloading_attempts - application_failures) / offloading_attempts * 100)
-            # statistics.add_bandwidth_consumption(curr_bandwidth_consumption)
+            cls._ode.get_statistics().add_energy_eff(battery_lifetime)
+            cls._ode.get_statistics().add_reward(application_overall_rewards)
+            cls._ode.get_statistics().add_failure_rate(application_failures)
+            cls._ode.get_statistics().add_service_avail((offloading_attempts - application_failures) / offloading_attempts * 100)
+            # cls._ode.get_statistics().add_bandwidth_consumption(curr_bandwidth_consumption)
             # cls.__reset_offloading_site_discrete_epoch_counters()
 
-        cls._stats_hist.append (statistics)
+        cls._stats_hist.append (cls._ode.get_statistics())
 
         print('##############################################################')
         print('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
         # print('################## ' + app_name + ' ###########################################')
         print('##############################################################\n')
-        print("Time mean: " + str(statistics.get_time_completion_mean()) + ' s')
-        print("Time variance: " + str(statistics.get_time_completion_var()) + ' s\n')
-        print("Battery lifetime mean: " + str(statistics.get_energy_consumption_mean()) + '%')
-        print("Battery lifetime variance: " + str(statistics.get_energy_consumption_var()) + '%\n')
-        print("Offloading failure rate mean: " + str(statistics.get_failure_rates_mean()) + ' failures')
-        print("Offloading failure rate variance: " + str(statistics.get_failure_rates_var()) + ' failures\n')
-        # print("Network bandwidth consumption mean: " + str(statistics.get_bandwidth_consumption_mean()) + " kbps")
-        # print("Network bandwidth consumption variance: " + str(statistics.get_bandwidth_consumption_var()) + " kbps\n")
-        print("Service availability rate mean: " + str(statistics.get_service_avail_mean()) + "%")
-        print("Service availability rate variance: " + str(statistics.get_service_avail_var()) + "%\n")
+        print("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
+        print("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
+        print("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
+        print("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
+        print("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
+        print("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
+        # print("Network bandwidth consumption mean: " + str(cls._ode.get_statistics().get_bandwidth_consumption_mean()) + " kbps")
+        # print("Network bandwidth consumption variance: " + str(cls._ode.get_statistics().get_bandwidth_consumption_var()) + " kbps\n")
+        print("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
+        print("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
         print("Offloading distribution: " + \
-            str(statistics.get_offloading_distribution()))
+            str(cls._ode.get_statistics().get_offloading_distribution()))
         print("Offloading distribution relative: " + \
-            str(statistics.get_offloading_distribution_relative()))
+            str(cls._ode.get_statistics().get_offloading_distribution_relative()))
         print("Num of offloadings: " + \
-            str(statistics.get_num_of_offloadings()) + '\n')
+            str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
 
         # text = ""
         # all_failures = 0
@@ -241,11 +239,11 @@ class MobileDevice:
         # print("Relative failure frequency occurence: " + text)
         # print("Num of failures: " + str(all_failures) + '\n')
         print("Offloading failure distribution: " + \
-            str(statistics.get_offloading_failure_frequencies()))
+            str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
         print("Offloading failure frequency relative: " + \
-            str(statistics.get_offloading_failure_relative()))
+            str(cls._ode.get_statistics().get_offloading_failure_relative()))
         print("Num of offloading failures: " + \
-            str(statistics.get_num_of_offloading_failures()) + '\n')
+            str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
         # print('Offloading site datasets:')
         # for edge in cls._edge_servers:
         #    print(edge.get_name() + ' ' + str(edge.get_node_candidate()))

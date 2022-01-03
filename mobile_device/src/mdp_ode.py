@@ -58,7 +58,7 @@ class MdpOde(OffloadingDecisionEngine):
                 if not candidate_node.execute(task):
                     Logger.w("Failure occurs on node " + candidate_node.get_name())
                     validity_vector = cls.recovery_action(validity_vector, candidate_node.get_offloading_action_index())
-                    # cls._statistics.add_offload_fail(candidate_node.get_name())
+                    cls._statistics.add_offload_fail(candidate_node.get_name())
                     task_failures += 1
 
                     (cost_rsp_time, cost_energy_consum, cost_reward) = \
@@ -107,7 +107,7 @@ class MdpOde(OffloadingDecisionEngine):
                 break
 
             cls._current_node = candidate_node
-            # cls._statistics.add_offload(cls._current_node.get_name())
+            cls._statistics.add_offload(cls._current_node.get_name())
 
             # task.save_offloading_site(cls._current_node.get_name())
             # task.save_offloading_policy(cls._policy)
@@ -161,8 +161,8 @@ class MdpOde(OffloadingDecisionEngine):
         cls._discount_factor = 0.96
         cls._policy = ()
         
-        #print ('Init P matrix = ' + str(cls._P))
-        #print ('Init R matrix = ' + str(cls._R))
+        # print ('Init P matrix = ' + str(cls._P))
+        # print ('Init R matrix = ' + str(cls._R))
 
 
     def __offloading_decision(cls, task, validity_vector):
