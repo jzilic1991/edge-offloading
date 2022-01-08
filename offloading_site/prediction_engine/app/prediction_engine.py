@@ -51,7 +51,7 @@ class PredictionEngine:
         cls.__cache_avail_data (cls._node_candidate, cls._y_test, cls._predicted)
         # cls.__plot_results (cls._x_test, cls._y_test, cls._predicted, 'Test result')
         
-        return cls._predicted.tolist()
+        return {'actual': cls._y_test.tolist() ,'predicted': cls._predicted.tolist()}
 
     
     def check_cached_files (cls, node_candidate):
