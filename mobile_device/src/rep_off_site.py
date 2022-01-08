@@ -5,7 +5,7 @@ from pathlib import Path
 from kivy.network.urlrequest import UrlRequest
 
 from base_off_site import BaseOffloadingSite
-from utilities import OffloadingSiteCode, ExecutionErrorCode
+from utilities import OffloadingSiteCode, ExecutionErrorCode, ReqStateMachine
 from task import Task
 
 # constants
@@ -18,8 +18,10 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         self._url_svc = url_svc
         self._node_candidates = self.__parse_node_candidate_list ()
         self._iter_index = -1
-        self._avail_data = dict ('predicted': [], 'actual': [])
-        self._used_data = dict ('predicted': [], 'actual': [])
+        self._avail_data = {'predicted': [], 'actual': []}
+        self._used_data = {'predicted': [], 'actual': []}
+        self._req_state = ReqStateMachine.IDLE
+        self._http_req = None
 
 
     def get_url_svc (cls):
@@ -35,16 +37,17 @@ class RepresentOffloadingSite (BaseOffloadingSite):
     
         if Path(filepath).exists():
             cls._avail_data = cls.__read_avail_dist (filepath)
+            cls.__fill_used_data()
         
         else:
-            cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
+            cls.__req_avail_dist (filepath, cls._node_candidates[cls._iter_index])
 
-        cls._used_data = cls._avail_data
+        # cls.__fill_used_data()
         
 
     def get_fail_trans_prob (cls):
         if len(cls._used_data['predicted']) == 0:
-            cls._used_data = cls._avail_data
+            cls.__fill_used_data()
         
         avail_prob = cls._used_data['predicted'][0]
 
@@ -65,9 +68,13 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         return 0.1
 
 
+    def get_req_state (cls):
+        return cls._req_state
+
+
     def next_avail_sample (cls):
         if len(cls._used_data['predicted']) <= 1:
-            cls._used_data = cls._avail_data
+            cls.__fill_used_data()
             return
         
         del cls._used_data['predicted'][0]
@@ -75,17 +82,18 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
     def reset_test_data (cls):
         if len(cls._avail_data['predicted']) != 0:
-            cls._used_data = cls._avail_data
+            cls.__fill_used_data()
             return
         
         filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
             str(cls._node_candidates[cls._iter_index][1]) + '.json'
         
         if not Path(filepath).exists():
-            cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
+            cls.__req_avail_dist (filepath, cls._node_candidates[cls._iter_index])
         
-        cls._avail_data = cls.__read_avail_dist (filepath)
-        cls._used_data = cls._avail_data        
+        else: 
+            cls._avail_data = cls.__read_avail_dist (filepath)
+            cls.__fill_used_data()
 
 
     def execute (cls, task):
@@ -131,6 +139,17 @@ class RepresentOffloadingSite (BaseOffloadingSite):
                     "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())
 
 
+    def __fill_used_data (cls):
+        cls._used_data['actual'] = []
+        cls._used_data['predicted'] = []
+        
+        for actual in cls._avail_data['actual']:
+            cls._used_data['actual'].append(actual)
+
+        for predicted in cls._avail_data['predicted']:
+            cls._used_data['predicted'].append(predicted)
+
+
     def __parse_node_candidate_list (cls):
         node_candidates = list ()
         filepath = cls.__deter_cand_list_file_path ()
@@ -166,19 +185,28 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
 
         with open (filepath, 'r') as jsonfile:
-           avail_data  = json.load(jsonfile)
+           avail_data = json.load(jsonfile)
         
         return avail_data
 
 
-    def __create_avail_dist_file (cls, filepath, node_candidate):
-        url_path = cls._url_svc + "/get_avail_data?sysid=" + str(node_candidate[0]) + "&nodenum=" + str(node_candidate[1])
-        url_req = UrlRequest (url_path, timeout = 30)
-        url_req.wait()
+    def __req_avail_dist (cls, filepath, node_candidate):
+        url_path = cls._url_svc + "get_avail_data?sysid=" + str(node_candidate[0]) + "&nodenum=" + str(node_candidate[1])
+        print ('Requesting ' + url_path)
+        cls._req_state = ReqStateMachine.ON_REQUEST
+        cls._http_req = UrlRequest (url_path, cls.create_avail_dist_file)
+        cls._http_req.wait()
 
-        avail_data = url_req.result
+
+    def create_avail_dist_file (cls, *args):
+        cls._avail_data = cls._http_req.result
+        filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
+            str(cls._node_candidates[cls._iter_index][1]) + '.json'
 
         print ('Creating availability file ' + filepath)
         
         with open (filepath, 'w') as jsonfile:
-            json.dump(avail_data, jsonfile)
+            json.dump(cls._avail_data, jsonfile)
+
+        cls.__fill_used_data()
+        cls._req_state = ReqStateMachine.IDLE

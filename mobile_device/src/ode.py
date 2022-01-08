@@ -234,7 +234,7 @@ class OffloadingDecisionEngine(ABC):
         elif candidate_node.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE and \
             previous_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
             cost_rsp_time = ResponseTime (0.0, 0.0, time_cost, time_cost)
-            cost_energy_consum = cls.__compute_complete_energy_consumption(cost_rsp_time, 0.0, 0.0, candidate_node, previous_node)
+            cost_energy_consum = cls.__compute_complete_energy_consumption(cost_rsp_time, candidate_node, previous_node)
             task_time_reward = cls.__compute_task_time_completion_reward(cost_rsp_time.get_task_overall())
             task_energy_reward = cls.__compute_task_energy_consumption_reward(cost_energy_consum.get_task_overall())
             cost_rewards = cls.__compute_overall_task_reward(task_time_reward, task_energy_reward)

@@ -4,7 +4,7 @@ import pandas as pd
 from kivy.network.urlrequest import UrlRequest
 
 from rep_off_site import RepresentOffloadingSite
-from utilities import NodeType, OffloadingActions
+from utilities import NodeType, OffloadingActions, ReqStateMachine
 
 
 class ResourceMonitor:
@@ -45,6 +45,7 @@ class ResourceMonitor:
         cls._edge_dat_server.next_node_candidate ()
         cls._edge_comp_server.next_node_candidate ()
         cls._cloud_dc.next_node_candidate ()
+        cls.__are_requests_done ()
 
 
     def reset_test_data (cls):
@@ -52,6 +53,7 @@ class ResourceMonitor:
         cls._edge_dat_server.reset_test_data ()
         cls._edge_comp_server.reset_test_data ()
         cls._cloud_dc.reset_test_data ()
+        cls.__are_requests_done ()
 
 
     def get_network_bandwidth (cls, first_site, second_site):
@@ -83,6 +85,21 @@ class ResourceMonitor:
 
     def get_cloud_dc (cls):
         return cls._cloud_dc
+
+
+    def __are_requests_done (cls):
+        off_sites = [cls._edge_reg_server, cls._edge_dat_server, cls._edge_comp_server, cls._cloud_dc]
+
+        while True:
+            all_positive = True
+            for site in off_sites:
+                if site.get_req_state() != ReqStateMachine.IDLE:
+                    all_positive = False
+                    break
+
+            if all_positive:
+                break
+
 
 
     def __get_net_conn_data (cls):

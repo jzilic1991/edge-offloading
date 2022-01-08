@@ -43,6 +43,10 @@ class Tasks:
     DI, CI, MODERATE = ('DI', 'CI', 'MODERATE')
 
 
+class ReqStateMachine:
+    IDLE, ON_REQUEST = ('IDLE', 'ON_REQUEST')
+
+
 class Objective:
     
     def __init__ (self, execution, downlink, uplink, task_overall):
