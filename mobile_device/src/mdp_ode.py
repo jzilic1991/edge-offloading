@@ -5,10 +5,10 @@ import time
 import numpy as np
 
 from ode import OffloadingDecisionEngine
-# from offloading_site import OffloadingSite
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OffloadingActions, ResponseTime, EnergyConsum
 from task import Task
 from logger import Logger
+from fail_detector import FailureDetector
 
 
 class MdpOde(OffloadingDecisionEngine):
@@ -25,7 +25,8 @@ class MdpOde(OffloadingDecisionEngine):
         task_energy_consumption_array = tuple()
         task_overall_reward_array = tuple()
         validity_vector = [True for i in range(len(cls._offloading_sites))]
-        non_offloadable_flag = False 
+        non_offloadable_flag = False
+        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites)
     
         for task in tasks:
             if task.is_offloadable() and non_offloadable_flag == False:
@@ -53,10 +54,10 @@ class MdpOde(OffloadingDecisionEngine):
                 (task_rsp_time, task_energy_consum) = cls.__compute_objectives (task, cls._previous_node, candidate_node)
                 task_completion_time_tmp = task_rsp_time.get_task_overall()
                 task_energy_consumption_tmp = task_energy_consum.get_task_overall()
-    
+
                 # if task deployment on offloading site is valid, then task is going to be executed
                 if not candidate_node.execute(task):
-                    Logger.w("Failure occurs on node " + candidate_node.get_name())
+                    Logger.w("FAILURE occurs on node " + candidate_node.get_name())
                     validity_vector = cls.recovery_action(validity_vector, candidate_node.get_offloading_action_index())
                     cls._statistics.add_offload_fail(candidate_node.get_name())
                     task_failures += 1

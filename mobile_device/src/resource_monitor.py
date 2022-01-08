@@ -40,6 +40,13 @@ class ResourceMonitor:
         return [cls._edge_reg_server, cls._edge_dat_server, cls._edge_comp_server]
 
 
+    def next_node_candidates (cls):
+        cls._edge_reg_server.next_node_candidate ()
+        cls._edge_dat_server.next_node_candidate ()
+        cls._edge_comp_server.next_node_candidate ()
+        cls._cloud_dc.next_node_candidate ()
+
+
     def reset_test_data (cls):
         cls._edge_reg_server.reset_test_data ()
         cls._edge_dat_server.reset_test_data ()

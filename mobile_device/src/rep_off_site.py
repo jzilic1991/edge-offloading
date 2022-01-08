@@ -18,8 +18,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         self._url_svc = url_svc
         self._node_candidates = self.__parse_node_candidate_list ()
         self._iter_index = -1
-        self._avail_data = list ()
-        self._used_data = list ()
+        self._avail_data = dict ('predicted': [], 'actual': [])
+        self._used_data = dict ('predicted': [], 'actual': [])
 
 
     def get_url_svc (cls):
@@ -43,18 +43,18 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         
 
     def get_fail_trans_prob (cls):
-        if len(cls._used_data) == 0:
+        if len(cls._used_data['predicted']) == 0:
             cls._used_data = cls._avail_data
         
-        fail_prob = cls._used_data['predicted'][0]
+        avail_prob = cls._used_data['predicted'][0]
 
-        if fail_prob > 1:
-            fail_prob = 1
+        if avail_prob > 1:
+            avail_prob = 1
         
-        if fail_prob >= 0.95 and cls._off_site_code != OffloadingSiteCode.CLOUD_DATA_CENTER:
+        if avail_prob >= 0.95 and cls._off_site_code != OffloadingSiteCode.CLOUD_DATA_CENTER:
             return 0
 
-        return (1 - fail_prob)
+        return (1 - avail_prob)
 
     
     def get_server_fail_prob (cls):
@@ -65,13 +65,21 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         return 0.1
 
 
+    def next_avail_sample (cls):
+        if len(cls._used_data['predicted']) <= 1:
+            cls._used_data = cls._avail_data
+            return
+        
+        del cls._used_data['predicted'][0]
+
+
     def reset_test_data (cls):
-        if len(cls._avail_data) != 0:
+        if len(cls._avail_data['predicted']) != 0:
             cls._used_data = cls._avail_data
             return
         
         filepath = 'cached_avail_data/' + str(cls._node_candidates[cls._iter_index][0]) + '_' +\
-            str(cls._node_candidates[cls._iter_index][1]) + '.txt'
+            str(cls._node_candidates[cls._iter_index][1]) + '.json'
         
         if not Path(filepath).exists():
             cls._avail_data = cls.__create_avail_dist_file (filepath, cls._node_candidates[cls._iter_index])
@@ -86,16 +94,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
         offloadable = task.is_offloadable()
 
-        if not offloadable:
+        if not offloadable or cls._fail_event:
             return ExecutionErrorCode.EXE_NOK
-
-        #if cls._failure_event_mode == FailureEventMode.POISSON_FAILURE:
-        #    if cls._failure_event <= cls._discrete_epoch_counter:
-        #        return ExecutionErrorCode.EXE_NOK
-
-        #elif cls._failure_event_mode == FailureEventMode.TEST_DATASET_FAILURE:
-        #    if cls._failure_event_flag:
-        #        return ExecutionErrorCode.EXE_NOK
     
         if not task.execute():
             raise ValueError("Task execution operation is not executed properly! Please check the code of execute() method in Task class!")
@@ -161,7 +161,7 @@ class RepresentOffloadingSite (BaseOffloadingSite):
     
 
     def __read_avail_dist (cls, filepath):
-        avail_data = list ()
+        avail_data = dict ()
         
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
 

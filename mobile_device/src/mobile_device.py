@@ -75,6 +75,14 @@ class MobileDevice:
 
     def get_fail_trans_prob (cls):
         return 0.0
+
+
+    def next_node_candidates (cls):
+        cls._res_monitor.next_node_candidates()
+
+
+    def update_fail_event (cls, event):
+        pass
     
     
     def execute(cls, task):
@@ -144,9 +152,10 @@ class MobileDevice:
                     print(str(current_progress) + "% - " + str(datetime.datetime.utcnow()))
 
                 cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
-                Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
                 cls._mobile_app.print_entire_config()
                 cls._mobile_app.run()
+               
+                Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
                 ready_tasks = cls._mobile_app.get_ready_tasks()
                 
                 while ready_tasks:
@@ -172,6 +181,8 @@ class MobileDevice:
                     Logger.w ("Current application failures: " + str(application_failures) + '\n')
 
                     application_overall_rewards = round(application_overall_rewards + task_overall_reward, 3)
+                    
+                    cls._ode.count_time_epoch()
                     # curr_bandwidth_consumption += epoch_bandwidth_consumption
 
                     # print ("Current application overall rewards: " + str(application_overall_rewards))
@@ -186,7 +197,6 @@ class MobileDevice:
                 # cls.__reset_application()
                 cls._ode.get_statistics().add_time_comp_single_app_exe(single_app_exe_task_comp)
                 cls._ode.get_statistics().add_energy_consum_single_app_exe(single_app_exe_energy_consum)
-                cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
                 
             cls._ode.get_statistics().add_time_comp(application_time_completion)
                     

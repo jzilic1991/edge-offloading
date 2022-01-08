@@ -37,7 +37,7 @@ class OffloadingDecisionEngine(ABC):
         self._edge_servers = edge_servers
         self._cloud_dc = cloud_dc
         self._network = network
-        self._offloading_sites = [None for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS)] 
+        self._offloading_sites = [None for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS)]
         self._app_name = ""
         self._w_f_time_completion = 0.5
         self._w_f_energy_consumption = 0.5
@@ -65,6 +65,13 @@ class OffloadingDecisionEngine(ABC):
         return cls._statistics
 
 
+    def count_time_epoch (cls):
+        for edge in cls._edge_servers:
+            edge.next_avail_sample ()
+
+        cls._cloud_dc.next_avail_sample ()
+
+
     @abstractmethod
     def initialize_params(cls):
         pass
@@ -73,12 +80,6 @@ class OffloadingDecisionEngine(ABC):
     @abstractmethod
     def offload(cls, tasks):
         pass
-
-
-    def __increment_discrete_epoch_counters(cls):
-        for offloading_site in cls._offloading_sites:
-            if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-                offloading_site.evaluate_failure_event()
 
 
     def __evaluate_params(cls, mobile_device, edge_servers, cloud_dc, network):
@@ -106,12 +107,6 @@ class OffloadingDecisionEngine(ABC):
                 return False
 
         return True
-
-
-    def __increment_discrete_epoch_counters(cls):
-        for offloading_site in cls._offloading_sites:
-            if offloading_site.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-                offloading_site.evaluate_failure_event()
 
 
     def __compute_bandwidth_consumption(cls, task, current_node, previous_node):
@@ -215,31 +210,32 @@ class OffloadingDecisionEngine(ABC):
 
 
     def __compute_failure_cost(cls, candidate_node, previous_node):
-        cost_rsp_time = ResponseTime (OFFLOADING_FAILURE_DETECTION_TIME, 0.0, 0.0, OFFLOADING_FAILURE_DETECTION_TIME)
+        time_cost = OFFLOADING_FAILURE_DETECTION_TIME
+        cost_rsp_time = ResponseTime (0.0, 0.0, 0.0, 0.0)
         cost_energy_consum = EnergyConsum (0.0, 0.0, 0.0, 0.0)
         cost_rewards = 0
 
         if candidate_node.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE and \
             previous_node.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-            task_rsp_time = ResponseTime (time_cost, 0.0, 0.0, time_cost)
-            cost_energy_consum = cls.__compute_complete_energy_consumption(task_rsp_time, candidate_node, previous_node)
-            task_time_reward = cls.__compute_task_time_completion_reward(time_cost.get_task_overall())
+            cost_rsp_time = ResponseTime (time_cost, 0.0, 0.0, time_cost)
+            cost_energy_consum = cls.__compute_complete_energy_consumption(cost_rsp_time, candidate_node, previous_node)
+            task_time_reward = cls.__compute_task_time_completion_reward(cost_rsp_time.get_task_overall())
             task_energy_reward = cls.__compute_task_energy_consumption_reward(cost_energy_consum.get_task_overall())
             cost_rewards = cls.__compute_overall_task_reward(task_time_reward, task_energy_reward)
 
         elif candidate_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE and \
             previous_node.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE:
-            task_rsp_time = ResponseTime (0.0, time_cost, 0.0, time_cost)
-            cost_energy_consum = cls.__compute_complete_energy_consumption(task_rsp_time, candidate_node, previous_node)
-            task_time_reward = cls.__compute_task_time_completion_reward(task_rsp_time.get_task_overall())
+            cost_rsp_time = ResponseTime (0.0, time_cost, 0.0, time_cost)
+            cost_energy_consum = cls.__compute_complete_energy_consumption(cost_rsp_time, candidate_node, previous_node)
+            task_time_reward = cls.__compute_task_time_completion_reward(cost_rsp_time.get_task_overall())
             task_energy_reward = cls.__compute_task_energy_consumption_reward(energy_consum.get_task_overall())
             cost_rewards = cls.__compute_overall_task_reward(task_time_reward, task_energy_reward)
 
         elif candidate_node.get_offloading_site_code() != OffloadingSiteCode.MOBILE_DEVICE and \
             previous_node.get_offloading_site_code() == OffloadingSiteCode.MOBILE_DEVICE:
-            task_rsp_time = ResponseTime (0.0, 0.0, time_cost, time_cost)
-            cost_energy_consum = cls.__compute_complete_energy_consumption(task_rsp_time, 0.0, 0.0, candidate_node, previous_node)
-            task_time_reward = cls.__compute_task_time_completion_reward(task_rsp_time.get_task_overall())
+            cost_rsp_time = ResponseTime (0.0, 0.0, time_cost, time_cost)
+            cost_energy_consum = cls.__compute_complete_energy_consumption(cost_rsp_time, 0.0, 0.0, candidate_node, previous_node)
+            task_time_reward = cls.__compute_task_time_completion_reward(cost_rsp_time.get_task_overall())
             task_energy_reward = cls.__compute_task_energy_consumption_reward(cost_energy_consum.get_task_overall())
             cost_rewards = cls.__compute_overall_task_reward(task_time_reward, task_energy_reward)
 

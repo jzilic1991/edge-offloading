@@ -20,6 +20,7 @@ class BaseOffloadingSite (ABC):
         self._data_storage_consumption = 0
         self._memory_consumption = 0
         self._node_type = node_type
+        self._fail_event = False
             
         self._off_site_code = Util.determine_off_site_code (node_type)
         (self._name, self._off_action) = Util.determine_name_and_action (name, self._off_site_code)
@@ -56,8 +57,8 @@ class BaseOffloadingSite (ABC):
         return cls._mips
 
 
-    def evaluate_failure_event(cls):
-        cls.__evaluate_failure_test()
+    def update_fail_event (cls, event):
+        cls._fail_event = bool (event)
 
 
     def check_validity_of_deployment(cls, task):
