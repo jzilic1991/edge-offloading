@@ -17,18 +17,18 @@ spec:
         spec:
             containers:
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v5
+              image: zikadocker1991/failure-monitor:v6
               args: ["cloud"]
               imagePullPolicy: Always
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v3
+              image: zikadocker1991/prediction-engine:v4
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v5
+              image: zikadocker1991/offloading-site:v6
               args: ["cloud"]
               imagePullPolicy: Always
               ports:
@@ -57,18 +57,18 @@ spec:
         spec:
             containers:
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v5
+              image: zikadocker1991/failure-monitor:v6
               args: ["comp"]
               imagePullPolicy: Always
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v3
+              image: zikadocker1991/prediction-engine:v4
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v5
+              image: zikadocker1991/offloading-site:v6
               args: ["comp"]
               imagePullPolicy: Always
               ports:
@@ -97,18 +97,18 @@ spec:
         spec:
             containers:
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v5
+              image: zikadocker1991/failure-monitor:v6
               args: ["database"]
               imagePullPolicy: Always
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v3
+              image: zikadocker1991/prediction-engine:v4
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v5
+              image: zikadocker1991/offloading-site:v6
               args: ["database"]
               imagePullPolicy: Always
               ports:
@@ -137,18 +137,18 @@ spec:
         spec:
             containers:
             - name: failure-monitor
-              image: zikadocker1991/failure-monitor:v5
+              image: zikadocker1991/failure-monitor:v6
               args: ["regular"]
               imagePullPolicy: Always
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v3
+              image: zikadocker1991/prediction-engine:v4
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
             - name: main-offloading-site
-              image: zikadocker1991/offloading-site:v5
+              image: zikadocker1991/offloading-site:v6
               args: ["regular"]
               imagePullPolicy: Always
               ports:
