@@ -49,9 +49,12 @@ def get_avail_data():
     print ('Sending node candidate ' + node_candidate + ' to failure monitor!', file = sys.stdout)
     sock_fail_mon.connect()
     sock_fail_mon.send(node_candidate)
-    fail_data = sock_fail_mon.receive()
+    data = sock_fail_mon.receive() # (avail_data, mtbf)
     sock_fail_mon.close()
     print ('Receive failure data with length ' + str(len(fail_data)), file = sys.stdout)
+    
+    fail_data = data[0]
+    mtbf = data[1]
             
     if len(fail_data) == 0:
         return jsonify ([])
@@ -71,8 +74,10 @@ def get_avail_data():
         avail_data = sock_pred_engine.receive()
         sock_pred_engine.close()
         print ('Receive availability data with length ' + str(len(avail_data)), file = sys.stdout)
+
+    avail_data['mtbf'] = mtbf
     
-    return jsonify (avail_data)
+    return jsonify (avail_data) # {'actual': [], 'predicted': [], 'mtbf': 0}
 
 
 off_site = init_off_site(sys.argv[len(sys.argv) - 1])

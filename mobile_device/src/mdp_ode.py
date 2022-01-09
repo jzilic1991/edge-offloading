@@ -26,7 +26,9 @@ class MdpOde(OffloadingDecisionEngine):
         task_overall_reward_array = tuple()
         validity_vector = [True for i in range(len(cls._offloading_sites))]
         non_offloadable_flag = False
-        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites)
+
+        # determines are there any failure events on offloading sites
+        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites) 
     
         for task in tasks:
             if task.is_offloadable() and non_offloadable_flag == False:

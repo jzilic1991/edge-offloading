@@ -4,28 +4,16 @@ import numpy as np
 class Statistics:
 
     def __init__(self, offloading_sites):
-        self._time_completion = tuple()
-        self._energy_consumption = tuple()
-        self._rewards = tuple()
-        self._offloading_distribution_dict = dict()
-        self._off_fail_freq_per_off_site_dict = dict()
-        self._single_app_time_comp = list()
-        self._single_app_energy_consum = list()
-        self._failure_rates = tuple()
-        self._service_avail = list()
-        self._chain_bandwidth_consumption = list()
+        self._offloading_sites = offloading_sites
+        self.reset_stats() 
 
-        for offloading_site in offloading_sites:
-            self._offloading_distribution_dict[offloading_site.get_name()] = 0
-            self._off_fail_freq_per_off_site_dict[offloading_site.get_name()] = 0
-    
 
     def print_average_time_completion(cls): 
         for key, value in cls._time_completion_dict.items():
             print("After " + str(key) + " executions, average is " + str(round(np.mean(value), 2)) + " s")
 
 
-    def print_average_energy_consumption(cls):		
+    def print_average_energy_consumption(cls):
         for key, value in cls._energy_consumption_dict.items():
             print("After " + str(key) + " executions, average is " + str(round(np.mean(value), 2)) + " J")
 
@@ -198,3 +186,20 @@ class Statistics:
 
     def get_single_app_app_energy_consum_std(cls):
         return np.std(cls._single_app_energy_consum)
+
+
+    def reset_stats (cls):
+        cls._time_completion = tuple()
+        cls._energy_consumption = tuple()
+        cls._rewards = tuple()
+        cls._offloading_distribution_dict = dict()
+        cls._off_fail_freq_per_off_site_dict = dict()
+        cls._single_app_time_comp = list()
+        cls._single_app_energy_consum = list()
+        cls._failure_rates = tuple()
+        cls._service_avail = list()
+        cls._chain_bandwidth_consumption = list()
+
+        for offloading_site in cls._offloading_sites:
+            cls._offloading_distribution_dict[offloading_site.get_name()] = 0
+            cls._off_fail_freq_per_off_site_dict[offloading_site.get_name()] = 0

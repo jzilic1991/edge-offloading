@@ -4,6 +4,7 @@ from utilities import Util, NodeType, OffloadingSiteCode, OffloadingActions, Exe
 from resource_monitor import ResourceMonitor
 from mob_app_profiler import MobileAppProfiler
 from mdp_svr_ode import MdpSvrOde
+from efpo_ode import EfpoOde
 from task import Task
 from logger import Logger
 
@@ -116,6 +117,11 @@ class MobileDevice:
     def deploy_mdp_svr_ode (cls):
         cls._ode = MdpSvrOde(cls, cls._res_monitor.get_edge_servers (), cls._res_monitor.get_cloud_dc (), \
                 cls._network, MDP_SVR_ODE_NAME)
+    
+
+    def deploy_efpo_ode (cls):
+        cls._ode = EfpoOde(cls, cls._res_monitor.get_edge_servers (), cls._res_monitor.get_cloud_dc (), \
+                cls._network, EFPO_ODE_NAME)
 
 
     def run(cls, samplings, executions):
@@ -210,25 +216,25 @@ class MobileDevice:
 
         cls._stats_hist.append (cls._ode.get_statistics())
 
-        print('##############################################################')
-        print('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
+        Logger.w('##############################################################')
+        Logger.w('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
         # print('################## ' + app_name + ' ###########################################')
-        print('##############################################################\n')
-        print("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
-        print("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
-        print("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
-        print("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
-        print("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
-        print("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
+        Logger.w('##############################################################\n')
+        Logger.w("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
+        Logger.w("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
+        Logger.w("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
+        Logger.w("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
+        Logger.w("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
+        Logger.w("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
         # print("Network bandwidth consumption mean: " + str(cls._ode.get_statistics().get_bandwidth_consumption_mean()) + " kbps")
         # print("Network bandwidth consumption variance: " + str(cls._ode.get_statistics().get_bandwidth_consumption_var()) + " kbps\n")
-        print("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
-        print("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
-        print("Offloading distribution: " + \
+        Logger.w("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
+        Logger.w("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
+        Logger.w("Offloading distribution: " + \
             str(cls._ode.get_statistics().get_offloading_distribution()))
-        print("Offloading distribution relative: " + \
+        Logger.w("Offloading distribution relative: " + \
             str(cls._ode.get_statistics().get_offloading_distribution_relative()))
-        print("Num of offloadings: " + \
+        Logger.w("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
 
         # text = ""
@@ -248,12 +254,14 @@ class MobileDevice:
         # text += cls._cloud_dc.get_name() + ': ' + str(round(cls._cloud_dc.get_failure_cnt() / all_failures * 100, 2))
         # print("Relative failure frequency occurence: " + text)
         # print("Num of failures: " + str(all_failures) + '\n')
-        print("Offloading failure distribution: " + \
+        Logger.w("Offloading failure distribution: " + \
             str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
-        print("Offloading failure frequency relative: " + \
+        Logger.w("Offloading failure frequency relative: " + \
             str(cls._ode.get_statistics().get_offloading_failure_relative()))
-        print("Num of offloading failures: " + \
+        Logger.w("Num of offloading failures: " + \
             str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
+
+        cls._ode.get_statistics().reset_stats()
         # print('Offloading site datasets:')
         # for edge in cls._edge_servers:
         #    print(edge.get_name() + ' ' + str(edge.get_node_candidate()))

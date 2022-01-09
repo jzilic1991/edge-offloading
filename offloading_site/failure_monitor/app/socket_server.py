@@ -32,7 +32,7 @@ class SocketServer():
             args = conn.recv(4096).decode()
             args = args.split('_')
             sysid, nodenum = args[0], args[1]
-            data = cls._fail_monitor.get_avail_data(sysid, nodenum)
+            data = cls._fail_monitor.get_avail_data(sysid, nodenum) # (avail_data, mtbf)
             break
 
         cls.__send (conn, data)

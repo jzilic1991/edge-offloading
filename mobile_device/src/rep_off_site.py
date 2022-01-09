@@ -1,11 +1,12 @@
 import sys
 import re
 import json
+import math
 from pathlib import Path
 from kivy.network.urlrequest import UrlRequest
 
 from base_off_site import BaseOffloadingSite
-from utilities import OffloadingSiteCode, ExecutionErrorCode, ReqStateMachine
+from utilities import OffloadingSiteCode, ExecutionErrorCode, OdeType, ReqStateMachine
 from task import Task
 
 # constants
@@ -45,21 +46,14 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         # cls.__fill_used_data()
         
 
-    def get_fail_trans_prob (cls):
-        if len(cls._used_data['predicted']) == 0:
-            cls.__fill_used_data()
-        
-        avail_prob = cls._used_data['predicted'][0]
+    def get_fail_trans_prob (cls, ode_type, t = 0):
+        if ode_type == OdeType.EFPO:
+            return cls.__get_prob_for_efpo(t)
 
-        if avail_prob > 1:
-            avail_prob = 1
-        
-        if avail_prob >= 0.95 and cls._off_site_code != OffloadingSiteCode.CLOUD_DATA_CENTER:
-            return 0
-
-        return (1 - avail_prob)
-
+        elif ode_type == OdeType.MDP_SVR:
+            return cls.__get_prob_for_mdp_svr()
     
+
     def get_server_fail_prob (cls):
         return 0.9
 
@@ -70,6 +64,10 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
     def get_req_state (cls):
         return cls._req_state
+
+
+    def get_mtbf (cls):
+        return cls._avail_data['mtbf']
 
 
     def next_avail_sample (cls):
@@ -137,6 +135,24 @@ class RepresentOffloadingSite (BaseOffloadingSite):
             raise ValueError("Memory consumption: " + str(cls._memory_consumption) + \
                     "Gb, data storage consumption: " + str(cls._data_storage_consumption) + \
                     "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())
+
+    def __get_prob_for_mdp_svr (cls):
+        if len(cls._used_data['predicted']) == 0:
+            cls.__fill_used_data()
+        
+        avail_prob = cls._used_data['predicted'][0]
+
+        if avail_prob > 1:
+            avail_prob = 1
+        
+        if avail_prob >= 0.95 and cls._off_site_code != OffloadingSiteCode.CLOUD_DATA_CENTER:
+            return 0
+
+        return (1 - avail_prob)
+
+
+    def __get_prob_for_efpo (cls, t):
+        return round((1 - math.exp(-t / cls._avail_data['mtbf'])), 2)
 
 
     def __fill_used_data (cls):

@@ -44,19 +44,19 @@ class MyWidget(BoxLayout):
         df = get_md_data ()
         self._mobile_device = MobileDevice (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]))
         self._mobile_device.deploy_mdp_svr_ode ()
-        self._mobile_device.run (1, 1000)
+        self._mobile_device.run (10, 1000)
 
         self._mobile_device.next_node_candidates ()
-        self._mobile_device.run (1, 1000)
+        self._mobile_device.run (10, 1000)
         
         self._mobile_device.next_node_candidates ()
-        self._mobile_device.run (1, 1000)
+        self._mobile_device.run (10, 1000)
         
         self._mobile_device.next_node_candidates ()
-        self._mobile_device.run (1, 1000)
+        self._mobile_device.run (10, 1000)
         
         self._mobile_device.next_node_candidates ()
-        self._mobile_device.run (1, 1000)
+        self._mobile_device.run (10, 1000)
 
 
     def http_response (self, *args):

@@ -17,8 +17,6 @@ class Dataset:
         self._offloading_site = offloading_site
             
         self.__determine_miscellaneous(offloading_site)
-    
-        self._mtbf = 0  
 
 
     def add_item (cls, row):
@@ -34,10 +32,10 @@ class Dataset:
             return cls.__read_avail_dist (filepath)
 
         rows = cls.__get_data_rows(system_id, node_num)
-        cls._mtbf = cls.__compute_mtbf(rows)
+        mtbf = cls.__compute_mtbf(rows)
         avail_data = cls.__evaluate_failure_data(system_id, node_num)
-        cls.__create_avail_dist_file (filepath, avail_data)
-        return avail_data
+        cls.__create_avail_dist_file (filepath, avail_data, mtbf)
+        return (avail_data, mtbf)
 
 
     def get_offloading_site_code (cls):
@@ -216,6 +214,7 @@ class Dataset:
 
     def __read_avail_dist (cls, filepath):
         avail_data = tuple ()
+        mtbf = 0
         
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
 
@@ -224,16 +223,20 @@ class Dataset:
 
            while line:
                if re.search ('\d+.\d+', line):
-                   avail_data += (float (line),)                
+                   avail_data += (float (line),)
+               
+               result = re.search ('MTBF: (\d+.\d+)', line)
+               if result:
+                   mtbf = float(result.group(1))
                
                line = filereader.readline()
            
            filereader.close()
         
-        return avail_data
+        return (avail_data, mtbf)
 
 
-    def __create_avail_dist_file (cls, filepath, avail_data):
+    def __create_avail_dist_file (cls, filepath, avail_data, mtbf):
         print ('Creating availability file ' + filepath)
 
         with open (filepath, 'w') as filewriter:
@@ -241,4 +244,5 @@ class Dataset:
             for data_point in avail_data:
                 filewriter.write (str(data_point) + '\n')
 
+            filewriter.write ('MTBF = ' + str(float(mtbf)) + '\n')
             filewriter.close()

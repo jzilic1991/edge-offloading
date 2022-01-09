@@ -1,39 +1,32 @@
 import math
 
-from utilities import OffloadingActions, OffloadingSiteCode # OdeType
-from ode import OffloadingDecisionEngine
+from utilities import OffloadingActions # OdeType
 from mdp_ode import MdpOde
-from logger import Logger
+from ode import OffloadingDecisionEngine
 
 
-class MdpSvrOde(MdpOde):
-
-    def initialize_params(cls):
-        cls._MdpOde__init_MDP_settings()
-        cls._discount_factor = 0.01
-
+class EfpoOde(MdpOde):
 
     def update_P_matrix(cls):
         for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS): 
-            for j in range(math.ceil(cls._P[i].size / cls._P[i][0].size)):
-                for k in range(math.ceil(cls._P[i][j].size / cls._P[i][j][0].size)): 
-                    
+            for j in range(math.ceil(cls._P[i].size / cls._P[i][0].size)): 
+                for k in range(math.ceil(cls._P[i][j].size / cls._P[i][j][0].size)):
                     if cls._offloading_sites[k].get_offloading_action_index() == i:
                         cls._P[i][j][k] = 1 - cls._offloading_sites[k].\
-                            get_fail_trans_prob(OdeType.MDP_SVR) 
+                            get_fail_trans_prob(OdeType.EFPO) 
 
                     elif cls._mobile_device.get_offloading_action_index() == k:
                         cls._P[i][j][k] = cls._offloading_sites[i].\
-                            get_fail_trans_prob(OdeType.MDP_SVR)
+                            get_fail_trans_prob(OdeType.EFPO)
 
                     else:
                         cls._P[i][j][k] = 0.0
 
 
     def update_R_matrix(cls, task, validity_vector):
-        for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS):
-            for j in range(math.ceil(cls._R[i].size / cls._R[i][0].size)): 
-                for k in range(math.ceil(cls._R[i][j].size / cls._R[i][j][0].size)):
+        for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS): 
+            for j in range(math.ceil(cls._R[i].size / cls._R[i][0].size)):
+                for k in range(math.ceil(cls._R[i][j].size / cls._R[i][j][0].size)): 
                     if cls._P[i][j][k] == 0.0 or not validity_vector[i]:
                         cls._R[i][j][k] = 0.0
                         cls._response_time_matrix[i][j][k] = 0.0
@@ -61,5 +54,10 @@ class MdpSvrOde(MdpOde):
 
 
     def recovery_action(cls, validity_vector, action_index):
-        validity_vector[action_index] = False
+        for i in range(len(validity_vector)):
+            if i == 0:
+                validity_vector[i] = True
+            else:
+                validity_vector[i] = False
+    
         return validity_vector

@@ -47,7 +47,7 @@ class FailureMonitor:
         def get_avail_data (cls, sysid, nodenum):
             data = cls._data_stats.get_node_avail_data (sysid, nodenum)
             # cls.__plot_avail_dist (data)
-            return data
+            return data # (avail_data, mtbf)
 
         
         def __determine_dataset (cls, node_type):
