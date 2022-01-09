@@ -23,7 +23,7 @@ spec:
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v4
+              image: zikadocker1991/prediction-engine:v6
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
@@ -63,7 +63,7 @@ spec:
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v4
+              image: zikadocker1991/prediction-engine:v6
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
@@ -103,7 +103,7 @@ spec:
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v4
+              image: zikadocker1991/prediction-engine:v6
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
@@ -143,7 +143,7 @@ spec:
               ports:
               - containerPort: 8000
             - name: prediction-engine
-              image: zikadocker1991/prediction-engine:v4
+              image: zikadocker1991/prediction-engine:v6
               imagePullPolicy: Always
               ports:
               - containerPort: 8001
