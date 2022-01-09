@@ -41,7 +41,6 @@ class OffloadingDecisionEngine(ABC):
         self._app_name = ""
         self._w_f_time_completion = 0.5
         self._w_f_energy_consumption = 0.5
-        self._time_epoch_cnt = 0
 
         for edge_server in self._edge_servers:
             self._offloading_sites[edge_server.get_offloading_action_index()] = edge_server
@@ -69,9 +68,10 @@ class OffloadingDecisionEngine(ABC):
     def count_time_epoch (cls):
         for edge in cls._edge_servers:
             edge.next_avail_sample ()
+            edge.time_epoch_count ()
 
         cls._cloud_dc.next_avail_sample ()
-        cls._time_epoch_cnt += 1
+        cls._cloud_dc.time_epoch_count ()
 
 
     @abstractmethod

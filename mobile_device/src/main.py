@@ -46,6 +46,7 @@ class MyWidget(BoxLayout):
         self._mobile_device.deploy_mdp_svr_ode ()
         self._mobile_device.run (10, 1000)
 
+        self._mobile_device.deploy_efpo_ode ()
         self._mobile_device.next_node_candidates ()
         self._mobile_device.run (10, 1000)
         

@@ -59,7 +59,7 @@ class MdpOde(OffloadingDecisionEngine):
 
                 # if task deployment on offloading site is valid, then task is going to be executed
                 if not candidate_node.execute(task):
-                    Logger.w("FAILURE occurs on node " + candidate_node.get_name())
+                    Logger.w("OFFLOADING FAILURE occurs on node " + candidate_node.get_name())
                     validity_vector = cls.recovery_action(validity_vector, candidate_node.get_offloading_action_index())
                     cls._statistics.add_offload_fail(candidate_node.get_name())
                     task_failures += 1

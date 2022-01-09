@@ -21,6 +21,7 @@ class BaseOffloadingSite (ABC):
         self._memory_consumption = 0
         self._node_type = node_type
         self._fail_event = False
+        self._time_epoch_cnt = 0
             
         self._off_site_code = Util.determine_off_site_code (node_type)
         (self._name, self._off_action) = Util.determine_name_and_action (name, self._off_site_code)
@@ -59,6 +60,13 @@ class BaseOffloadingSite (ABC):
 
     def update_fail_event (cls, event):
         cls._fail_event = bool (event)
+
+        if cls._fail_event:
+            cls._time_epoch_cnt = 0
+    
+
+    def time_epoch_count (cls):
+        cls._time_epoch_cnt += 1
 
 
     def check_validity_of_deployment(cls, task):

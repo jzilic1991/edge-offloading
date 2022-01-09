@@ -136,6 +136,7 @@ class RepresentOffloadingSite (BaseOffloadingSite):
                     "Gb, data storage consumption: " + str(cls._data_storage_consumption) + \
                     "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())
 
+
     def __get_prob_for_mdp_svr (cls):
         if len(cls._used_data['predicted']) == 0:
             cls.__fill_used_data()
