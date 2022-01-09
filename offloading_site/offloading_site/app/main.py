@@ -16,7 +16,7 @@ sock_pred_engine = SocketClient ("localhost", 8001)
 
 
 def init_off_site (node_type):
-    con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "10.8.0.1", port = "32398")
+    con = psycopg2.connect(database = "postgres", user = "postgres", password = "", host = "128.131.169.143", port = "32398")
     print("Database opened successfully", file = sys.stdout)
     
     cur = con.cursor()
@@ -51,7 +51,7 @@ def get_avail_data():
     sock_fail_mon.send(node_candidate)
     data = sock_fail_mon.receive() # (avail_data, mtbf)
     sock_fail_mon.close()
-    print ('Receive failure data with length ' + str(len(fail_data)), file = sys.stdout)
+    print ('Receive failure data with length ' + str(len(data[0])), file = sys.stdout)
     
     fail_data = data[0]
     mtbf = data[1]

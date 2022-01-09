@@ -222,12 +222,13 @@ class Dataset:
            line = filereader.readline()
 
            while line:
-               if re.search ('\d+.\d+', line):
-                   avail_data += (float (line),)
+               result = re.search (r'\bMTBF = (\d+\.\d+)\b', line)
                
-               result = re.search ('MTBF: (\d+.\d+)', line)
                if result:
                    mtbf = float(result.group(1))
+               
+               elif re.search (r'\b(\d+\.\d+)\b', line):
+                   avail_data += (float (line),)
                
                line = filereader.readline()
            
