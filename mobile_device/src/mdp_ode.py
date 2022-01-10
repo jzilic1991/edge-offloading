@@ -13,6 +13,10 @@ from fail_detector import FailureDetector
 
 class MdpOde(OffloadingDecisionEngine):
 
+    def __init__(self, mobile_device, edge_servers, cloud_dc, network, name, ode_type):
+        super().__init__(mobile_device, edge_servers, cloud_dc, network, name, ode_type)
+
+
     def initialize_params(cls):
         cls.__init_MDP_settings()
 
@@ -28,7 +32,7 @@ class MdpOde(OffloadingDecisionEngine):
         non_offloadable_flag = False
 
         # determines are there any failure events on offloading sites
-        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites) 
+        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites, cls._ode_type) 
     
         for task in tasks:
             if task.is_offloadable() and non_offloadable_flag == False:
@@ -51,7 +55,7 @@ class MdpOde(OffloadingDecisionEngine):
                 if not candidate_node.check_validity_of_deployment(task):
                     raise ValueError(candidate_node.get_name() + " does not have validity for task deployment!")
 
-                Logger.w ('\n\n\n\n\n' + cls._previous_node.get_name() + " -> " + candidate_node.get_name())
+                Logger.w ('\n\n' + cls._previous_node.get_name() + " -> " + candidate_node.get_name())
                 Logger.w ('Offloading task ' + task.get_name() + ' (off = ' + str(task.is_offloadable()) + ')\n')
                 (task_rsp_time, task_energy_consum) = cls.__compute_objectives (task, cls._previous_node, candidate_node)
                 task_completion_time_tmp = task_rsp_time.get_task_overall()
@@ -91,9 +95,9 @@ class MdpOde(OffloadingDecisionEngine):
                 task_energy_consumption = round(task_energy_consumption + task_energy_consumption_tmp, 3)
                 task_energy_consumption_array += (task_energy_consumption,)
                 
-                Logger.w ('Task ' + task.get_name() + ' is offloaded on ' + candidate_node.get_name())
-                Logger.w("Complete task completion time: " + str(task_completion_time) + " s")
-                Logger.w("Complete task energy: " + str(task_energy_consumption) + " J")
+                # Logger.w ('Task ' + task.get_name() + ' is offloaded on ' + candidate_node.get_name())
+                # Logger.w("Complete task completion time: " + str(task_completion_time) + " s")
+                # Logger.w("Complete task energy: " + str(task_energy_consumption) + " J")
 
                 task_time_completion_reward = cls._OffloadingDecisionEngine__compute_task_time_completion_reward\
                         (task_completion_time)
@@ -101,11 +105,11 @@ class MdpOde(OffloadingDecisionEngine):
                         (task_energy_consumption)
                 task_overall_reward_tmp = round(cls._OffloadingDecisionEngine__compute_overall_task_reward\
                         (task_time_completion_reward, task_energy_consumption_reward), 3)
-                Logger.w("Reward: " + str(task_overall_reward_tmp) + '\n')
+                # Logger.w("Reward: " + str(task_overall_reward_tmp) + '\n')
     
                 task_overall_reward = task_overall_reward + task_overall_reward_tmp
                 task_overall_reward_array += (task_overall_reward),
-                Logger.w("Complete task reward: " + str(task_overall_reward) + "\n")
+                # Logger.w("Complete task reward: " + str(task_overall_reward) + "\n")
 
                 break
 
@@ -180,8 +184,8 @@ class MdpOde(OffloadingDecisionEngine):
             offloading_site_index = cls._current_node.get_offloading_action_index()
     
             cls._policy = cls.__MDP_run(task, validity_vector)
-            Logger.w("Current node: " + cls._current_node.get_name())
-            Logger.w("Current offloading policy: " + str(cls._policy))
+            # Logger.w("Current node: " + cls._current_node.get_name())
+            # Logger.w("Current offloading policy: " + str(cls._policy))
 
             if cls._policy[offloading_site_index] == OffloadingActions.MOBILE_DEVICE:
                 return (cls._offloading_sites[cls._mobile_device.get_offloading_action_index()], validity_vector)
@@ -222,17 +226,17 @@ class MdpOde(OffloadingDecisionEngine):
     def __compute_objectives (cls, task, previous_node, candidate_node):
         task_rsp_time = cls._OffloadingDecisionEngine__compute_complete_task_time_completion\
             (task, candidate_node, previous_node)
-        Logger.w("Uplink time: " + str(task_rsp_time.get_uplink()) + "s")
-        Logger.w("Execution time: " + str(task_rsp_time.get_execution()) + "s")
-        Logger.w("Downlink time: " + str(task_rsp_time.get_downlink()) + "s")
-        Logger.w("Task completion time: " + str(task_rsp_time.get_task_overall()) + "s\n")
+        # Logger.w("Uplink time: " + str(task_rsp_time.get_uplink()) + "s")
+        # Logger.w("Execution time: " + str(task_rsp_time.get_execution()) + "s")
+        # Logger.w("Downlink time: " + str(task_rsp_time.get_downlink()) + "s")
+        # Logger.w("Task completion time: " + str(task_rsp_time.get_task_overall()) + "s\n")
 
         task_energy_consum = cls._OffloadingDecisionEngine__compute_complete_energy_consumption\
             (task_rsp_time, candidate_node, previous_node)
-        Logger.w("Uplink energy: " + str(task_energy_consum.get_uplink()) + "J")
-        Logger.w("Execution/Idle energy: " + str(task_energy_consum.get_execution()) + "J")
-        Logger.w("Downlink energy: " + str(task_energy_consum.get_downlink()) + "J")
-        Logger.w("Task energy: " + str(task_energy_consum.get_task_overall()) + "J")
+        # Logger.w("Uplink energy: " + str(task_energy_consum.get_uplink()) + "J")
+        # Logger.w("Execution/Idle energy: " + str(task_energy_consum.get_execution()) + "J")
+        # Logger.w("Downlink energy: " + str(task_energy_consum.get_downlink()) + "J")
+        # Logger.w("Task energy: " + str(task_energy_consum.get_task_overall()) + "J")
 
         return (task_rsp_time, task_energy_consum)
 

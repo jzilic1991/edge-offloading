@@ -188,6 +188,18 @@ class Statistics:
         return np.std(cls._single_app_energy_consum)
 
 
+    def get_all_time_comp (cls):
+        return cls._time_completion
+
+
+    def get_all_energy_consum (cls):
+        return cls._energy_consumption
+
+
+    def get_all_service_avail (cls):
+        return cls._service_avail
+
+
     def reset_stats (cls):
         cls._time_completion = tuple()
         cls._energy_consumption = tuple()

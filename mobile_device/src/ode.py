@@ -28,7 +28,7 @@ OFFLOADING_FAILURE_DETECTION_TIME = 1.5 # seconds
 
 class OffloadingDecisionEngine(ABC):
 
-    def __init__(self, mobile_device, edge_servers, cloud_dc, network, name):
+    def __init__(self, mobile_device, edge_servers, cloud_dc, network, name, ode_type):
         if not self.__evaluate_params(mobile_device, edge_servers, cloud_dc, network):
             raise ValueError("Wrong parameters passed to DummyOde object!")
     
@@ -41,6 +41,7 @@ class OffloadingDecisionEngine(ABC):
         self._app_name = ""
         self._w_f_time_completion = 0.5
         self._w_f_energy_consumption = 0.5
+        self._ode_type = ode_type
 
         for edge_server in self._edge_servers:
             self._offloading_sites[edge_server.get_offloading_action_index()] = edge_server

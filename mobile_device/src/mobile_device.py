@@ -10,7 +10,7 @@ from logger import Logger
 
 # constants
 GIGABYTES = 1000000
-PROGRESS_REPORT_INTERVAL = 1
+PROGRESS_REPORT_INTERVAL = 10
 
 FACEBOOK = "FACEBOOK"
 FACERECOGNIZER = "FACERECOGNIZER"
@@ -74,7 +74,11 @@ class MobileDevice:
         return cls._mips
     
 
-    def get_fail_trans_prob (cls):
+    def get_fail_trans_prob (cls, ode_type, t = 0):
+        return 0.0
+
+
+    def get_actual_fail_prob (cls):
         return 0.0
 
 
@@ -84,6 +88,10 @@ class MobileDevice:
 
     def update_fail_event (cls, event):
         pass
+
+
+    def get_fail_event (cls):
+        return None
     
     
     def execute(cls, task):
@@ -158,7 +166,7 @@ class MobileDevice:
                     print(str(current_progress) + "% - " + str(datetime.datetime.utcnow()))
 
                 cls._mobile_app = cls._mobile_app_profiler.deploy_random_mobile_app()
-                cls._mobile_app.print_entire_config()
+                # cls._mobile_app.print_entire_config()
                 cls._mobile_app.run()
                
                 Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
@@ -176,19 +184,21 @@ class MobileDevice:
                     application_time_completion = round(application_time_completion + task_completion_time, 3)
                     application_fail_time_completion += round(task_failure_time_cost, 3)
                     single_app_exe_task_comp = round(single_app_exe_task_comp + task_completion_time, 3)
-                    Logger.w ("Current application runtime: " + str(application_time_completion) + " s")
+                    # Logger.w ("Current application runtime: " + str(application_time_completion) + " s")
 
                     application_energy_consumption = round(application_energy_consumption + task_energy_consumption, 3)
                     application_fail_energy_consumption = round(application_fail_energy_consumption + task_failure_energy_cost, 3)
                     single_app_exe_energy_consum = round(single_app_exe_energy_consum + task_energy_consumption, 3)
-                    Logger.w ("Current application energy consumption: " + str(application_energy_consumption) + " J")
+                    # Logger.w ("Current application energy consumption: " + str(application_energy_consumption) + " J")
 
                     application_failures += task_failures
-                    Logger.w ("Current application failures: " + str(application_failures) + '\n')
+                    # Logger.w ("Current application failures: " + str(application_failures) + '\n')
 
                     application_overall_rewards = round(application_overall_rewards + task_overall_reward, 3)
                     
+                    # increment new time epoch for next availability sample and failure event evaluation
                     cls._ode.count_time_epoch()
+
                     # curr_bandwidth_consumption += epoch_bandwidth_consumption
 
                     # print ("Current application overall rewards: " + str(application_overall_rewards))
@@ -216,25 +226,29 @@ class MobileDevice:
 
         cls._stats_hist.append (cls._ode.get_statistics())
 
-        Logger.w('##############################################################')
-        Logger.w('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
+        # print ('Get all time completion: ' + str(cls._ode.get_statistics().get_all_time_comp()))
+        # print ('Get all battery lifetime: '  + str(cls._ode.get_statistics().get_all_energy_consum()))
+        # print ('Get all service availability: ' + str(cls._ode.get_statistics().get_all_service_avail()))
+
+        Logger.p('##############################################################')
+        Logger.p('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
         # print('################## ' + app_name + ' ###########################################')
-        Logger.w('##############################################################\n')
-        Logger.w("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
-        Logger.w("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
-        Logger.w("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
-        Logger.w("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
-        Logger.w("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
-        Logger.w("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
+        Logger.p('##############################################################\n')
+        Logger.p("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
+        Logger.p("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
+        Logger.p("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
+        Logger.p("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
+        Logger.p("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
+        Logger.p("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
         # print("Network bandwidth consumption mean: " + str(cls._ode.get_statistics().get_bandwidth_consumption_mean()) + " kbps")
         # print("Network bandwidth consumption variance: " + str(cls._ode.get_statistics().get_bandwidth_consumption_var()) + " kbps\n")
-        Logger.w("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
-        Logger.w("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
-        Logger.w("Offloading distribution: " + \
+        Logger.p("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
+        Logger.p("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
+        Logger.p("Offloading distribution: " + \
             str(cls._ode.get_statistics().get_offloading_distribution()))
-        Logger.w("Offloading distribution relative: " + \
+        Logger.p("Offloading distribution relative: " + \
             str(cls._ode.get_statistics().get_offloading_distribution_relative()))
-        Logger.w("Num of offloadings: " + \
+        Logger.p("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
 
         # text = ""
@@ -254,11 +268,11 @@ class MobileDevice:
         # text += cls._cloud_dc.get_name() + ': ' + str(round(cls._cloud_dc.get_failure_cnt() / all_failures * 100, 2))
         # print("Relative failure frequency occurence: " + text)
         # print("Num of failures: " + str(all_failures) + '\n')
-        Logger.w("Offloading failure distribution: " + \
+        Logger.p("Offloading failure distribution: " + \
             str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
-        Logger.w("Offloading failure frequency relative: " + \
+        Logger.p("Offloading failure frequency relative: " + \
             str(cls._ode.get_statistics().get_offloading_failure_relative()))
-        Logger.w("Num of offloading failures: " + \
+        Logger.p("Num of offloading failures: " + \
             str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
 
         cls._ode.get_statistics().reset_stats()

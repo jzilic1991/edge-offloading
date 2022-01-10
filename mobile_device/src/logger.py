@@ -6,3 +6,10 @@ class Logger(object):
     def w (text):
         if True:
             Logger.file_handler.write(text + "\n")
+
+    
+    @staticmethod
+    def p (text):
+        if True:
+            print (text + "\n")
+            Logger.file_handler.write(text + "\n")

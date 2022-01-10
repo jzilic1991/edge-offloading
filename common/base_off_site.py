@@ -65,6 +65,10 @@ class BaseOffloadingSite (ABC):
             cls._time_epoch_cnt = 0
     
 
+    def get_fail_event (cls):
+        return cls._fail_event
+    
+
     def time_epoch_count (cls):
         cls._time_epoch_cnt += 1
 
@@ -94,7 +98,7 @@ class BaseOffloadingSite (ABC):
 
 
     @abstractmethod
-    def get_fail_trans_prob (cls):
+    def get_fail_trans_prob (cls, ode_type, t = 0):
         pass
 
     

@@ -1,12 +1,16 @@
 import math
 
-from utilities import OffloadingActions, OffloadingSiteCode # OdeType
+from utilities import OffloadingActions, OffloadingSiteCode, OdeType
 from ode import OffloadingDecisionEngine
 from mdp_ode import MdpOde
 from logger import Logger
 
 
 class MdpSvrOde(MdpOde):
+    
+    def __init__(self, mobile_device, edge_servers, cloud_dc, network, name):
+        super().__init__(mobile_device, edge_servers, cloud_dc, network, name, OdeType.MDP_SVR)
+    
 
     def initialize_params(cls):
         cls._MdpOde__init_MDP_settings()

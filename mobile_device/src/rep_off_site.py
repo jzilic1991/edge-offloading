@@ -8,6 +8,7 @@ from kivy.network.urlrequest import UrlRequest
 from base_off_site import BaseOffloadingSite
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OdeType, ReqStateMachine
 from task import Task
+from logger import Logger
 
 # constants
 GIGABYTES = 1000000
@@ -44,11 +45,15 @@ class RepresentOffloadingSite (BaseOffloadingSite):
             cls.__req_avail_dist (filepath, cls._node_candidates[cls._iter_index])
 
         # cls.__fill_used_data()
+
+
+    def get_actual_fail_prob (cls):
+        return 1 - cls._avail_data['predicted'][0]
         
 
-    def get_fail_trans_prob (cls, ode_type, t = 0):
+    def get_fail_trans_prob (cls, ode_type):
         if ode_type == OdeType.EFPO:
-            return cls.__get_prob_for_efpo(t)
+            return cls.__get_prob_for_efpo()
 
         elif ode_type == OdeType.MDP_SVR:
             return cls.__get_prob_for_mdp_svr()
@@ -75,6 +80,7 @@ class RepresentOffloadingSite (BaseOffloadingSite):
             cls.__fill_used_data()
             return
         
+        del cls._used_data['actual'][0]
         del cls._used_data['predicted'][0]
 
 
@@ -152,8 +158,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         return (1 - avail_prob)
 
 
-    def __get_prob_for_efpo (cls, t):
-        return round((1 - math.exp(-t / cls._avail_data['mtbf'])), 2)
+    def __get_prob_for_efpo (cls, ):
+        return round((1 - math.exp(-cls._time_epoch_cnt / cls._avail_data['mtbf'])), 2)
 
 
     def __fill_used_data (cls):
@@ -200,6 +206,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         avail_data = dict ()
         
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
+        Logger.p('Node candidate: (' + str(cls._node_candidates[cls._iter_index][0]) + \
+                ', ' + str(cls._node_candidates[cls._iter_index][1]) +')')
 
         with open (filepath, 'r') as jsonfile:
            avail_data = json.load(jsonfile)

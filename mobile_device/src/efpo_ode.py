@@ -1,11 +1,15 @@
 import math
 
-from utilities import OffloadingActions # OdeType
+from utilities import OffloadingActions, OdeType
 from mdp_ode import MdpOde
 from ode import OffloadingDecisionEngine
 
 
 class EfpoOde(MdpOde):
+    
+    def __init__(self, mobile_device, edge_servers, cloud_dc, network, name):
+        super().__init__(mobile_device, edge_servers, cloud_dc, network, name, OdeType.EFPO)
+
 
     def update_P_matrix(cls):
         for i in range(OffloadingActions.NUMBER_OF_OFFLOADING_ACTIONS): 
