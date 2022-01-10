@@ -68,7 +68,7 @@ class Dataset:
             return -1
 
         total_time = (cls.__get_max_failure_date(data) - cls.__get_min_failure_date(data)).days * 24
-        return total_time / len(cls._data)
+        return total_time / len(data)
        
 
     def __get_min_failure_date (cls, data):
