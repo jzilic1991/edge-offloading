@@ -55,15 +55,15 @@ class MdpOde(OffloadingDecisionEngine):
                 if not candidate_node.check_validity_of_deployment(task):
                     raise ValueError(candidate_node.get_name() + " does not have validity for task deployment!")
 
-                Logger.w ('\n\n' + cls._previous_node.get_name() + " -> " + candidate_node.get_name())
-                Logger.w ('Offloading task ' + task.get_name() + ' (off = ' + str(task.is_offloadable()) + ')\n')
+                # Logger.w ('\n\n' + cls._previous_node.get_name() + " -> " + candidate_node.get_name())
+                # Logger.w ('Offloading task ' + task.get_name() + ' (off = ' + str(task.is_offloadable()) + ')\n')
                 (task_rsp_time, task_energy_consum) = cls.__compute_objectives (task, cls._previous_node, candidate_node)
                 task_completion_time_tmp = task_rsp_time.get_task_overall()
                 task_energy_consumption_tmp = task_energy_consum.get_task_overall()
 
                 # if task deployment on offloading site is valid, then task is going to be executed
                 if not candidate_node.execute(task):
-                    Logger.w("OFFLOADING FAILURE occurs on node " + candidate_node.get_name())
+                    # Logger.w("OFFLOADING FAILURE occurs on node " + candidate_node.get_name())
                     validity_vector = cls.recovery_action(validity_vector, candidate_node.get_offloading_action_index())
                     cls._statistics.add_offload_fail(candidate_node.get_name())
                     task_failures += 1
