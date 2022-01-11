@@ -304,7 +304,7 @@ def plot_battery_consumption_graph(data_mean, i):
     ax = plt.subplot(111)
     ax.bar(x - 0.2, data_mean[MDP_SVR_STR], width = 0.2, color = 'b', align = 'center', label = 'MDP-SVR')
     ax.bar(x, data_mean[EFPO_STR], width = 0.2, color = 'pink', align = 'center', label = 'EFPO')
-    ax.set_ylim([96,98.5])
+    ax.set_ylim([96,100])
 
     plt.xlabel('Dataset configurations')
     plt.ylabel('Battery lifetime (percentage)')
@@ -502,7 +502,7 @@ def parse_simulation_log():
             elif efpo_flag:
                 service_avail_var_dict[EFPO_STR][i] = float(matched.group(1))
 
-        matched = re.search("Offloading distribution relative: {'MOBILE_DEVICE': (\d+\.\d+), 'EDGE_DATABASE_SERVER_A': (\d+\.\d+), 'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_1': (\d+\.\d+)}", line)
+        matched = re.search("Offloading distribution relative: {'MOBILE_DEVICE': (\d+\.\d+), 'EDGE_DATABASE_SERVER_A': (\d+\.\d+), 'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_A': (\d+\.\d+)}", line)
         if matched:
             if mdp_svr_flag:
                 off_rel_dict[MDP_SVR_STR][i] = (float(matched.group(1)), float(matched.group(2)), \
@@ -520,7 +520,7 @@ def parse_simulation_log():
             elif efpo_flag:
                 num_of_off_dict[EFPO_STR][i] = int(matched.group(1))
 
-        matched = re.search("Relative failure frequency occurence: EDGE_DATABASE_SERVER_A: (\d+\.\d+), EDGE_COMPUTATIONAL_SERVER_A: (\d+\.\d+), EDGE_REGULAR_SERVER_A: (\d+\.\d+), CLOUD_DATA_CENTER_1: (\d+\.\d+)", line)
+        matched = re.search("Relative failure frequency occurence: EDGE_DATABASE_SERVER_A: (\d+\.\d+), EDGE_COMPUTATIONAL_SERVER_A: (\d+\.\d+), EDGE_REGULAR_SERVER_A: (\d+\.\d+), CLOUD_DATA_CENTER_A: (\d+\.\d+)", line)
         if matched:
             if mdp_svr_flag:
                 fail_freq_rel[MDP_SVR_STR][i] = (float(matched.group(1)), float(matched.group(2)), \
@@ -538,7 +538,7 @@ def parse_simulation_log():
             elif efpo_flag:
                 num_of_fail[EFPO_STR][i] = int(matched.group(1))
 
-        matched = re.search("Offloading failure frequency relative: {'MOBILE_DEVICE': (\d+\.\d+), 'EDGE_DATABASE_SERVER_A': (\d+\.\d+), 'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_1': (\d+\.\d+)}", line)
+        matched = re.search("Offloading failure frequency relative: {'MOBILE_DEVICE': (\d+\.\d+), 'EDGE_DATABASE_SERVER_A': (\d+\.\d+), 'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_A': (\d+\.\d+)}", line)
         if matched:
             if mdp_svr_flag:
                 off_fail_freq_rel[MDP_SVR_STR][i] = (float(matched.group(1)), float(matched.group(2)), \
@@ -578,7 +578,7 @@ def parse_simulation_log():
                 failure_rate_var_dict[EFPO_STR][i] = float(matched.group(1)) / 1000 * 100
 
         matched = re.search("Offloading distribution relative: {'MOBILE_DEVICE': (\d+\.\d+), 'EDGE_DATABASE_SERVER_A': (\d+\.\d+), " + \
-            "'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_1': (\d+\.\d+)}", line)
+            "'EDGE_COMPUTATIONAL_SERVER_A': (\d+\.\d+), 'EDGE_REGULAR_SERVER_A': (\d+\.\d+), 'CLOUD_DATA_CENTER_A': (\d+\.\d+)}", line)
     
         if matched:
             if mdp_svr_flag:
