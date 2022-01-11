@@ -1,7 +1,7 @@
 import sys
 
 from utilities import ExecutionErrorCode
-from logger import Logger
+# from logger import Logger
 
 
 class Task:
@@ -91,12 +91,12 @@ class Task:
 
     
     def print_system(cls):
-        Logger.w("######### " + cls._name + " SYSTEM CONFIGURATION #########")
-        Logger.w("CPU: " + str(cls._millions_of_instructions) + " M cycles")
-        Logger.w("Memory: " + str(cls._memory) + " Gb")
-        Logger.w("Input data: " + str(cls._data_in) + " Kb")
-        Logger.w("Output data: " + str(cls._data_out) + " Kb")
-        Logger.w("Offloadable: Yes\n" if cls._off else "Offloadable: No\n")
+        print("######### " + cls._name + " SYSTEM CONFIGURATION #########")
+        print("CPU: " + str(cls._millions_of_instructions) + " M cycles")
+        print("Memory: " + str(cls._memory) + " Gb")
+        print("Input data: " + str(cls._data_in) + " Kb")
+        print("Output data: " + str(cls._data_out) + " Kb")
+        print("Offloadable: Yes\n" if cls._off else "Offloadable: No\n")
         
 
     def remove_in_edge(cls, executed_task):

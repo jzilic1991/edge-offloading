@@ -2,7 +2,7 @@ import sys
 
 from task import Task
 from utilities import ExecutionErrorCode
-from logger import Logger
+# from logger import Logger
 
 
 class MobileApplication:
@@ -58,13 +58,13 @@ class MobileApplication:
 
 
     def print_task_dependencies(cls):
-        Logger.w("******** TASK DEPENDENCIES ********")
+        print("******** TASK DEPENDENCIES ********")
         
         for key, values in cls._delay_dict.items():
             for value in values:
-                Logger.w(key.get_name() + " ----------> " + value.get_name())
+                print(key.get_name() + " ----------> " + value.get_name())
         
-        Logger.w('\n')
+        print('\n')
 
 
     def print_task_config(cls):
@@ -83,7 +83,7 @@ class MobileApplication:
 
     
     def print_entire_config(cls):
-        Logger.w("######## " + cls._name + " APPLICATION CONFIGURATION ##########")
+        print("######## " + cls._name + " APPLICATION CONFIGURATION ##########")
 
         cls.print_task_dependencies()
         # cls.print_task_config()

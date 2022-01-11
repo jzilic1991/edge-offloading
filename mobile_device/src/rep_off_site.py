@@ -8,7 +8,7 @@ from kivy.network.urlrequest import UrlRequest
 from base_off_site import BaseOffloadingSite
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OdeType, ReqStateMachine
 from task import Task
-from logger import Logger
+# from logger import Logger
 
 # constants
 GIGABYTES = 1000000
@@ -206,8 +206,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         avail_data = dict ()
         
         print ('Reading availability data from file ' + filepath, file = sys.stdout)
-        Logger.p('Node candidate: (' + str(cls._node_candidates[cls._iter_index][0]) + \
-                ', ' + str(cls._node_candidates[cls._iter_index][1]) +')')
+        # Logger.p('Node candidate: (' + str(cls._node_candidates[cls._iter_index][0]) + \
+        #        ', ' + str(cls._node_candidates[cls._iter_index][1]) +')')
 
         with open (filepath, 'r') as jsonfile:
            avail_data = json.load(jsonfile)

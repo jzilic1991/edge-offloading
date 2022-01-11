@@ -46,12 +46,13 @@ class MobileDevice:
         self._offloading_site_code = OffloadingSiteCode.MOBILE_DEVICE
         self._offloading_action_index = OffloadingActions.MOBILE_DEVICE
         self._node_type = NodeType.MOBILE
-        self._discrete_epoch_counter = 0
         self._energy_supply_budget = 34200
         self._mobile_app_profiler = MobileAppProfiler ()
         self._mobile_app = None
         self._stats_hist = list ()
         self._network = self.__deploy_network_model ()
+        self._log = Logger('logs/simulation.txt', True, 'w')
+        self._init_run = True
 
 
     def get_offloading_site_code (cls):
@@ -135,6 +136,9 @@ class MobileDevice:
     def run(cls, samplings, executions):
         if not cls._ode:
             return ExecutionErrorCode.EXE_NOK
+
+        if not cls._init_run:
+            cls._log.update_action('a')
         
         previous_progress = 0
         current_progress = 0
@@ -169,7 +173,7 @@ class MobileDevice:
                 # cls._mobile_app.print_entire_config()
                 cls._mobile_app.run()
                
-                Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
+                # Logger.w (cls._mobile_app.get_name() + ' application is deployed!')
                 ready_tasks = cls._mobile_app.get_ready_tasks()
                 
                 while ready_tasks:
@@ -230,25 +234,25 @@ class MobileDevice:
         # print ('Get all battery lifetime: '  + str(cls._ode.get_statistics().get_all_energy_consum()))
         # print ('Get all service availability: ' + str(cls._ode.get_statistics().get_all_service_avail()))
 
-        Logger.p('##############################################################')
-        Logger.p('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
+        cls._log.p('##############################################################')
+        cls._log.p('################## ' + cls._ode.get_name() + ' OFFLOADING RESULT SUMMARY #################')
         # print('################## ' + app_name + ' ###########################################')
-        Logger.p('##############################################################\n')
-        Logger.p("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
-        Logger.p("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
-        Logger.p("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
-        Logger.p("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
-        Logger.p("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
-        Logger.p("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
+        cls._log.p('##############################################################\n')
+        cls._log.p("Time mean: " + str(cls._ode.get_statistics().get_time_completion_mean()) + ' s')
+        cls._log.p("Time variance: " + str(cls._ode.get_statistics().get_time_completion_var()) + ' s\n')
+        cls._log.p("Battery lifetime mean: " + str(cls._ode.get_statistics().get_energy_consumption_mean()) + '%')
+        cls._log.p("Battery lifetime variance: " + str(cls._ode.get_statistics().get_energy_consumption_var()) + '%\n')
+        cls._log.p("Offloading failure rate mean: " + str(cls._ode.get_statistics().get_failure_rates_mean()) + ' failures')
+        cls._log.p("Offloading failure rate variance: " + str(cls._ode.get_statistics().get_failure_rates_var()) + ' failures\n')
         # print("Network bandwidth consumption mean: " + str(cls._ode.get_statistics().get_bandwidth_consumption_mean()) + " kbps")
         # print("Network bandwidth consumption variance: " + str(cls._ode.get_statistics().get_bandwidth_consumption_var()) + " kbps\n")
-        Logger.p("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
-        Logger.p("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
-        Logger.p("Offloading distribution: " + \
+        cls._log.p("Service availability rate mean: " + str(cls._ode.get_statistics().get_service_avail_mean()) + "%")
+        cls._log.p("Service availability rate variance: " + str(cls._ode.get_statistics().get_service_avail_var()) + "%\n")
+        cls._log.p("Offloading distribution: " + \
             str(cls._ode.get_statistics().get_offloading_distribution()))
-        Logger.p("Offloading distribution relative: " + \
+        cls._log.p("Offloading distribution relative: " + \
             str(cls._ode.get_statistics().get_offloading_distribution_relative()))
-        Logger.p("Num of offloadings: " + \
+        cls._log.p("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
 
         # text = ""
@@ -268,14 +272,15 @@ class MobileDevice:
         # text += cls._cloud_dc.get_name() + ': ' + str(round(cls._cloud_dc.get_failure_cnt() / all_failures * 100, 2))
         # print("Relative failure frequency occurence: " + text)
         # print("Num of failures: " + str(all_failures) + '\n')
-        Logger.p("Offloading failure distribution: " + \
+        cls._log.p("Offloading failure distribution: " + \
             str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
-        Logger.p("Offloading failure frequency relative: " + \
+        cls._log.p("Offloading failure frequency relative: " + \
             str(cls._ode.get_statistics().get_offloading_failure_relative()))
-        Logger.p("Num of offloading failures: " + \
+        cls._log.p("Num of offloading failures: " + \
             str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
 
         cls._ode.get_statistics().reset_stats()
+        cls._init_run = False
         # print('Offloading site datasets:')
         # for edge in cls._edge_servers:
         #    print(edge.get_name() + ' ' + str(edge.get_node_candidate()))

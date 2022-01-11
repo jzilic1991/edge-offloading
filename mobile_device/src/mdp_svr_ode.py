@@ -3,7 +3,7 @@ import math
 from utilities import OffloadingActions, OffloadingSiteCode, OdeType
 from ode import OffloadingDecisionEngine
 from mdp_ode import MdpOde
-from logger import Logger
+# from logger import Logger
 
 
 class MdpSvrOde(MdpOde):

@@ -7,7 +7,7 @@ import numpy as np
 from ode import OffloadingDecisionEngine
 from utilities import OffloadingSiteCode, ExecutionErrorCode, OffloadingActions, ResponseTime, EnergyConsum
 from task import Task
-from logger import Logger
+# from logger import Logger
 from fail_detector import FailureDetector
 
 

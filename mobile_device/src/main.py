@@ -39,24 +39,26 @@ class MyWidget(BoxLayout):
         super (MyWidget, self).__init__(**kwargs)
         
         self._label_text = "DONE"
+        self._samplings = 1
+        self._executions = 100
         #self._search_url = "http://128.131.169.143:30256/get_avail_data?sysid=1&nodenum=0"
         #self._request = UrlRequest (self._search_url, self.http_response)
         df = get_md_data ()
         self._mobile_device = MobileDevice (int(df['mips'][0]), int(df['memory'][0]), int(df['storage'][0]))
         
-        self.__run_experiment (10, 1000)
+        self.__run_experiment (self._samplings, self._executions)
         
         self._mobile_device.next_node_candidates ()
-        self.__run_experiment (10, 1000)
+        self.__run_experiment (self._samplings, self._executions)
         
-        # self._mobile_device.next_node_candidates ()
-        # self.__run_experiment (10, 1000)
+        self._mobile_device.next_node_candidates ()
+        self.__run_experiment (self._samplings, self._executions)
         
-        # self._mobile_device.next_node_candidates ()
-        # self.__run_experiment (10, 1000)
+        self._mobile_device.next_node_candidates ()
+        self.__run_experiment (self._samplings, self._executions)
         
-        # self._mobile_device.next_node_candidates ()
-        # self.__run_experiment (10, 1000)
+        self._mobile_device.next_node_candidates ()
+        self.__run_experiment (self._samplings, self._executions)
 
 
     def __run_experiment (cls, samplings, executions):
