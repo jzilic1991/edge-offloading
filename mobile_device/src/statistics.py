@@ -72,6 +72,15 @@ class Statistics:
         raise ValueError("Offloading site " + offloading_site_name_fail + " does not exists in dictionary in Statistics object!")
 
 
+    def add_fail_event (cls, off_sites):
+        for site in off_sites:
+            if site.get_name() in cls._fail_events_per_off_site_dict.keys() and\
+                    site.get_fail_event():
+                cls._fail_events_per_off_site_dict[site.get_name()] = \
+                        cls._fail_events_per_off_site_dict[site.get_name()] + 1
+                return
+
+
     def add_service_avail(cls, service_avail):
         cls._service_avail.append(service_avail)
 
@@ -136,6 +145,10 @@ class Statistics:
         return cls._off_fail_freq_per_off_site_dict
 
 
+    def get_failure_events (cls):
+        return cls._fail_events_per_off_site_dict
+
+
     def get_offloading_distribution_relative(cls):
         sum_ = sum(cls._offloading_distribution_dict.values())
         rel_dict = dict()
@@ -162,6 +175,24 @@ class Statistics:
                 rel_dict[key] = 0
 
         return rel_dict
+    
+
+    def get_failure_events_relative(cls):
+        sum_ = sum(cls._fail_events_per_off_site_dict.values())
+        rel_dict = dict()
+
+        for key, value in cls._fail_events_per_off_site_dict.items():
+            if sum_ != 0:
+                rel_dict[key] = round((value / sum_) * 100, 2)
+            
+            else:
+                rel_dict[key] = 0
+
+        return rel_dict
+
+
+    def get_num_of_failure_events (cls):
+        return sum(cls._fail_events_per_off_site_dict.values())
 
 
     def get_num_of_offloadings(cls):
@@ -210,8 +241,10 @@ class Statistics:
         cls._single_app_energy_consum = list()
         cls._failure_rates = tuple()
         cls._service_avail = list()
+        cls._fail_events_per_off_site_dict = dict()
         cls._chain_bandwidth_consumption = list()
 
         for offloading_site in cls._offloading_sites:
             cls._offloading_distribution_dict[offloading_site.get_name()] = 0
             cls._off_fail_freq_per_off_site_dict[offloading_site.get_name()] = 0
+            cls._fail_events_per_off_site_dict[offloading_site.get_name()] = 0

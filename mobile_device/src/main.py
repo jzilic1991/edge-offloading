@@ -39,7 +39,7 @@ class MyWidget(BoxLayout):
         super (MyWidget, self).__init__(**kwargs)
         
         self._label_text = "DONE"
-        self._samplings = 1000
+        self._samplings = 100
         self._executions = 1000
         #self._search_url = "http://128.131.169.143:30256/get_avail_data?sysid=1&nodenum=0"
         #self._request = UrlRequest (self._search_url, self.http_response)

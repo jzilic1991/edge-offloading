@@ -32,7 +32,10 @@ class MdpOde(OffloadingDecisionEngine):
         non_offloadable_flag = False
 
         # determines are there any failure events on offloading sites
-        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites, cls._ode_type) 
+        cls._offloading_sites = FailureDetector.eval_fail_event (cls._offloading_sites, cls._ode_type)
+        
+        # register failure events for statistics
+        cls._statistics.add_fail_event(cls._offloading_sites)
     
         for task in tasks:
             if task.is_offloadable() and non_offloadable_flag == False:

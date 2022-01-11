@@ -261,24 +261,28 @@ class MobileDevice:
         cls._log.p("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
         
-        text = ""
-        all_failures = 0
-        for edge in cls._res_monitor.get_edge_servers():
-            all_failures += edge.get_failure_cnt()
-            text += edge.get_name() + ': ' + str(edge.get_failure_cnt()) + ', '
+        cls._log.p("Failure frequency occurence: " + str(cls._ode.get_statistics().get_failure_events()))
+        cls._log.p("Relative failure frequency occurence: " + str(cls._ode.get_statistics().get_failure_events_relative()))
+        cls._log.p("Num of failures: " + str(cls._ode.get_statistics().get_num_of_failure_events()) + '\n')
+        
+        # text = ""
+        # all_failures = 0
+        # for edge in cls._res_monitor.get_edge_servers():
+        #    all_failures += edge.get_failure_cnt()
+        #    text += edge.get_name() + ': ' + str(edge.get_failure_cnt()) + ', '
 
-        all_failures += cls._res_monitor.get_cloud_dc().get_failure_cnt()
-        text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + str(cls._res_monitor.get_cloud_dc().get_failure_cnt())
-        cls._log.p("Failure frequency occurence: " + text)
+        # all_failures += cls._res_monitor.get_cloud_dc().get_failure_cnt()
+        # text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + str(cls._res_monitor.get_cloud_dc().get_failure_cnt())
+        # cls._log.p("Failure frequency occurence: " + text)
 
-        text = ""
-        for edge in cls._res_monitor.get_edge_servers():
-            text += edge.get_name() + ': ' + str(round(edge.get_failure_cnt() / all_failures * 100, 2)) + ', '
+        # text = ""
+        # for edge in cls._res_monitor.get_edge_servers():
+        #    text += edge.get_name() + ': ' + str(round(edge.get_failure_cnt() / all_failures * 100, 2)) + ', '
 
-        text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + \
-                str(round(cls._res_monitor.get_cloud_dc().get_failure_cnt() / all_failures * 100, 2))
-        cls._log.p("Relative failure frequency occurence: " + text)
-        cls._log.p("Num of failures: " + str(all_failures) + '\n')
+        # text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + \
+        #        str(round(cls._res_monitor.get_cloud_dc().get_failure_cnt() / all_failures * 100, 2))
+        # cls._log.p("Relative failure frequency occurence: " + text)
+        # cls._log.p("Num of failures: " + str(all_failures) + '\n')
 
         cls._log.p("Offloading failure distribution: " + \
             str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
