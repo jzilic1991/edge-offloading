@@ -59,7 +59,7 @@ class OffloadingDecisionEngine(ABC):
 
 
     def get_name(cls):
-        return cls._name + "_t_" + str(cls._w_f_time_completion) + "_e_" + str(cls._w_f_energy_consumption)
+        return cls._name #+ "_t_" + str(cls._w_f_time_completion) + "_e_" + str(cls._w_f_energy_consumption)
     
 
     def get_statistics (cls):

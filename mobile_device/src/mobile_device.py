@@ -260,13 +260,6 @@ class MobileDevice:
             str(cls._ode.get_statistics().get_offloading_distribution_relative()))
         cls._log.p("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
-
-        cls._log.p("Offloading failure distribution: " + \
-            str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
-        cls._log.p("Offloading failure frequency relative: " + \
-            str(cls._ode.get_statistics().get_offloading_failure_relative()))
-        cls._log.p("Num of offloading failures: " + \
-            str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
         
         text = ""
         all_failures = 0
@@ -286,6 +279,14 @@ class MobileDevice:
                 str(round(cls._res_monitor.get_cloud_dc().get_failure_cnt() / all_failures * 100, 2))
         cls._log.p("Relative failure frequency occurence: " + text)
         cls._log.p("Num of failures: " + str(all_failures) + '\n')
+
+        cls._log.p("Offloading failure distribution: " + \
+            str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
+        cls._log.p("Offloading failure frequency relative: " + \
+            str(cls._ode.get_statistics().get_offloading_failure_relative()))
+        cls._log.p("Num of offloading failures: " + \
+            str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
+        
    
 
     def __deploy_network_model (cls):
