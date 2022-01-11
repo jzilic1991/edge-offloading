@@ -229,7 +229,13 @@ class MobileDevice:
             # cls.__reset_offloading_site_discrete_epoch_counters()
 
         cls._stats_hist.append (cls._ode.get_statistics())
+        cls.__print_log_results ()
+        
+        cls._ode.get_statistics().reset_stats()
+        cls._init_run = False
 
+
+    def __print_log_results (cls):
         # print ('Get all time completion: ' + str(cls._ode.get_statistics().get_all_time_comp()))
         # print ('Get all battery lifetime: '  + str(cls._ode.get_statistics().get_all_energy_consum()))
         # print ('Get all service availability: ' + str(cls._ode.get_statistics().get_all_service_avail()))
@@ -255,37 +261,31 @@ class MobileDevice:
         cls._log.p("Num of offloadings: " + \
             str(cls._ode.get_statistics().get_num_of_offloadings()) + '\n')
 
-        # text = ""
-        # all_failures = 0
-        # for edge in cls._edge_servers:
-        #    all_failures += edge.get_failure_cnt()
-        # text += edge.get_name() + ': ' + str(edge.get_failure_cnt()) + ', '
-
-        # all_failures += cls._cloud_dc.get_failure_cnt()
-        # text += cls._cloud_dc.get_name() + ': ' + str(cls._cloud_dc.get_failure_cnt())
-        # print("Failure frequency occurence: " + text)
-
-        # text = ""
-        # for edge in cls._edge_servers:
-        #    text += edge.get_name() + ': ' + str(round(edge.get_failure_cnt() / all_failures * 100, 2)) + ', '
-
-        # text += cls._cloud_dc.get_name() + ': ' + str(round(cls._cloud_dc.get_failure_cnt() / all_failures * 100, 2))
-        # print("Relative failure frequency occurence: " + text)
-        # print("Num of failures: " + str(all_failures) + '\n')
         cls._log.p("Offloading failure distribution: " + \
             str(cls._ode.get_statistics().get_offloading_failure_frequencies()))
         cls._log.p("Offloading failure frequency relative: " + \
             str(cls._ode.get_statistics().get_offloading_failure_relative()))
         cls._log.p("Num of offloading failures: " + \
             str(cls._ode.get_statistics().get_num_of_offloading_failures()) + '\n')
+        
+        text = ""
+        all_failures = 0
+        for edge in cls._res_monitor.get_edge_servers():
+            all_failures += edge.get_failure_cnt()
+            text += edge.get_name() + ': ' + str(edge.get_failure_cnt()) + ', '
 
-        cls._ode.get_statistics().reset_stats()
-        cls._init_run = False
-        # print('Offloading site datasets:')
-        # for edge in cls._edge_servers:
-        #    print(edge.get_name() + ' ' + str(edge.get_node_candidate()))
+        all_failures += cls._res_monitor.get_cloud_dc().get_failure_cnt()
+        text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + str(cls._res_monitor.get_cloud_dc().get_failure_cnt())
+        cls._log.p("Failure frequency occurence: " + text)
 
-        # print(cls._cloud_dc.get_name() + ' ' + str(cls._cloud_dc.get_node_candidate()))
+        text = ""
+        for edge in cls._res_monitor.get_edge_servers():
+            text += edge.get_name() + ': ' + str(round(edge.get_failure_cnt() / all_failures * 100, 2)) + ', '
+
+        text += cls._res_monitor.get_cloud_dc().get_name() + ': ' + \
+                str(round(cls._res_monitor.get_cloud_dc().get_failure_cnt() / all_failures * 100, 2))
+        cls._log.p("Relative failure frequency occurence: " + text)
+        cls._log.p("Num of failures: " + str(all_failures) + '\n')
    
 
     def __deploy_network_model (cls):
@@ -381,7 +381,7 @@ class MobileDevice:
         return ExecutionErrorCode.EXE_NOK
 
 
-    def flush_executed_task(cls, task):
+    def terminate_task(cls, task):
         if not isinstance(task, Task):
             print ("Task for execution on offloading site should be Task class instance!")
             return ExecutionErrorCode.EXE_NOK

@@ -119,7 +119,7 @@ class MdpOde(OffloadingDecisionEngine):
             # task.save_offloading_site(cls._current_node.get_name())
             # task.save_offloading_policy(cls._policy)
 
-            cls._current_node.flush_executed_task(task)
+            cls._current_node.terminate_task(task)
 
         max_task_completion_time = 0
         for task_completion_time in task_completion_time_array:

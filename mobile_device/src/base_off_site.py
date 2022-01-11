@@ -22,6 +22,7 @@ class BaseOffloadingSite (ABC):
         self._node_type = node_type
         self._fail_event = False
         self._time_epoch_cnt = 0
+        self._fail_cnt = 0
             
         self._off_site_code = Util.determine_off_site_code (node_type)
         (self._name, self._off_action) = Util.determine_name_and_action (name, self._off_site_code)
@@ -52,6 +53,10 @@ class BaseOffloadingSite (ABC):
 
     def get_name (cls):
         return cls._name
+    
+
+    def get_failure_cnt (cls):
+        return cls._fail_cnt
 
 
     def get_millions_of_instructions_per_second (cls):
@@ -63,6 +68,7 @@ class BaseOffloadingSite (ABC):
 
         if cls._fail_event:
             cls._time_epoch_cnt = 0
+            cls._fail_cnt += 1
     
 
     def get_fail_event (cls):

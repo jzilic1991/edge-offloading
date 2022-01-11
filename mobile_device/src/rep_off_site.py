@@ -85,6 +85,8 @@ class RepresentOffloadingSite (BaseOffloadingSite):
 
 
     def reset_test_data (cls):
+        cls.__reset_fail_cnt ()
+        
         if len(cls._avail_data['predicted']) != 0:
             cls.__fill_used_data()
             return
@@ -122,15 +124,11 @@ class RepresentOffloadingSite (BaseOffloadingSite):
         return ExecutionErrorCode.EXE_OK
 
 
-    def terminate_task (cls, task):
-        raise NotImplementedError
-
-
     def detect_failure_event (cls, prob):
         raise NotImplementedError
     
 
-    def flush_executed_task(cls, task):
+    def terminate_task(cls, task):
         if not isinstance(task, Task):
             return ExecutionErrorCode.EXE_NOK
     
@@ -141,6 +139,10 @@ class RepresentOffloadingSite (BaseOffloadingSite):
             raise ValueError("Memory consumption: " + str(cls._memory_consumption) + \
                     "Gb, data storage consumption: " + str(cls._data_storage_consumption) + \
                     "Gb, both should be positive! Node: " + cls._name + ", task: " + task.get_name())
+
+
+    def __reset_fail_cnt (cls):
+        cls._fail_cnt = 0
 
 
     def __get_prob_for_mdp_svr (cls):
