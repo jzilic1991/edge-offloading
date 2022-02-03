@@ -335,8 +335,8 @@ def plot_service_avail_graph(data_mean, i):
 
     plt.rcParams.update({'font.size': 14})
     fig = plt.figure()
-    #ax = plt.subplot(111)
-    ax = fig.add_axes([0.1, 0.1, 0.6, 0.75])
+    ax = plt.subplot(111)
+    # ax = fig.add_axes([0.1, 0.1, 0.6, 0.75])
     ax.bar(x - 0.2, data_mean[MDP_SVR_STR], width = 0.2, color = 'b', align = 'center', label = 'MDP-SVR')
     ax.bar(x, data_mean[EFPO_STR], width = 0.2, color = 'pink', align = 'center', label = 'EFPO')
     ax.set_ylim([95.5,100])
@@ -345,7 +345,7 @@ def plot_service_avail_graph(data_mean, i):
     plt.ylabel('Service availability (%)')
     #plt.title('Average service availability')
     plt.xticks(x, ['DS1', 'DS2', 'DS3', 'DS4', 'DS5'], fontsize = 14)
-    plt.legend(bbox_to_anchor = (1.04,1), loc = "upper left", prop = {'size': 14}, framealpha = 1, frameon = True)
+    # plt.legend(bbox_to_anchor = (1.04,1), loc = "upper left", prop = {'size': 14}, framealpha = 1, frameon = True)
     plt.show()
 
 
@@ -396,7 +396,7 @@ def plot_svr_overall_time(sample_size, overall_times):
 
 
 def parse_simulation_log():
-    file_reader = open('logs/simulation.txt', 'r+')
+    file_reader = open('logs/simulation2.txt', 'r+')
     mdp_svr_flag = False
     efpo_flag = False
     flags = [False, False]

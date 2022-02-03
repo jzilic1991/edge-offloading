@@ -1,0 +1,281 @@
+##############################################################
+################## MDP_SVR OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 639.301 s
+Time variance: 151.613 s
+
+Battery lifetime mean: 98.257%
+Battery lifetime variance: 0.001%
+
+Offloading failure rate mean: 21.31 failures
+Offloading failure rate variance: 28.514 failures
+
+Service availability rate mean: 99.637%
+Service availability rate variance: 0.008%
+
+Offloading distribution: {'MOBILE_DEVICE': 220137, 'EDGE_DATABASE_SERVER_A': 71115, 'EDGE_COMPUTATIONAL_SERVER_A': 293678, 'EDGE_REGULAR_SERVER_A': 125, 'CLOUD_DATA_CENTER_A': 0}
+Offloading distribution relative: {'MOBILE_DEVICE': 37.63, 'EDGE_DATABASE_SERVER_A': 12.16, 'EDGE_COMPUTATIONAL_SERVER_A': 50.2, 'EDGE_REGULAR_SERVER_A': 0.02, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloadings: 585055
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1327, 'EDGE_COMPUTATIONAL_SERVER_A': 4379, 'EDGE_REGULAR_SERVER_A': 4477, 'CLOUD_DATA_CENTER_A': 8635}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 7.05, 'EDGE_COMPUTATIONAL_SERVER_A': 23.27, 'EDGE_REGULAR_SERVER_A': 23.79, 'CLOUD_DATA_CENTER_A': 45.89}
+Num of failures: 18818
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 174, 'EDGE_COMPUTATIONAL_SERVER_A': 2245, 'EDGE_REGULAR_SERVER_A': 0, 'CLOUD_DATA_CENTER_A': 0}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 7.19, 'EDGE_COMPUTATIONAL_SERVER_A': 92.81, 'EDGE_REGULAR_SERVER_A': 0.0, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloading failures: 2419
+
+##############################################################
+################## EFPO OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 801.681 s
+Time variance: 411.524 s
+
+Battery lifetime mean: 97.937%
+Battery lifetime variance: 0.003%
+
+Offloading failure rate mean: 78.3 failures
+Offloading failure rate variance: 54.17 failures
+
+Service availability rate mean: 98.679%
+Service availability rate variance: 0.014%
+
+Offloading distribution: {'MOBILE_DEVICE': 229866, 'EDGE_DATABASE_SERVER_A': 103004, 'EDGE_COMPUTATIONAL_SERVER_A': 56851, 'EDGE_REGULAR_SERVER_A': 184224, 'CLOUD_DATA_CENTER_A': 10981}
+Offloading distribution relative: {'MOBILE_DEVICE': 39.3, 'EDGE_DATABASE_SERVER_A': 17.61, 'EDGE_COMPUTATIONAL_SERVER_A': 9.72, 'EDGE_REGULAR_SERVER_A': 31.5, 'CLOUD_DATA_CENTER_A': 1.88}
+Num of offloadings: 584926
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1401, 'EDGE_COMPUTATIONAL_SERVER_A': 4510, 'EDGE_REGULAR_SERVER_A': 4451, 'CLOUD_DATA_CENTER_A': 8694}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 7.35, 'EDGE_COMPUTATIONAL_SERVER_A': 23.67, 'EDGE_REGULAR_SERVER_A': 23.36, 'CLOUD_DATA_CENTER_A': 45.62}
+Num of failures: 19056
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 717, 'EDGE_COMPUTATIONAL_SERVER_A': 2304, 'EDGE_REGULAR_SERVER_A': 1930, 'CLOUD_DATA_CENTER_A': 3926}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 8.08, 'EDGE_COMPUTATIONAL_SERVER_A': 25.95, 'EDGE_REGULAR_SERVER_A': 21.74, 'CLOUD_DATA_CENTER_A': 44.23}
+Num of offloading failures: 8877
+
+##############################################################
+################## MDP_SVR OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 651.342 s
+Time variance: 158.168 s
+
+Battery lifetime mean: 98.29%
+Battery lifetime variance: 0.001%
+
+Offloading failure rate mean: 27.26 failures
+Offloading failure rate variance: 38.552 failures
+
+Service availability rate mean: 99.536%
+Service availability rate variance: 0.011%
+
+Offloading distribution: {'MOBILE_DEVICE': 220482, 'EDGE_DATABASE_SERVER_A': 218538, 'EDGE_COMPUTATIONAL_SERVER_A': 135253, 'EDGE_REGULAR_SERVER_A': 10667, 'CLOUD_DATA_CENTER_A': 0}
+Offloading distribution relative: {'MOBILE_DEVICE': 37.69, 'EDGE_DATABASE_SERVER_A': 37.36, 'EDGE_COMPUTATIONAL_SERVER_A': 23.12, 'EDGE_REGULAR_SERVER_A': 1.82, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloadings: 584940
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 3831, 'EDGE_COMPUTATIONAL_SERVER_A': 6074, 'EDGE_REGULAR_SERVER_A': 4271, 'CLOUD_DATA_CENTER_A': 8696}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 16.75, 'EDGE_COMPUTATIONAL_SERVER_A': 26.56, 'EDGE_REGULAR_SERVER_A': 18.67, 'CLOUD_DATA_CENTER_A': 38.02}
+Num of failures: 22872
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1432, 'EDGE_COMPUTATIONAL_SERVER_A': 1531, 'EDGE_REGULAR_SERVER_A': 86, 'CLOUD_DATA_CENTER_A': 0}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 46.97, 'EDGE_COMPUTATIONAL_SERVER_A': 50.21, 'EDGE_REGULAR_SERVER_A': 2.82, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloading failures: 3049
+
+##############################################################
+################## EFPO OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 891.46 s
+Time variance: 547.885 s
+
+Battery lifetime mean: 97.648%
+Battery lifetime variance: 0.004%
+
+Offloading failure rate mean: 110.67 failures
+Offloading failure rate variance: 109.101 failures
+
+Service availability rate mean: 98.142%
+Service availability rate variance: 0.03%
+
+Offloading distribution: {'MOBILE_DEVICE': 233538, 'EDGE_DATABASE_SERVER_A': 154175, 'EDGE_COMPUTATIONAL_SERVER_A': 51135, 'EDGE_REGULAR_SERVER_A': 89835, 'CLOUD_DATA_CENTER_A': 55941}
+Offloading distribution relative: {'MOBILE_DEVICE': 39.95, 'EDGE_DATABASE_SERVER_A': 26.37, 'EDGE_COMPUTATIONAL_SERVER_A': 8.75, 'EDGE_REGULAR_SERVER_A': 15.37, 'CLOUD_DATA_CENTER_A': 9.57}
+Num of offloadings: 584624
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 3825, 'EDGE_COMPUTATIONAL_SERVER_A': 6127, 'EDGE_REGULAR_SERVER_A': 4277, 'CLOUD_DATA_CENTER_A': 8597}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 16.76, 'EDGE_COMPUTATIONAL_SERVER_A': 26.84, 'EDGE_REGULAR_SERVER_A': 18.74, 'CLOUD_DATA_CENTER_A': 37.66}
+Num of failures: 22826
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 2195, 'EDGE_COMPUTATIONAL_SERVER_A': 3319, 'EDGE_REGULAR_SERVER_A': 2131, 'CLOUD_DATA_CENTER_A': 4847}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 17.57, 'EDGE_COMPUTATIONAL_SERVER_A': 26.57, 'EDGE_REGULAR_SERVER_A': 17.06, 'CLOUD_DATA_CENTER_A': 38.8}
+Num of offloading failures: 12492
+
+##############################################################
+################## MDP_SVR OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 612.838 s
+Time variance: 88.471 s
+
+Battery lifetime mean: 98.422%
+Battery lifetime variance: 0.0%
+
+Offloading failure rate mean: 15.09 failures
+Offloading failure rate variance: 13.122 failures
+
+Service availability rate mean: 99.743%
+Service availability rate variance: 0.004%
+
+Offloading distribution: {'MOBILE_DEVICE': 220355, 'EDGE_DATABASE_SERVER_A': 336553, 'EDGE_COMPUTATIONAL_SERVER_A': 18955, 'EDGE_REGULAR_SERVER_A': 9361, 'CLOUD_DATA_CENTER_A': 0}
+Offloading distribution relative: {'MOBILE_DEVICE': 37.65, 'EDGE_DATABASE_SERVER_A': 57.51, 'EDGE_COMPUTATIONAL_SERVER_A': 3.24, 'EDGE_REGULAR_SERVER_A': 1.6, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloadings: 585224
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 987, 'EDGE_COMPUTATIONAL_SERVER_A': 29720, 'EDGE_REGULAR_SERVER_A': 2743, 'CLOUD_DATA_CENTER_A': 8231}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 2.37, 'EDGE_COMPUTATIONAL_SERVER_A': 71.3, 'EDGE_REGULAR_SERVER_A': 6.58, 'CLOUD_DATA_CENTER_A': 19.75}
+Num of failures: 41681
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 542, 'EDGE_COMPUTATIONAL_SERVER_A': 1071, 'EDGE_REGULAR_SERVER_A': 46, 'CLOUD_DATA_CENTER_A': 0}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 32.67, 'EDGE_COMPUTATIONAL_SERVER_A': 64.56, 'EDGE_REGULAR_SERVER_A': 2.77, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloading failures: 1659
+
+##############################################################
+################## EFPO OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 1011.538 s
+Time variance: 1049.208 s
+
+Battery lifetime mean: 97.409%
+Battery lifetime variance: 0.011%
+
+Offloading failure rate mean: 185.72 failures
+Offloading failure rate variance: 168.022 failures
+
+Service availability rate mean: 96.922%
+Service availability rate variance: 0.042%
+
+Offloading distribution: {'MOBILE_DEVICE': 243023, 'EDGE_DATABASE_SERVER_A': 64783, 'EDGE_COMPUTATIONAL_SERVER_A': 180512, 'EDGE_REGULAR_SERVER_A': 86676, 'CLOUD_DATA_CENTER_A': 9635}
+Offloading distribution relative: {'MOBILE_DEVICE': 41.57, 'EDGE_DATABASE_SERVER_A': 11.08, 'EDGE_COMPUTATIONAL_SERVER_A': 30.88, 'EDGE_REGULAR_SERVER_A': 14.83, 'CLOUD_DATA_CENTER_A': 1.65}
+Num of offloadings: 584629
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1012, 'EDGE_COMPUTATIONAL_SERVER_A': 29729, 'EDGE_REGULAR_SERVER_A': 2755, 'CLOUD_DATA_CENTER_A': 8159}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 2.43, 'EDGE_COMPUTATIONAL_SERVER_A': 71.37, 'EDGE_REGULAR_SERVER_A': 6.61, 'CLOUD_DATA_CENTER_A': 19.59}
+Num of failures: 41655
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 417, 'EDGE_COMPUTATIONAL_SERVER_A': 15945, 'EDGE_REGULAR_SERVER_A': 859, 'CLOUD_DATA_CENTER_A': 3692}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 1.99, 'EDGE_COMPUTATIONAL_SERVER_A': 76.24, 'EDGE_REGULAR_SERVER_A': 4.11, 'CLOUD_DATA_CENTER_A': 17.65}
+Num of offloading failures: 20913
+
+##############################################################
+################## MDP_SVR OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 661.547 s
+Time variance: 144.946 s
+
+Battery lifetime mean: 98.215%
+Battery lifetime variance: 0.001%
+
+Offloading failure rate mean: 34.95 failures
+Offloading failure rate variance: 32.768 failures
+
+Service availability rate mean: 99.406%
+Service availability rate variance: 0.009%
+
+Offloading distribution: {'MOBILE_DEVICE': 220239, 'EDGE_DATABASE_SERVER_A': 80437, 'EDGE_COMPUTATIONAL_SERVER_A': 283996, 'EDGE_REGULAR_SERVER_A': 198, 'CLOUD_DATA_CENTER_A': 14}
+Offloading distribution relative: {'MOBILE_DEVICE': 37.66, 'EDGE_DATABASE_SERVER_A': 13.75, 'EDGE_COMPUTATIONAL_SERVER_A': 48.56, 'EDGE_REGULAR_SERVER_A': 0.03, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloadings: 584884
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 3024, 'EDGE_COMPUTATIONAL_SERVER_A': 6811, 'EDGE_REGULAR_SERVER_A': 9610, 'CLOUD_DATA_CENTER_A': 8487}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 10.83, 'EDGE_COMPUTATIONAL_SERVER_A': 24.38, 'EDGE_REGULAR_SERVER_A': 34.4, 'CLOUD_DATA_CENTER_A': 30.38}
+Num of failures: 27932
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 455, 'EDGE_COMPUTATIONAL_SERVER_A': 3427, 'EDGE_REGULAR_SERVER_A': 6, 'CLOUD_DATA_CENTER_A': 0}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 11.7, 'EDGE_COMPUTATIONAL_SERVER_A': 88.14, 'EDGE_REGULAR_SERVER_A': 0.15, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloading failures: 3888
+
+##############################################################
+################## EFPO OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 846.246 s
+Time variance: 373.601 s
+
+Battery lifetime mean: 97.863%
+Battery lifetime variance: 0.002%
+
+Offloading failure rate mean: 106.14 failures
+Offloading failure rate variance: 97.56 failures
+
+Service availability rate mean: 98.217%
+Service availability rate variance: 0.026%
+
+Offloading distribution: {'MOBILE_DEVICE': 233161, 'EDGE_DATABASE_SERVER_A': 111897, 'EDGE_COMPUTATIONAL_SERVER_A': 57139, 'EDGE_REGULAR_SERVER_A': 176762, 'CLOUD_DATA_CENTER_A': 5726}
+Offloading distribution relative: {'MOBILE_DEVICE': 39.88, 'EDGE_DATABASE_SERVER_A': 19.14, 'EDGE_COMPUTATIONAL_SERVER_A': 9.77, 'EDGE_REGULAR_SERVER_A': 30.23, 'CLOUD_DATA_CENTER_A': 0.98}
+Num of offloadings: 584685
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 2986, 'EDGE_COMPUTATIONAL_SERVER_A': 6988, 'EDGE_REGULAR_SERVER_A': 9602, 'CLOUD_DATA_CENTER_A': 8514}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 10.63, 'EDGE_COMPUTATIONAL_SERVER_A': 24.88, 'EDGE_REGULAR_SERVER_A': 34.18, 'CLOUD_DATA_CENTER_A': 30.31}
+Num of failures: 28090
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1291, 'EDGE_COMPUTATIONAL_SERVER_A': 3674, 'EDGE_REGULAR_SERVER_A': 3795, 'CLOUD_DATA_CENTER_A': 3316}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 10.69, 'EDGE_COMPUTATIONAL_SERVER_A': 30.42, 'EDGE_REGULAR_SERVER_A': 31.43, 'CLOUD_DATA_CENTER_A': 27.46}
+Num of offloading failures: 12076
+
+##############################################################
+################## MDP_SVR OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 651.588 s
+Time variance: 135.836 s
+
+Battery lifetime mean: 98.228%
+Battery lifetime variance: 0.001%
+
+Offloading failure rate mean: 29.59 failures
+Offloading failure rate variance: 35.842 failures
+
+Service availability rate mean: 99.496%
+Service availability rate variance: 0.01%
+
+Offloading distribution: {'MOBILE_DEVICE': 219909, 'EDGE_DATABASE_SERVER_A': 76698, 'EDGE_COMPUTATIONAL_SERVER_A': 287199, 'EDGE_REGULAR_SERVER_A': 219, 'CLOUD_DATA_CENTER_A': 1}
+Offloading distribution relative: {'MOBILE_DEVICE': 37.65, 'EDGE_DATABASE_SERVER_A': 13.13, 'EDGE_COMPUTATIONAL_SERVER_A': 49.18, 'EDGE_REGULAR_SERVER_A': 0.04, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloadings: 584026
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 3661, 'EDGE_COMPUTATIONAL_SERVER_A': 5381, 'EDGE_REGULAR_SERVER_A': 6263, 'CLOUD_DATA_CENTER_A': 8473}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 15.4, 'EDGE_COMPUTATIONAL_SERVER_A': 22.63, 'EDGE_REGULAR_SERVER_A': 26.34, 'CLOUD_DATA_CENTER_A': 35.63}
+Num of failures: 23778
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 528, 'EDGE_COMPUTATIONAL_SERVER_A': 2782, 'EDGE_REGULAR_SERVER_A': 2, 'CLOUD_DATA_CENTER_A': 0}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 15.94, 'EDGE_COMPUTATIONAL_SERVER_A': 84.0, 'EDGE_REGULAR_SERVER_A': 0.06, 'CLOUD_DATA_CENTER_A': 0.0}
+Num of offloading failures: 3312
+
+##############################################################
+################## EFPO OFFLOADING RESULT SUMMARY #################
+##############################################################
+
+Time mean: 828.26 s
+Time variance: 330.718 s
+
+Battery lifetime mean: 97.898%
+Battery lifetime variance: 0.002%
+
+Offloading failure rate mean: 100.7 failures
+Offloading failure rate variance: 79.71 failures
+
+Service availability rate mean: 98.306%
+Service availability rate variance: 0.022%
+
+Offloading distribution: {'MOBILE_DEVICE': 232513, 'EDGE_DATABASE_SERVER_A': 185092, 'EDGE_COMPUTATIONAL_SERVER_A': 46132, 'EDGE_REGULAR_SERVER_A': 103740, 'CLOUD_DATA_CENTER_A': 16949}
+Offloading distribution relative: {'MOBILE_DEVICE': 39.78, 'EDGE_DATABASE_SERVER_A': 31.67, 'EDGE_COMPUTATIONAL_SERVER_A': 7.89, 'EDGE_REGULAR_SERVER_A': 17.75, 'CLOUD_DATA_CENTER_A': 2.9}
+Num of offloadings: 584426
+
+
+Failure frequency occurence: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 3551, 'EDGE_COMPUTATIONAL_SERVER_A': 5471, 'EDGE_REGULAR_SERVER_A': 6078, 'CLOUD_DATA_CENTER_A': 8561}
+Relative failure frequency occurence: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 15.01, 'EDGE_COMPUTATIONAL_SERVER_A': 23.12, 'EDGE_REGULAR_SERVER_A': 25.69, 'CLOUD_DATA_CENTER_A': 36.18}
+Num of failures: 23661
+
+Offloading failure distribution: {'MOBILE_DEVICE': 0, 'EDGE_DATABASE_SERVER_A': 1961, 'EDGE_COMPUTATIONAL_SERVER_A': 2919, 'EDGE_REGULAR_SERVER_A': 2675, 'CLOUD_DATA_CENTER_A': 3852}
+Offloading failure frequency relative: {'MOBILE_DEVICE': 0.0, 'EDGE_DATABASE_SERVER_A': 17.19, 'EDGE_COMPUTATIONAL_SERVER_A': 25.59, 'EDGE_REGULAR_SERVER_A': 23.45, 'CLOUD_DATA_CENTER_A': 33.77}
+Num of offloading failures: 11407
+
