@@ -12,6 +12,8 @@ This is proactive fault-tolerant edge offloading framework modeled as Markov Dec
 
 The workflow begins with the failure monitor which collects historical failure trace logs and forwards them to the prediction engine (step 1a). Subsequently, the prediction engine estimates the service availability of each offloading site and sends information to the mobile device (step 2a). Simultaneously, the application profiler and the resource monitor collect information about mobile application requirements and remote infrastructure capabilities (step 2b and 2c). These data are used by the decision engine (steps 3a, 3b, and 3c) to output the offloading decision policy (Step 4a), based on which task offloading is performed (Step 5a and 5b).
 
+<br/>
+
 ## Prototype Implementation
 The framework is based on microservice architecture where microservices are containerized in Docker containers and executed on the Kuberentes cluster. The containers are abstracted as Kubernetes services and exposed to the external devices/users as a offloading service. 
 
@@ -27,6 +29,8 @@ Micro-services on the mobile device are developed using Python Kivy mobile cross
 
 ### Offloading Service Deployment
 Offloading HTTP requests from mobile device are handled by Flask micro web service on each remote offloading site. It is instantiate as an micro-service docker container on each of the remote offloading site. It is deployed as part of single Kubernetes pod together with the failure monitor and prediction engine micro-services. This pod is abstracted as a Kubernets offloading service exposed publically through HTTP URL address. Additionally, the NGINX reverse proxy is employed to redirect mobile HTTP requests to appropriate offloading services. Combining both aforementioned web services, the offloading services are available to the mobile device for task offloading through HTTP protocol.
+
+<br/>
 
 ## Experimental Test-bed
 The edge offloading framework is evaluated on the test-bed shown in the following figures. Huawei P Smart Z is a mobile device, RPis are edge nodes, and AMD64 is used to simulate a cloud data center.
