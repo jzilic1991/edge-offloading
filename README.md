@@ -21,7 +21,6 @@ The repository consists of following directory elements:
 - *kubernetes*: contains YAML deployment and service configuration files for edge offloading application,
 - *mobile device*: contains source and docker files for micro-services deployed on mobile device,
 - *offloading site*: contains source and docker files for micro-services deployed on remote offloading sites,
-- **
 
 <hr>
 
