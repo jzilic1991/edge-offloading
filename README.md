@@ -19,7 +19,7 @@ The repository consists of following directory elements:
 - *common*: contains common features related to the entire edge offloading application,
 - *database*: contains SQL injection file for populating PostgreSQL database with necessary parameters,
 - *kubernetes*: contains YAML deployment and service configuration files for edge offloading application,
-- *mobile device*: contains source and docker files for micro-services deployed on mobile device,
+- *mobile device*: contains source files for micro-services deployed on mobile device,
 - *offloading site*: contains source and docker files for micro-services deployed on remote offloading sites,
 
 <hr>
