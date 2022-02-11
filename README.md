@@ -1,16 +1,29 @@
 # Edge Offloading on Microservice Architectures
 This is proactive fault-tolerant edge offloading framework modeled as Markov Decision Process (MDP) based on offloading service availability predictions from Support Vector Regression (SVR). The framework is composed out of following components:
 
-- *Decision engine* computes the offloading decision policy,
-- *Prediction engine* estimates future offloading service availability on the remote offloading site,
-- *Failure monitor* monitors local system operations and logs failure events into local failure file,
-- *Failure detector* detects offloading failures during runtime execution and collects the failure estimation data,
-- *Resource monitor* collects resource information about remote infrastructure,
-- *Application profiler* profiles resource requirements of underlying mobile applications.
+- **Decision engine**: computes the offloading decision policy,
+- **Prediction engine**: estimates future offloading service availability on the remote offloading site,
+- **Failure monitor**: monitors local system operations and logs failure events into local failure file,
+- **Failure detector**: detects offloading failures during runtime execution and collects the failure estimation data,
+- **Resource monitor**: collects resource information about remote infrastructure,
+- **Application profiler**: profiles resource requirements of underlying mobile applications.
 
 <img width="627" alt="edge_offloading_model" src="https://user-images.githubusercontent.com/89394269/153574960-a9df1b15-5ea7-42b3-90cc-59c6a149c1eb.png">
 
 The workflow begins with the failure monitor which collects historical failure trace logs and forwards them to the prediction engine (step 1a). Subsequently, the prediction engine estimates the service availability of each offloading site and sends information to the mobile device (step 2a). Simultaneously, the application profiler and the resource monitor collect information about mobile application requirements and remote infrastructure capabilities (step 2b and 2c). These data are used by the decision engine (steps 3a, 3b, and 3c) to output the offloading decision policy (Step 4a), based on which task offloading is performed (Step 5a and 5b).
+
+<hr>
+
+The repository consists of following directory elements:
+
+- *common*: contains common features related to the entire edge offloading application,
+- *database*: contains SQL injection file for populating PostgreSQL database with necessary parameters,
+- *kubernetes*: contains YAML deployment and service configuration files for edge offloading application,
+- *mobile device*: contains source and docker files for micro-services deployed on mobile device,
+- *offloading site*: contains source and docker files for micro-services deployed on remote offloading sites,
+- **
+
+<hr>
 
 <br/>
 
