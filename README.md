@@ -32,7 +32,7 @@ Offloading HTTP requests from mobile device are handled by Flask micro web servi
 The edge offloading framework is evaluated on the test-bed shown in the following figures. Huawei P Smart Z is a mobile device, RPis are edge nodes, and AMD64 is used to simulate a cloud data center.
 
 <p align="left">
-  <img width="400" alt="infrastructure_schematics" src="https://user-images.githubusercontent.com/89394269/153597551-3dd0423b-503e-4490-9047-90a9864c0e62.png" align="left">
+  <img width="350" alt="infrastructure_schematics" src="https://user-images.githubusercontent.com/89394269/153597551-3dd0423b-503e-4490-9047-90a9864c0e62.png" align="left">
   <img width="200" alt="amd_server" src="https://user-images.githubusercontent.com/89394269/153597579-d5386de8-a2d2-4339-9b5e-b0e8fa86eb3a.png" align="center">
   <img width="200" alt="cluster_config" src="https://user-images.githubusercontent.com/89394269/153598398-426704be-f909-4b3c-b98a-6717d0d43fab.png" align="right">
 </p>
