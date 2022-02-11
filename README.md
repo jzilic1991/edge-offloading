@@ -56,8 +56,15 @@ The edge offloading framework is evaluated on the test-bed shown in the followin
 <br/>
 
 ## Datasets
-
+Datasets used in our work are:
+-Los Alamos National Laboratory (LANL) failure dataset of high-performance computing (HPC) clusters [1]
+-LiveLab application usage traces [2]
 <br/>
 
 ## Acknowledgments
 This work is partially funded through the Rucon project (Runtime Control in Multi Clouds), FWF Y 904 START-Programm 2015.
+
+## References
+[1] Schroeder, Bianca, and Garth A. Gibson. "A large-scale study of failures in high-performance computing systems." IEEE transactions on Dependable and Secure Computing 7.4 (2009): 337-350.
+
+[2] Shepard, Clayton, et al. "LiveLab: measuring wireless networks and smartphone users in the field." ACM SIGMETRICS Performance Evaluation Review 38.3 (2011): 15-20.
