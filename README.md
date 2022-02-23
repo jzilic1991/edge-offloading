@@ -1,4 +1,4 @@
-# Edge Offloading on Microservice Architectures
+# Edge Offloading for Microservice Architectures
 This is a proactive fault-tolerant edge offloading framework modeled as Markov Decision Process (MDP) based on offloading service availability predictions from Support Vector Regression (SVR). The framework is composed of the following components:
 
 - **Decision engine**: computes the offloading decision policy,
